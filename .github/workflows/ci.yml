@@ -1,59 +1,28 @@
-# le nom du workflow, tel qu'il apparaitre dans l'onglet "Actions" de GitHub
-name : CI
+name: CI
 
-# définit les déclencheurs : à quels événements ce workflow s'exécute. C'est le cœur de la logique.
-on :
+on:
+  push:
+    branches: [main]
+  pull_request:
 
-#Se déclenche à chaque push sur la branche main uniquement. 
-#Sans la ligne branches, il se déclencherait sur tous les push de toutes les branches — donc deux fois pour chaque PR (une fois pour le push, une fois pour la PR). Ici : main couvre le code fusionné.
-  push :
-    branches : [main]
-
-#Se déclenche à l'ouverture et à chaque nouveau commit d'une pull request. La clé est vide (pas de sous-options) : ça signifie « toutes les PR, quelle que soit la branche cible ». C'est cette ligne qui fait tout le travail — c'est elle qui produira la coche verte ou la croix rouge sur ta PR.
-  pull_request : 
-
-#Un workflow contient un ou plusieurs jobs. Par défaut, les jobs tournent en parallèle, chacun sur une machine séparée.
 jobs:
-
-#L'identifiant du job — un nom que nous choisissons librement. Il sert de référence si un autre job doit dépendre de celui-ci (needs: quality).
-
   quality:
-  #Le libellé affiché dans l'interface GitHub. Sans lui, GitHub afficherait l'identifiant brut quality.
-    name: Lint, type-check, test
-  #La machine virtuelle que GitHub va démarrer pour ce job. ubuntu-latest est le choix standard : le plus rapide et le moins coûteux en minutes (les runners Windows et macOS consomment respectivement 2× et 10× plus de quota).
-    runs-on : ubuntu-latest
-#La liste ordonnée des étapes. Elles s'exécutent séquentiellement sur la même machine, et si une seule échoue, le job s'arrête immédiatement et se marque en rouge.
-    steps:
+    name: Lint, type-check, test, build
+    runs-on: ubuntu-latest
 
-      # - name : le libellé de l'étape dans les logs.
-      # uses : exécute une action préexistante (du code réutilisable publié sur GitHub)
-      # au lieu d'une commande shell.
-      # actions/checkout : l'action officielle qui clone ton dépôt sur la machine.
-      # Sans elle, la machine est vide — elle n'a pas ton code. C'est toujours la première étape.
-      # @v7 : la version. Épingler une version majeure évite qu'une mise à jour cassante
-      # ne fasse échouer ta CI du jour au lendemain.
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      # with: : les paramètres d'entrée passés à l'action (l'équivalent des props d'un composant React).
-      # node-version: 24 : installe Node 24, la version que tu as en local (v24.17.0). Aligner CI et local évite le classique « ça marche chez moi ».
-      # cache: npm : met en cache le dossier de téléchargement npm entre deux exécutions, en se basant sur l'empreinte de ton package-lock.json. Concrètement : l'installation des dépendances passe de ~60 s à ~10 s.
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
 
-      # run: : exécute une commande shell (par opposition à uses:).
-      # npm ci au lieu de npm install — c'est la distinction à connaître en entretien :
-        # npm ci supprime node_modules et installe exactement les versions figées dans package-lock.json.
-        # Il échoue si package.json et package-lock.json sont désynchronisés, au lieu de « réparer » silencieusement le lock.
-        # Résultat : des builds reproductibles. npm install peut mettre à jour des versions et introduire une différence invisible entre ta machine et la CI.
-
       - name: Install dependencies
         run: npm ci
 
-      # Ces quatre étapes lancent les scripts de ton package.json. L'ordre n'est pas arbitraire : on place les vérifications rapides en premier (lint ~5 s, types ~10 s) et le build en dernier (~60 s). Si une faute de frappe casse le code, tu obtiens un retour en 20 secondes au lieu de 90.
       - name: Lint
         run: npm run lint
 
