@@ -28,6 +28,17 @@
       "card4Description": "Free to try, fast to use, and fully bilingual — the interface and the PDF report both switch instantly between French and English."
     },
     "footer": {
+      "ctaTitle": "Stop rebuilding the same report every Monday",
+      "ctaSubtitle": "Try the demo with realistic sample data — no account, no credit card, no Meta connection needed.",
+      "ctaButton": "Try the demo",
+      "product": "Product",
+      "legal": "Legal",
+      "contact": "Contact",
+      "features": "Features",
+      "howItWorks": "How it works",
+      "demo": "Live demo",
+      "privacy": "Privacy policy",
+      "dataDeletion": "Data deletion",
       "cta": "Want a custom version for your agency? Get in touch.",
       "credit": "© 2026 Meta Ads Report Studio. Built by Nossair Sedki."
     }
