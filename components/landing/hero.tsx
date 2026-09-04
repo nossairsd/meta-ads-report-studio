@@ -15,22 +15,25 @@ export default function Hero() {
 
   return (
     <div id="hero" className="relative z-10 space-y-12 md:space-y-20 lg:space-y-24">
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px]">
+      <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[720px] w-screen -translate-x-1/2">
         <GradientWaves
-          horizonColor="#FFFFFF"
-          waveColor="#BFDBFE"
-          crestColor="#FFFFFF"
-          speed={0.22}
-          amplitude={1.1}
-          waveScale={0.5}
+          horizonColor="#EFF6FF"
+          waveColor="#3B82F6"
+          crestColor="#DBEAFE"
+          speed={0.3}
+          amplitude={1.8}
+          waveScale={0.55}
           waveRatio={0.9}
-          swell={14}
-          turbulence={7}
-          opacity={0.5}
+          swell={22}
+          turbulence={12}
+          fogDepth={50}
+          opacity={0.9}
           mouseInteraction
-          parallaxStrength={0.25}
+          parallaxStrength={0.3}
           grain={false}
         />
+        {/* Fade the wave into the white page instead of cutting off hard */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-white" />
       </div>
 
       <Navbar />
