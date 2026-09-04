@@ -56,8 +56,6 @@ export default function Footer() {
     { label: "GitHub", href: "#", icon: <GithubIcon /> },
   ];
 
-  const stack = ["Next.js", "TypeScript", "Tailwind CSS", "Meta Marketing API"];
-
   function scrollTop() {
     // Lenis owns the scroll position; window.scrollTo would fight it.
     if (lenis) lenis.scrollTo(0, { duration: 1.2 });
@@ -65,7 +63,31 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative">
+    <footer className="relative isolate">
+      {/* Animated backdrop: two slow-drifting brand glows plus a dot grid,
+          both masked so they stay behind the content and never wash it out. */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-10 -bottom-10 -z-10 overflow-hidden">
+        <motion.div
+          animate={{ x: ["-6%", "6%", "-6%"], opacity: [0.5, 0.8, 0.5] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-24 left-[8%] h-[380px] w-[380px] rounded-full bg-primary/[0.10] blur-[110px]"
+        />
+        <motion.div
+          animate={{ x: ["5%", "-5%", "5%"], opacity: [0.35, 0.6, 0.35] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          className="absolute -bottom-32 right-[10%] h-[420px] w-[420px] rounded-full bg-[#0EA5E9]/[0.09] blur-[120px]"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(15,23,42,0.10) 1px, transparent 1px)",
+            backgroundSize: "26px 26px",
+            maskImage: "radial-gradient(ellipse 75% 60% at 50% 40%, black 10%, transparent 78%)",
+            WebkitMaskImage: "radial-gradient(ellipse 75% 60% at 50% 40%, black 10%, transparent 78%)",
+          }}
+        />
+      </div>
+
       <div className="grid grid-cols-1 gap-10 border-t border-black/[0.07] pt-14 text-left sm:grid-cols-2 lg:grid-cols-12">
         <motion.div
           custom={0}
@@ -73,7 +95,7 @@ export default function Footer() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="space-y-5 lg:col-span-5"
+          className="space-y-5 lg:col-span-6"
         >
           <Logo size="lg" />
           <p className="max-w-xs text-sm text-foreground/60">{t("cta")}</p>
@@ -101,7 +123,7 @@ export default function Footer() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="space-y-3.5 lg:col-span-2"
+          className="space-y-3.5 lg:col-span-3"
         >
           <h3 className="text-xs font-semibold tracking-[0.12em] text-black uppercase">
             {t("product")}
@@ -125,7 +147,7 @@ export default function Footer() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="space-y-3.5 lg:col-span-2"
+          className="space-y-3.5 lg:col-span-3"
         >
           <h3 className="text-xs font-semibold tracking-[0.12em] text-black uppercase">
             {t("legal")}
@@ -140,28 +162,6 @@ export default function Footer() {
           </ul>
         </motion.div>
 
-        <motion.div
-          custom={3}
-          variants={column}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          className="space-y-3.5 lg:col-span-3"
-        >
-          <h3 className="text-xs font-semibold tracking-[0.12em] text-black uppercase">
-            {t("builtWith")}
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {stack.map((tech) => (
-              <span
-                key={tech}
-                className="rounded-full border border-black/[0.07] bg-white px-3 py-1 text-xs font-medium text-foreground/70 shadow-sm"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </motion.div>
       </div>
 
       {/* Bottom bar */}
