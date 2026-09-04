@@ -1,7 +1,6 @@
 'use client'
 
-import { MotionProps, HTMLMotionProps } from "motion/react";
-import * as motion from "motion/react-m"
+import { motion, MotionProps, HTMLMotionProps } from "motion/react";
 
 interface SlideEffectProps {
   children: React.ReactNode;
@@ -20,7 +19,7 @@ export default function SlideEffect(
       initial={{ opacity: 0, y: direction === 'top' ? 70 : direction === 'bottom' ? -70 : 0, x: direction === 'left' ? 70 : direction === 'right' ? -70 : 0 }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration, ease, delay, type: isSpring ? 'spring' : '' }}
+      transition={{ duration, ease, delay, type: isSpring ? 'spring' : undefined }}
       className={className}
     >
       {children}

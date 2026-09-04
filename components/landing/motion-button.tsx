@@ -1,6 +1,6 @@
 "use client";
 
-import * as motion from "motion/react-m";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import type { ComponentProps } from "react";
 
