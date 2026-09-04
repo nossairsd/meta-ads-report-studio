@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Navbar from "@/components/landing/navbar";
 import SpecularButton from "@/components/landing/specular-button";
 import { DashboardPreview } from "@/components/landing/dashboard-preview";
 import GradientWaves from "@/components/effects/gradient-waves";
@@ -36,9 +35,7 @@ export default function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-white" />
       </div>
 
-      <Navbar />
-
-      <section className="flex flex-col items-center gap-7 text-center lg:gap-10">
+      <section className="flex flex-col items-center gap-7 pt-24 text-center lg:gap-10">
         <h1 className="text-4xl leading-none font-medium tracking-tight text-black md:text-6xl lg:text-hero xl:max-w-4xl">
           <TextBlurEffect className="bg-gradient-to-b from-black to-black/60 bg-clip-text text-transparent">
             {t("title")}
@@ -56,10 +53,10 @@ export default function Hero() {
           <div className="mt-1 flex w-full flex-col items-center justify-center gap-3 md:flex-row md:gap-4">
             <SpecularButton
               size="lg"
-              baseColor="#16A34A"
-              lineColor="#BBF7D0"
+              baseColor="#2563EB"
+              lineColor="#93C5FD"
               textColor="#FFFFFF"
-              radius={12}
+              radius={999}
               className="w-full gap-2 md:w-fit"
             >
               <span className="inline-flex items-center gap-2">
@@ -72,7 +69,7 @@ export default function Hero() {
               baseColor="#FFFFFF"
               lineColor="#2563EB"
               textColor="#1F2937"
-              radius={12}
+              radius={999}
               className="w-full md:w-fit"
             >
               {t("ctaSecondary")}
