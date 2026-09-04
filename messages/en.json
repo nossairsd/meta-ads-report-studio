@@ -1,7 +1,35 @@
 {
-  "HomePage": {
-    "title": "Meta Ads Report Studio",
-    "description": "Generate professional Meta Ads performance reports in one click.",
-    "cta": "Try the demo"
+  "Landing": {
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How it works",
+      "cta": "Try the demo"
+    },
+    "hero": {
+      "title": "Meta Ads reports in one click",
+      "subtitle": "Stop losing 3 hours every Monday copy-pasting numbers into Excel. Connect your account and get a client-ready report in seconds.",
+      "ctaPrimary": "Try the demo",
+      "ctaSecondary": "Connect with Facebook",
+      "trustLine": "Free demo · No credit card · No Meta account required"
+    },
+    "features": {
+      "badge": "why teams switch",
+      "title": "Everything your reports need",
+      "description": "Built for agency owners and freelance media buyers who are done copy-pasting numbers into spreadsheets every week.",
+      "card1Title": "Connect in one click",
+      "card1Description": "Sign in with Facebook and securely authorize read-only access to your ad account. No setup, no configuration, no code.",
+      "card1MockLabel": "Connect with Facebook",
+      "card1MockConnected": "Connected",
+      "card2Title": "Real-time visualization",
+      "card2Description": "Spend, impressions, clicks and conversions update instantly as you switch between 7, 30 or 90-day periods.",
+      "card3Title": "Agency-ready PDF reports",
+      "card3Description": "Generate a clean, professional 4-page PDF in seconds — cover page, KPIs, trend chart, and campaign breakdown.",
+      "card4Title": "Built for freelancers and agencies",
+      "card4Description": "Free to try, fast to use, and fully bilingual — the interface and the PDF report both switch instantly between French and English."
+    },
+    "footer": {
+      "cta": "Want a custom version for your agency? Get in touch.",
+      "credit": "© 2026 Meta Ads Report Studio. Built by Nossair Sedki."
+    }
   }
 }

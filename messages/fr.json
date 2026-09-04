@@ -1,7 +1,35 @@
 {
-  "HomePage": {
-    "title": "Meta Ads Report Studio",
-    "description": "Générez un rapport de performance Meta Ads professionnel en un clic.",
-    "cta": "Essayer la démo"
+  "Landing": {
+    "nav": {
+      "features": "Fonctionnalités",
+      "howItWorks": "Comment ça marche",
+      "cta": "Essayer la démo"
+    },
+    "hero": {
+      "title": "Vos rapports Meta Ads en 1 clic",
+      "subtitle": "Arrêtez de perdre 3 heures chaque lundi à copier-coller des chiffres dans Excel. Connectez votre compte et obtenez un rapport prêt pour vos clients en quelques secondes.",
+      "ctaPrimary": "Essayer la démo",
+      "ctaSecondary": "Se connecter avec Facebook",
+      "trustLine": "Démo gratuite · Aucune carte bancaire · Aucun compte Meta requis"
+    },
+    "features": {
+      "badge": "pourquoi nous choisir",
+      "title": "Tout ce qu'il faut pour vos rapports",
+      "description": "Conçu pour les directeurs d'agence et les freelances media buyers qui en ont assez de copier-coller des chiffres chaque semaine.",
+      "card1Title": "Connexion en 1 clic",
+      "card1Description": "Connectez-vous avec Facebook et autorisez l'accès en lecture seule à votre compte publicitaire. Aucune configuration, aucun code.",
+      "card1MockLabel": "Se connecter avec Facebook",
+      "card1MockConnected": "Connecté",
+      "card2Title": "Visualisation en temps réel",
+      "card2Description": "Dépenses, impressions, clics et conversions se mettent à jour instantanément selon la période choisie (7, 30 ou 90 jours).",
+      "card3Title": "Rapports PDF prêts pour vos clients",
+      "card3Description": "Générez un PDF propre et professionnel de 4 pages en quelques secondes — couverture, KPIs, courbe d'évolution et répartition par campagne.",
+      "card4Title": "Pensé pour les freelances et agences",
+      "card4Description": "Gratuit à l'essai, rapide à utiliser, et entièrement bilingue — l'interface et le rapport PDF basculent instantanément entre le français et l'anglais."
+    },
+    "footer": {
+      "cta": "Vous souhaitez une version personnalisée pour votre agence ? Contactez-moi.",
+      "credit": "© 2026 Meta Ads Report Studio. Créé par Nossair Sedki."
+    }
   }
 }
