@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AlignJustify, X } from "lucide-react";
-import { AnimatePresence } from "motion/react";
-import * as motion from "motion/react-m";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Logo from "@/components/landing/logo";
