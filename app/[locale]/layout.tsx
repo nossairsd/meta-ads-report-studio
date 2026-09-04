@@ -43,7 +43,10 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={`${dmSans.variable} ${geistMono.variable} h-full antialiased overflow-x-hidden`}
     >
-      <body className="min-h-full flex flex-col w-full overflow-x-hidden">
+      {/* overflow-x is clipped on <html> only: setting it here too would make
+          CSS compute overflow-y:auto on the body, giving it a second scrollbar
+          and shrinking full-bleed sections by the scrollbar width. */}
+      <body className="flex min-h-full w-full flex-col">
         <NextIntlClientProvider>
           <LenisProvider>{children}</LenisProvider>
         </NextIntlClientProvider>

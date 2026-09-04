@@ -27,14 +27,19 @@
       "card4Title": "Built for freelancers and agencies",
       "card4Description": "Free to try, fast to use, and fully bilingual — the interface and the PDF report both switch instantly between French and English."
     },
+    "cta": {
+      "title": "From ad account to client-ready report in under 2 minutes",
+      "subtitle": "Every Monday, the same chore: open Ads Manager, copy the numbers across, rebuild the layout. Meta Ads Report Studio produces the report for you, ready to send.",
+      "stat1Value": "~3 h",
+      "stat1Label": "saved every week per client account, on reporting you cannot bill for",
+      "stat2Value": "4 pages",
+      "stat2Label": "cover, KPIs, trend and campaign breakdown — no manual clean-up",
+      "stat3Value": "€0",
+      "stat3Label": "full demo with sample data, no account and no credit card",
+      "button": "Try the demo",
+      "buttonNote": "No Meta connection required"
+    },
     "footer": {
-      "ctaTitle": "Stop rebuilding the same report every Monday",
-      "ctaSubtitle": "Try the demo with realistic sample data — no account, no credit card, no Meta connection needed.",
-      "ctaButton": "Try the demo",
-      "chipPages": "4-page report",
-      "chipSpeed": "Under 5 seconds",
-      "chipLangs": "French & English",
-      "builtWith": "Built with",
       "backToTop": "Back to top",
       "product": "Product",
       "legal": "Legal",

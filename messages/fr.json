@@ -27,14 +27,19 @@
       "card4Title": "Pensé pour les freelances et agences",
       "card4Description": "Gratuit à l'essai, rapide à utiliser, et entièrement bilingue — l'interface et le rapport PDF basculent instantanément entre le français et l'anglais."
     },
+    "cta": {
+      "title": "Du compte publicitaire au rapport client en moins de 2 minutes",
+      "subtitle": "Chaque lundi, la même corvée : ouvrir le Gestionnaire de publicités, recopier les chiffres, refaire la mise en page. Meta Ads Report Studio produit le rapport à votre place, prêt à envoyer.",
+      "stat1Value": "~3 h",
+      "stat1Label": "économisées chaque semaine et par compte client, sur un reporting non facturable",
+      "stat2Value": "4 pages",
+      "stat2Label": "couverture, KPIs, évolution et répartition par campagne — sans retouche",
+      "stat3Value": "0 €",
+      "stat3Label": "démo complète avec données d'exemple, sans compte ni carte bancaire",
+      "button": "Essayer la démo",
+      "buttonNote": "Aucune connexion Meta requise"
+    },
     "footer": {
-      "ctaTitle": "Arrêtez de refaire le même rapport chaque lundi",
-      "ctaSubtitle": "Essayez la démo avec des données d'exemple réalistes — sans compte, sans carte bancaire, sans connexion Meta.",
-      "ctaButton": "Essayer la démo",
-      "chipPages": "Rapport de 4 pages",
-      "chipSpeed": "Moins de 5 secondes",
-      "chipLangs": "Français & Anglais",
-      "builtWith": "Conçu avec",
       "backToTop": "Retour en haut",
       "product": "Produit",
       "legal": "Légal",

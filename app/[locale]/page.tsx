@@ -8,10 +8,16 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="mx-auto w-full max-w-6xl space-y-24 px-6 pb-10 md:space-y-32">
+
+      <div className="mx-auto w-full max-w-6xl space-y-24 px-6 md:space-y-32">
         <Hero />
         <Features />
-        <CtaBand />
+      </div>
+
+      {/* Full-bleed: sits outside the max-width column so it spans the viewport */}
+      <CtaBand />
+
+      <div className="mx-auto mt-24 w-full max-w-6xl px-6 pb-10 md:mt-28">
         <Footer />
       </div>
     </>
