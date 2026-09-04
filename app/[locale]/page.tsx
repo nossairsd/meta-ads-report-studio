@@ -14,12 +14,10 @@ export default function Home() {
         <Features />
       </div>
 
-      {/* Full-bleed: sits outside the max-width column so it spans the viewport */}
+      {/* Both sit outside the max-width column so they span the viewport, and
+          share the same dark base so the page closes on one continuous block. */}
       <CtaBand />
-
-      <div className="mx-auto mt-24 w-full max-w-6xl px-6 pb-10 md:mt-28">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }
