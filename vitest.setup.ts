@@ -29,3 +29,13 @@ if (!window.matchMedia) {
       dispatchEvent: () => false,
     }) as MediaQueryList;
 }
+
+// jsdom has no WebGL. GradientWaves/SpecularButton already guard against a
+// null context, but jsdom logs a noisy "Not implemented" error on every call
+// unless getContext is stubbed to return null quietly.
+const originalGetContext = HTMLCanvasElement.prototype.getContext;
+// @ts-expect-error -- test-only stub narrowed to what our components call
+HTMLCanvasElement.prototype.getContext = function (contextId: string, ...args: unknown[]) {
+  if (contextId === "webgl2" || contextId === "webgl") return null;
+  return originalGetContext.call(this, contextId, ...args);
+};
