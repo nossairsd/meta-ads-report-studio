@@ -8,23 +8,24 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Logo from "@/components/landing/logo";
 import { MotionButton } from "@/components/landing/motion-button";
-import { useScrollDirection } from "@/lib/use-scroll-direction";
+import { useScrolled } from "@/lib/use-scrolled";
 
-const linkVariants = {
+const itemVariants = {
   hidden: { opacity: 0, y: -8 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: 0.15 + i * 0.06, duration: 0.4, ease: "easeOut" as const },
+    transition: { delay: 0.15 + i * 0.07, duration: 0.45, ease: "easeOut" as const },
   }),
 };
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const t = useTranslations("Landing.nav");
   const pathname = usePathname();
   const router = useRouter();
-  const { hidden, scrolled } = useScrollDirection();
+  const scrolled = useScrolled();
 
   function switchLocale(locale: "en" | "fr") {
     const segments = pathname.split("/");
@@ -38,122 +39,151 @@ export default function Navbar() {
   ];
 
   return (
-    <motion.nav
-      animate={{ y: hidden ? "-110%" : "0%" }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className={`sticky top-0 z-50 flex h-fit w-full items-center justify-between rounded-2xl px-4 py-3 transition-[background-color,box-shadow,backdrop-filter] duration-300 ${
-        scrolled
-          ? "border border-black/5 bg-white/70 shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-lg"
-          : "border border-transparent bg-transparent"
-      }`}
-    >
-      <motion.div
-        custom={0}
-        variants={linkVariants}
-        initial="hidden"
-        animate="show"
-        className="shrink-0"
+    <div className="fixed top-0 right-0 left-0 z-50 px-6 pt-3 pb-1">
+      <motion.nav
+        initial={false}
+        animate={scrolled ? "scrolled" : "top"}
+        variants={{
+          // Both states use px so motion can interpolate; 1152px matches the
+          // page's max-w-6xl container, and `w-full` keeps it responsive below.
+          top: {
+            maxWidth: 1152,
+            borderRadius: 18,
+            backgroundColor: "rgba(255,255,255,0)",
+            borderColor: "rgba(0,0,0,0)",
+            boxShadow: "0 0 0 rgba(0,0,0,0)",
+            paddingLeft: 8,
+            paddingRight: 8,
+          },
+          scrolled: {
+            maxWidth: 920,
+            borderRadius: 999,
+            backgroundColor: "rgba(255,255,255,0.75)",
+            borderColor: "rgba(0,0,0,0.06)",
+            boxShadow: "0 10px 34px rgba(15,23,42,0.10)",
+            paddingLeft: 16,
+            paddingRight: 10,
+          },
+        }}
+        transition={{ type: "spring", stiffness: 260, damping: 30 }}
+        className={`mx-auto flex h-fit w-full items-center justify-between border py-2 ${
+          scrolled ? "backdrop-blur-xl" : ""
+        }`}
       >
-        <Link href="/" title="Home">
-          <Logo />
-        </Link>
-      </motion.div>
-
-      <div className="hidden items-center justify-center gap-6 md:flex">
-        <ul className="flex items-center justify-center gap-6 text-sm font-medium text-black/80">
-          {navLinks.map((link, i) => (
-            <motion.li
-              key={link.name}
-              custom={i + 1}
-              variants={linkVariants}
-              initial="hidden"
-              animate="show"
-            >
-              <Link href={link.href} className="transition-opacity hover:opacity-70">
-                {link.name}
-              </Link>
-            </motion.li>
-          ))}
-        </ul>
-
-        <motion.div
-          custom={navLinks.length + 1}
-          variants={linkVariants}
-          initial="hidden"
-          animate="show"
-          className="flex items-center gap-1 text-sm font-medium text-black/50"
-        >
-          <button
-            onClick={() => switchLocale("fr")}
-            className="rounded-md px-2 py-1 transition-colors hover:bg-black/5 hover:text-black"
-          >
-            FR
-          </button>
-          <span>|</span>
-          <button
-            onClick={() => switchLocale("en")}
-            className="rounded-md px-2 py-1 transition-colors hover:bg-black/5 hover:text-black"
-          >
-            EN
-          </button>
-        </motion.div>
-
-        <motion.div
-          custom={navLinks.length + 2}
-          variants={linkVariants}
-          initial="hidden"
-          animate="show"
-        >
-          <Link href="#hero">
-            <MotionButton size="lg">{t("cta")}</MotionButton>
+        <motion.div custom={0} variants={itemVariants} initial="hidden" animate="show" className="shrink-0">
+          <Link href="/" title="Home">
+            <Logo />
           </Link>
         </motion.div>
-      </div>
 
-      <motion.div
-        initial={{ scale: 1 }}
-        whileTap={{ scale: 0.85 }}
-        transition={{ duration: 0.2 }}
-        className="flex cursor-pointer text-black md:hidden"
-        onClick={() => setIsOpen((v) => !v)}
-      >
-        {isOpen ? <X size={22} /> : <AlignJustify size={22} />}
-      </motion.div>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-full left-0 z-50 mt-2 w-full overflow-hidden rounded-2xl border border-black/5 bg-white shadow-lg md:hidden"
+        <div className="hidden items-center justify-center gap-2 md:flex">
+          <ul
+            className="flex items-center justify-center gap-1 text-sm font-medium text-black/70"
+            onMouseLeave={() => setHovered(null)}
           >
-            <div className="flex flex-col gap-4 p-6">
-              {navLinks.map((link) => (
+            {navLinks.map((link, i) => (
+              <motion.li
+                key={link.name}
+                custom={i + 1}
+                variants={itemVariants}
+                initial="hidden"
+                animate="show"
+                onMouseEnter={() => setHovered(link.name)}
+                className="relative"
+              >
+                {hovered === link.name && (
+                  <motion.span
+                    layoutId="nav-hover-pill"
+                    className="absolute inset-0 -z-10 rounded-full bg-black/[0.06]"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                )}
                 <Link
-                  key={link.name}
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="py-2 text-base font-medium"
+                  className="block rounded-full px-3.5 py-2 transition-colors hover:text-black"
                 >
                   {link.name}
                 </Link>
-              ))}
-              <div className="flex items-center gap-2 text-sm font-medium text-black/50">
-                <button onClick={() => switchLocale("fr")}>FR</button>
-                <span>|</span>
-                <button onClick={() => switchLocale("en")}>EN</button>
-              </div>
-              <Link href="#hero" onClick={() => setIsOpen(false)}>
-                <MotionButton size="lg" className="w-full justify-center">
-                  {t("cta")}
-                </MotionButton>
-              </Link>
-            </div>
+              </motion.li>
+            ))}
+          </ul>
+
+          <motion.div
+            custom={navLinks.length + 1}
+            variants={itemVariants}
+            initial="hidden"
+            animate="show"
+            className="mx-1 flex items-center gap-0.5 text-sm font-medium text-black/45"
+          >
+            <button
+              onClick={() => switchLocale("fr")}
+              className="rounded-full px-2 py-1 transition-colors hover:bg-black/5 hover:text-black"
+            >
+              FR
+            </button>
+            <span className="text-black/20">|</span>
+            <button
+              onClick={() => switchLocale("en")}
+              className="rounded-full px-2 py-1 transition-colors hover:bg-black/5 hover:text-black"
+            >
+              EN
+            </button>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+
+          <motion.div custom={navLinks.length + 2} variants={itemVariants} initial="hidden" animate="show">
+            <Link href="#hero">
+              <MotionButton size="lg" className="rounded-full px-5">
+                {t("cta")}
+              </MotionButton>
+            </Link>
+          </motion.div>
+        </div>
+
+        <motion.div
+          initial={{ scale: 1 }}
+          whileTap={{ scale: 0.85 }}
+          transition={{ duration: 0.2 }}
+          className="flex cursor-pointer text-black md:hidden"
+          onClick={() => setIsOpen((v) => !v)}
+        >
+          {isOpen ? <X size={22} /> : <AlignJustify size={22} />}
+        </motion.div>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-full left-0 z-50 mt-2 w-full overflow-hidden rounded-2xl border border-black/5 bg-white/95 shadow-xl backdrop-blur-xl md:hidden"
+            >
+              <div className="flex flex-col gap-4 p-6">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="py-2 text-base font-medium"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+                <div className="flex items-center gap-2 text-sm font-medium text-black/50">
+                  <button onClick={() => switchLocale("fr")}>FR</button>
+                  <span>|</span>
+                  <button onClick={() => switchLocale("en")}>EN</button>
+                </div>
+                <Link href="#hero" onClick={() => setIsOpen(false)}>
+                  <MotionButton size="lg" className="w-full justify-center rounded-full">
+                    {t("cta")}
+                  </MotionButton>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
+    </div>
   );
 }
