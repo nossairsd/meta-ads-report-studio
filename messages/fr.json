@@ -28,6 +28,17 @@
       "card4Description": "Gratuit à l'essai, rapide à utiliser, et entièrement bilingue — l'interface et le rapport PDF basculent instantanément entre le français et l'anglais."
     },
     "footer": {
+      "ctaTitle": "Arrêtez de refaire le même rapport chaque lundi",
+      "ctaSubtitle": "Essayez la démo avec des données d'exemple réalistes — sans compte, sans carte bancaire, sans connexion Meta.",
+      "ctaButton": "Essayer la démo",
+      "product": "Produit",
+      "legal": "Légal",
+      "contact": "Contact",
+      "features": "Fonctionnalités",
+      "howItWorks": "Comment ça marche",
+      "demo": "Démo en direct",
+      "privacy": "Politique de confidentialité",
+      "dataDeletion": "Suppression des données",
       "cta": "Vous souhaitez une version personnalisée pour votre agence ? Contactez-moi.",
       "credit": "© 2026 Meta Ads Report Studio. Créé par Nossair Sedki."
     }
