@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { AlignJustify, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Logo from "@/components/landing/logo";
+import LocaleToggle from "@/components/landing/locale-toggle";
 import { MotionButton } from "@/components/landing/motion-button";
 import { useScrolled } from "@/lib/use-scrolled";
 
@@ -23,15 +23,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   const t = useTranslations("Landing.nav");
-  const pathname = usePathname();
-  const router = useRouter();
   const scrolled = useScrolled();
-
-  function switchLocale(locale: "en" | "fr") {
-    const segments = pathname.split("/");
-    segments[1] = locale;
-    router.push(segments.join("/"));
-  }
 
   const navLinks = [
     { name: t("features"), href: "#features" },
@@ -113,21 +105,9 @@ export default function Navbar() {
             variants={itemVariants}
             initial="hidden"
             animate="show"
-            className="mx-1 flex items-center gap-0.5 text-sm font-medium text-black/45"
+            className="mx-1"
           >
-            <button
-              onClick={() => switchLocale("fr")}
-              className="rounded-full px-2 py-1 transition-colors hover:bg-black/5 hover:text-black"
-            >
-              FR
-            </button>
-            <span className="text-black/20">|</span>
-            <button
-              onClick={() => switchLocale("en")}
-              className="rounded-full px-2 py-1 transition-colors hover:bg-black/5 hover:text-black"
-            >
-              EN
-            </button>
+            <LocaleToggle layoutId="locale-pill-desktop" />
           </motion.div>
 
           <motion.div custom={navLinks.length + 2} variants={itemVariants} initial="hidden" animate="show">
@@ -169,11 +149,7 @@ export default function Navbar() {
                     {link.name}
                   </Link>
                 ))}
-                <div className="flex items-center gap-2 text-sm font-medium text-black/50">
-                  <button onClick={() => switchLocale("fr")}>FR</button>
-                  <span>|</span>
-                  <button onClick={() => switchLocale("en")}>EN</button>
-                </div>
+                <LocaleToggle layoutId="locale-pill-mobile" className="self-start" />
                 <Link href="#hero" onClick={() => setIsOpen(false)}>
                   <MotionButton size="lg" className="w-full justify-center rounded-full">
                     {t("cta")}

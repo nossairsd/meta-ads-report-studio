@@ -24,7 +24,7 @@ export default function Footer() {
 
   return (
     <footer className="border-border flex w-full flex-col items-center justify-center gap-7 border-t py-10 text-sm md:gap-8 md:py-16">
-      <Logo />
+      <Logo size="lg" />
 
       <p className="max-w-sm text-center text-foreground/70">{t("cta")}</p>
 
