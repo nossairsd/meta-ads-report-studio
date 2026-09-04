@@ -2,8 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import Navbar from "@/components/landing/navbar";
-import { MotionButton } from "@/components/landing/motion-button";
+import SpecularButton from "@/components/landing/specular-button";
 import { DashboardPreview } from "@/components/landing/dashboard-preview";
+import GradientWaves from "@/components/effects/gradient-waves";
 import TextBlurEffect from "@/components/effects/text-blur-effect";
 import SlideEffect from "@/components/effects/slide-effect";
 import FadeEffect from "@/components/effects/fade-effect";
@@ -14,6 +15,24 @@ export default function Hero() {
 
   return (
     <div id="hero" className="relative z-10 space-y-12 md:space-y-20 lg:space-y-24">
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px]">
+        <GradientWaves
+          horizonColor="#FFFFFF"
+          waveColor="#BFDBFE"
+          crestColor="#FFFFFF"
+          speed={0.22}
+          amplitude={1.1}
+          waveScale={0.5}
+          waveRatio={0.9}
+          swell={14}
+          turbulence={7}
+          opacity={0.5}
+          mouseInteraction
+          parallaxStrength={0.25}
+          grain={false}
+        />
+      </div>
+
       <Navbar />
 
       <section className="flex flex-col items-center gap-7 text-center lg:gap-10">
@@ -32,13 +51,29 @@ export default function Hero() {
 
         <SlideEffect className="flex w-full flex-col items-center justify-center gap-5 md:w-fit">
           <div className="mt-1 flex w-full flex-col items-center justify-center gap-3 md:flex-row md:gap-4">
-            <MotionButton size="lg" className="w-full gap-2 md:w-fit">
-              {t("ctaPrimary")}
-              <ArrowRight className="h-4 w-4" />
-            </MotionButton>
-            <MotionButton size="lg" variant="outline" className="w-full md:w-fit">
+            <SpecularButton
+              size="lg"
+              baseColor="#16A34A"
+              lineColor="#BBF7D0"
+              textColor="#FFFFFF"
+              radius={12}
+              className="w-full gap-2 md:w-fit"
+            >
+              <span className="inline-flex items-center gap-2">
+                {t("ctaPrimary")}
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </SpecularButton>
+            <SpecularButton
+              size="lg"
+              baseColor="#FFFFFF"
+              lineColor="#2563EB"
+              textColor="#1F2937"
+              radius={12}
+              className="w-full md:w-fit"
+            >
               {t("ctaSecondary")}
-            </MotionButton>
+            </SpecularButton>
           </div>
 
           <p className="text-xs text-foreground/50">{t("trustLine")}</p>

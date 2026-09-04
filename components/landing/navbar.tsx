@@ -8,12 +8,23 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Logo from "@/components/landing/logo";
 import { MotionButton } from "@/components/landing/motion-button";
+import { useScrollDirection } from "@/lib/use-scroll-direction";
+
+const linkVariants = {
+  hidden: { opacity: 0, y: -8 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.15 + i * 0.06, duration: 0.4, ease: "easeOut" as const },
+  }),
+};
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("Landing.nav");
   const pathname = usePathname();
   const router = useRouter();
+  const { hidden, scrolled } = useScrollDirection();
 
   function switchLocale(locale: "en" | "fr") {
     const segments = pathname.split("/");
@@ -27,23 +38,51 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="flex h-fit w-full items-center justify-between py-4">
-      <Link href="/" title="Home" className="shrink-0">
-        <Logo />
-      </Link>
+    <motion.nav
+      animate={{ y: hidden ? "-110%" : "0%" }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className={`sticky top-0 z-50 flex h-fit w-full items-center justify-between rounded-2xl px-4 py-3 transition-[background-color,box-shadow,backdrop-filter] duration-300 ${
+        scrolled
+          ? "border border-black/5 bg-white/70 shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-lg"
+          : "border border-transparent bg-transparent"
+      }`}
+    >
+      <motion.div
+        custom={0}
+        variants={linkVariants}
+        initial="hidden"
+        animate="show"
+        className="shrink-0"
+      >
+        <Link href="/" title="Home">
+          <Logo />
+        </Link>
+      </motion.div>
 
       <div className="hidden items-center justify-center gap-6 md:flex">
         <ul className="flex items-center justify-center gap-6 text-sm font-medium text-black/80">
-          {navLinks.map((link) => (
-            <li key={link.name}>
+          {navLinks.map((link, i) => (
+            <motion.li
+              key={link.name}
+              custom={i + 1}
+              variants={linkVariants}
+              initial="hidden"
+              animate="show"
+            >
               <Link href={link.href} className="transition-opacity hover:opacity-70">
                 {link.name}
               </Link>
-            </li>
+            </motion.li>
           ))}
         </ul>
 
-        <div className="flex items-center gap-1 text-sm font-medium text-black/50">
+        <motion.div
+          custom={navLinks.length + 1}
+          variants={linkVariants}
+          initial="hidden"
+          animate="show"
+          className="flex items-center gap-1 text-sm font-medium text-black/50"
+        >
           <button
             onClick={() => switchLocale("fr")}
             className="rounded-md px-2 py-1 transition-colors hover:bg-black/5 hover:text-black"
@@ -57,11 +96,18 @@ export default function Navbar() {
           >
             EN
           </button>
-        </div>
+        </motion.div>
 
-        <Link href="#hero">
-          <MotionButton size="lg">{t("cta")}</MotionButton>
-        </Link>
+        <motion.div
+          custom={navLinks.length + 2}
+          variants={linkVariants}
+          initial="hidden"
+          animate="show"
+        >
+          <Link href="#hero">
+            <MotionButton size="lg">{t("cta")}</MotionButton>
+          </Link>
+        </motion.div>
       </div>
 
       <motion.div
@@ -81,7 +127,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-16 left-0 z-50 w-full overflow-hidden bg-white shadow-lg md:hidden"
+            className="absolute top-full left-0 z-50 mt-2 w-full overflow-hidden rounded-2xl border border-black/5 bg-white shadow-lg md:hidden"
           >
             <div className="flex flex-col gap-4 p-6">
               {navLinks.map((link) => (
@@ -108,6 +154,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 }
