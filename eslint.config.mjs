@@ -12,7 +12,26 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Prisma writes this; it is a build artefact carrying its own
+    // @ts-nocheck, and linting it produces thousands of irrelevant findings.
+    "generated/**",
   ]),
+  {
+    rules: {
+      // A leading underscore is the conventional way to say "this parameter
+      // exists to satisfy a signature and is not meant to be used" — a mock
+      // whose call tuple must be typed, for instance. Without this the
+      // convention still warns, which trains people to ignore warnings.
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;

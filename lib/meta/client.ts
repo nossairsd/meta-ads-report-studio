@@ -7,8 +7,12 @@ import { classifyMetaError, MetaApiError } from "./errors";
 import { mapInsightsToRows, normalizeAdAccountId } from "./map";
 import type { AdAccount, InsightRow, Period } from "@/lib/metrics/schema";
 
-const API_VERSION = "v21.0";
-const BASE_URL = `https://graph.facebook.com/${API_VERSION}`;
+/** Exported so the OAuth flow pins the same version. A provider talking to one
+ *  Graph version while the data client talks to another is a bug that only
+ *  surfaces when Meta changes a field between the two. */
+export const API_VERSION = "v21.0";
+export const GRAPH_BASE_URL = `https://graph.facebook.com/${API_VERSION}`;
+const BASE_URL = GRAPH_BASE_URL;
 
 /** Meta paginates insights; without a ceiling a misconfigured account could
  *  loop until the function times out. 90 days x a few campaigns fits well
