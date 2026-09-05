@@ -48,11 +48,39 @@ export function DashboardView({
       ? formatCurrencyCents(data.totals.spendCents, locale, account.currency)
       : formatCompact(data.totals[metric], locale);
 
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
   function handleDownload() {
+    setDownloadError(null);
     startDownload(async () => {
-      // Wired to /api/report in the next step; the pending state is already
-      // driven by useTransition so the button cannot be double-clicked.
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      try {
+        const response = await fetch("/api/report", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ source: "demo", period, locale }),
+        });
+        if (!response.ok) throw new Error(`report failed: ${response.status}`);
+
+        const blob = await response.blob();
+        // The server sets the real filename on Content-Disposition, but a
+        // blob: URL has no name of its own, so mirror it onto the anchor.
+        const disposition = response.headers.get("Content-Disposition") ?? "";
+        const encoded = /filename\*=UTF-8''([^;]+)/i.exec(disposition)?.[1];
+        const filename = encoded
+          ? decodeURIComponent(encoded)
+          : `${account.name}.pdf`;
+
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(url);
+      } catch {
+        setDownloadError(t("downloadError"));
+      }
     });
   }
 
@@ -104,6 +132,12 @@ export function DashboardView({
           </Button>
         </div>
       </header>
+
+      {downloadError && (
+        <p role="alert" className="text-sm text-destructive">
+          {downloadError}
+        </p>
+      )}
 
       {data.isEmpty ? (
         <DashboardEmptyState
