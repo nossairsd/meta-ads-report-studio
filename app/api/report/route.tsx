@@ -4,6 +4,8 @@ import { z } from "zod";
 import { ReportDocument, type ReportStrings } from "@/lib/report/report-document";
 import { buildDashboardData, toIsoDate } from "@/lib/metrics/aggregate";
 import { DEMO_ACCOUNT, getDemoRows } from "@/lib/metrics/demo-data";
+import { auth } from "@/lib/auth/config";
+import { loadLiveDashboard } from "@/lib/meta/service";
 import { periodSchema } from "@/lib/metrics/schema";
 import { routing } from "@/i18n/routing";
 
@@ -20,7 +22,7 @@ export const runtime = "nodejs";
  * account), which makes that bound the main safeguard.
  */
 const requestSchema = z.object({
-  source: z.literal("demo"),
+  source: z.enum(["demo", "live"]),
   period: periodSchema,
   locale: z.enum(routing.locales),
 });
@@ -49,15 +51,39 @@ export async function POST(request: Request) {
     );
   }
 
-  const { period, locale } = parsed.data;
+  const { source, period, locale } = parsed.data;
 
-  const endDate = toIsoDate(new Date());
-  const data = buildDashboardData({
-    account: DEMO_ACCOUNT,
-    rows: getDemoRows(),
-    period,
-    endDate,
-  });
+  // The client says which dataset it wants, never what is in it. A live report
+  // is rebuilt here from the user's own connection, so the figures in the PDF
+  // cannot be anything the browser chose to send.
+  let account;
+  let rows;
+  let endDate;
+
+  if (source === "live") {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return Response.json({ error: "unauthorized" }, { status: 401 });
+    }
+
+    try {
+      const live = await loadLiveDashboard(session.user.id);
+      account = live.account;
+      rows = live.rows;
+      endDate = live.endDate;
+    } catch {
+      // The dashboard already explains a failed connection in context; here the
+      // only useful answer is that the report could not be built. The reason is
+      // deliberately not echoed back — it can carry account identifiers.
+      return Response.json({ error: "report_unavailable" }, { status: 502 });
+    }
+  } else {
+    account = DEMO_ACCOUNT;
+    rows = getDemoRows();
+    endDate = toIsoDate(new Date());
+  }
+
+  const data = buildDashboardData({ account, rows, period, endDate });
 
   const t = await getTranslations({ locale, namespace: "Report" });
   const tDashboard = await getTranslations({ locale, namespace: "Dashboard" });
@@ -98,7 +124,7 @@ export async function POST(request: Request) {
     />
   );
 
-  const filename = `${DEMO_ACCOUNT.name} — ${data.rangeStart} → ${data.rangeEnd}.pdf`;
+  const filename = `${account.name} — ${data.rangeStart} → ${data.rangeEnd}.pdf`;
 
   return new Response(new Uint8Array(buffer), {
     headers: {

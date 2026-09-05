@@ -1,0 +1,23 @@
+"use server";
+
+import { signIn, signOut } from "@/lib/auth/config";
+
+/**
+ * Server actions for the connection lifecycle.
+ *
+ * These live in a server action rather than a client-side `signIn()` call so
+ * the OAuth redirect is issued by the server: the client never has to hold the
+ * provider configuration, and the flow works with JavaScript disabled.
+ */
+
+export async function connectMeta(redirectTo: string = "/dashboard") {
+  await signIn("facebook", { redirectTo });
+}
+
+export async function disconnect(redirectTo: string = "/") {
+  // Deletes the session row, so access ends immediately rather than when a
+  // token would have expired. The Account row and its encrypted token survive:
+  // signing out is not the same as revoking access, and the data-deletion page
+  // covers the latter.
+  await signOut({ redirectTo });
+}

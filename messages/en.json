@@ -98,7 +98,42 @@
     "errorTitle": "Could not load your data",
     "errorDescription": "Connecting to the ad account failed. This can happen when a session has expired or the Meta API is unavailable.",
     "errorRetry": "Try again",
-    "downloadError": "The report could not be generated. Please try again in a moment."
+    "downloadError": "The report could not be generated. Please try again in a moment.",
+    "title": "Dashboard",
+    "signedInAs": "Signed in as {name}",
+    "disconnect": "Sign out",
+    "failure": {
+      "pending": "Working…",
+      "reconnect": "Reconnect to Meta",
+      "notConnected": {
+        "title": "No ad account connected",
+        "description": "Your Meta account is linked but no ad account is readable with it. Reconnect and make sure you grant access to the account you want to report on."
+      },
+      "expired": {
+        "title": "Your Meta connection has expired",
+        "description": "Meta connections last about 60 days, and this one has run out. Reconnecting takes a few seconds and nothing else is lost."
+      },
+      "permission": {
+        "title": "Missing permission",
+        "description": "The connection is valid but does not include permission to read ad statistics. Reconnect and accept the ads_read permission when Meta asks."
+      },
+      "rateLimit": {
+        "title": "Meta is throttling requests",
+        "description": "Too many requests have been made to this ad account in a short time. This clears on its own — try again in a few minutes."
+      },
+      "network": {
+        "title": "Could not reach Meta",
+        "description": "The request did not get through. This is usually momentary, so it is worth trying again."
+      },
+      "server": {
+        "title": "Meta is not responding correctly",
+        "description": "Meta answered with an error on their side. Nothing is wrong with your account or your data — try again shortly."
+      },
+      "unexpected": {
+        "title": "Something went wrong",
+        "description": "The dashboard could not be loaded. If it keeps happening, get in touch and include the detail below."
+      }
+    }
   },
   "Landing": {
     "nav": {
@@ -111,7 +146,8 @@
       "subtitle": "Stop losing 3 hours every Monday copy-pasting numbers into Excel. Connect your account and get a client-ready report in seconds.",
       "ctaPrimary": "Try the demo",
       "ctaSecondary": "Connect with Facebook",
-      "trustLine": "Free demo · No credit card · No Meta account required"
+      "trustLine": "Free demo · No credit card · No Meta account required",
+      "ctaSecondaryPending": "Redirecting to Meta…"
     },
     "features": {
       "badge": "why teams switch",
