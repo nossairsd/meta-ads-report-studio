@@ -1,4 +1,59 @@
 {
+  "Privacy": {
+    "title": "Politique de confidentialité",
+    "updated": "Dernière mise à jour : septembre 2026",
+    "controller": {
+      "heading": "Qui traite vos données",
+      "body": "Meta Ads Report Studio est un projet indépendant édité par Nossair Sedki. Pour toute question relative à vos données, écrivez à nossair.sedki.eng@gmail.com."
+    },
+    "whatWeCollect": {
+      "heading": "Données collectées",
+      "body": "Si vous connectez un compte publicitaire Meta, nous conservons votre identifiant Meta, votre nom, l'identifiant du compte publicitaire autorisé, et un jeton d'accès en lecture seule chiffré. Les statistiques publicitaires (dépenses, impressions, clics, conversions) sont récupérées à la demande pour construire votre rapport. En mode démonstration, aucune donnée personnelle n'est collectée : les chiffres affichés sont fictifs."
+    },
+    "why": {
+      "heading": "Pourquoi ces données",
+      "body": "Uniquement pour afficher votre tableau de bord et générer votre rapport PDF. Nous ne demandons que la permission ads_read, qui autorise la lecture et jamais la modification de vos campagnes. Vos données ne sont ni vendues, ni utilisées à des fins publicitaires, ni exploitées pour entraîner un modèle."
+    },
+    "retention": {
+      "heading": "Durée de conservation",
+      "body": "Le jeton d'accès et les informations de compte sont conservés tant que votre connexion reste active, et supprimés dès que vous révoquez l'accès ou demandez la suppression. Les statistiques publicitaires ne sont pas stockées de façon durable : elles sont récupérées à chaque consultation puis écartées."
+    },
+    "sharing": {
+      "heading": "Partage avec des tiers",
+      "body": "Aucune donnée n'est transmise à un tiers à des fins commerciales. Les seuls sous-traitants techniques sont l'hébergeur de l'application et son fournisseur de base de données, qui n'accèdent pas au contenu de vos rapports."
+    },
+    "rights": {
+      "heading": "Vos droits",
+      "body": "Vous pouvez à tout moment accéder à vos données, les corriger, en demander la suppression, ou révoquer l'accès directement depuis les paramètres de votre compte Facebook. La page Suppression des données décrit la marche à suivre."
+    },
+    "contact": {
+      "heading": "Contact",
+      "body": "Pour toute demande relative à cette politique : nossair.sedki.eng@gmail.com. Une réponse vous sera apportée sous 30 jours."
+    }
+  },
+  "DataDeletion": {
+    "title": "Suppression des données",
+    "updated": "Dernière mise à jour : septembre 2026",
+    "what": {
+      "heading": "Ce qui peut être supprimé",
+      "body": "Les données associées à votre connexion : votre identifiant Meta, votre nom, l'identifiant du compte publicitaire autorisé et le jeton d'accès chiffré. Les statistiques publicitaires n'étant pas conservées de façon durable, il n'y a rien à supprimer de ce côté."
+    },
+    "selfServe": {
+      "heading": "Révoquer l'accès vous-même",
+      "body": "Le moyen le plus direct : dans Facebook, ouvrez Paramètres et confidentialité, puis Applications et sites web, et retirez Meta Ads Report Studio. L'accès est coupé immédiatement et le jeton devient inutilisable."
+    },
+    "request": {
+      "heading": "Demander la suppression",
+      "body": "Pour que les données stockées soient effacées de nos serveurs, envoyez une demande à nossair.sedki.eng@gmail.com :",
+      "step1": "Indiquez l'adresse e-mail ou l'identifiant Meta utilisé lors de la connexion.",
+      "step2": "Précisez qu'il s'agit d'une demande de suppression de données.",
+      "step3": "La suppression est effectuée sous 30 jours, et une confirmation vous est envoyée."
+    },
+    "demo": {
+      "heading": "Mode démonstration",
+      "body": "Si vous avez seulement utilisé la démonstration, aucune donnée vous concernant n'existe : ce mode ne demande ni compte, ni connexion, et les chiffres affichés sont entièrement fictifs."
+    }
+  },
   "Report": {
     "title": "Rapport de performance Meta Ads",
     "preparedFor": "Préparé pour",
