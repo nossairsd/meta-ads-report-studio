@@ -26,7 +26,7 @@ export default function DemoPage() {
         account={DEMO_ACCOUNT}
         rows={getDemoRows()}
         endDate={endDate}
-        isDemo
+        source="demo"
       />
     </main>
   );

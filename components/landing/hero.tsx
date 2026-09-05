@@ -9,8 +9,9 @@ import TextBlurEffect from "@/components/effects/text-blur-effect";
 import SlideEffect from "@/components/effects/slide-effect";
 import FadeEffect from "@/components/effects/fade-effect";
 import { ArrowRight } from "lucide-react";
+import { ConnectButton } from "@/components/landing/connect-button";
 
-export default function Hero() {
+export default function Hero({ canConnect }: { canConnect: boolean }) {
   const t = useTranslations("Landing.hero");
 
   return (
@@ -67,16 +68,7 @@ export default function Hero() {
                 </span>
               </SpecularButton>
             </Link>
-            <SpecularButton
-              size="lg"
-              baseColor="#FFFFFF"
-              lineColor="#2563EB"
-              textColor="#1F2937"
-              radius={999}
-              className="w-full md:w-fit"
-            >
-              {t("ctaSecondary")}
-            </SpecularButton>
+            <ConnectButton canConnect={canConnect} />
           </div>
 
           <p className="text-xs text-foreground/50">{t("trustLine")}</p>

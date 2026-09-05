@@ -25,15 +25,20 @@ export function DashboardView({
   account,
   rows,
   endDate,
-  isDemo = false,
+  source = "demo",
 }: {
   account: AdAccount;
   rows: InsightRow[];
   /** Anchor date for the period windows, passed in from the server so the
    *  server and client renders agree. */
   endDate: string;
-  isDemo?: boolean;
+  /** Which dataset the report endpoint should rebuild from. The figures shown
+   *  here came from the server, but the PDF is generated server-side from the
+   *  source of truth rather than from anything this component could post — a
+   *  client that could supply its own rows could put any numbers in a report. */
+  source?: "demo" | "live";
 }) {
+  const isDemo = source === "demo";
   const t = useTranslations("Dashboard");
   const locale = useLocale();
   const [period, setPeriod] = useState<Period>(30);
@@ -57,7 +62,7 @@ export function DashboardView({
         const response = await fetch("/api/report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ source: "demo", period, locale }),
+          body: JSON.stringify({ source, period, locale }),
         });
         if (!response.ok) throw new Error(`report failed: ${response.status}`);
 

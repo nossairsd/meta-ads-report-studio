@@ -89,3 +89,17 @@ export function classifyMetaError({
 
   return "server";
 }
+
+/**
+ * The user has a session but no usable Meta connection — a different problem
+ * from an API failure, and it needs a different answer in the UI.
+ *
+ * Defined here rather than beside the service that raises it so that mapping
+ * errors to UI states does not have to import a server-only module.
+ */
+export class NotConnectedError extends Error {
+  constructor(message = "No Meta connection for this user") {
+    super(message);
+    this.name = "NotConnectedError";
+  }
+}

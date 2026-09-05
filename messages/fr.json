@@ -98,7 +98,42 @@
     "errorTitle": "Impossible de charger les données",
     "errorDescription": "La connexion au compte publicitaire a échoué. Cela peut venir d'une session expirée ou d'une indisponibilité de l'API Meta.",
     "errorRetry": "Réessayer",
-    "downloadError": "Le téléchargement du rapport a échoué. Réessayez dans un instant."
+    "downloadError": "Le téléchargement du rapport a échoué. Réessayez dans un instant.",
+    "title": "Tableau de bord",
+    "signedInAs": "Connecté en tant que {name}",
+    "disconnect": "Se déconnecter",
+    "failure": {
+      "pending": "En cours…",
+      "reconnect": "Reconnecter à Meta",
+      "notConnected": {
+        "title": "Aucun compte publicitaire connecté",
+        "description": "Votre compte Meta est bien lié, mais aucun compte publicitaire n'est lisible avec cette connexion. Reconnectez-vous en autorisant l'accès au compte que vous voulez analyser."
+      },
+      "expired": {
+        "title": "Votre connexion Meta a expiré",
+        "description": "Une connexion Meta dure environ 60 jours, et celle-ci est arrivée à terme. La reconnexion prend quelques secondes et ne fait rien perdre."
+      },
+      "permission": {
+        "title": "Permission manquante",
+        "description": "La connexion est valide mais ne comprend pas l'autorisation de lire les statistiques publicitaires. Reconnectez-vous et acceptez la permission ads_read demandée par Meta."
+      },
+      "rateLimit": {
+        "title": "Meta limite temporairement les requêtes",
+        "description": "Trop de requêtes ont été envoyées pour ce compte en peu de temps. La limite se lève seule : réessayez dans quelques minutes."
+      },
+      "network": {
+        "title": "Impossible de joindre Meta",
+        "description": "La requête n'est pas passée. C'est généralement momentané, cela vaut la peine de réessayer."
+      },
+      "server": {
+        "title": "Meta ne répond pas correctement",
+        "description": "Meta a renvoyé une erreur de son côté. Ni votre compte ni vos données ne sont en cause : réessayez d'ici peu."
+      },
+      "unexpected": {
+        "title": "Une erreur est survenue",
+        "description": "Le tableau de bord n'a pas pu être chargé. Si cela se reproduit, contactez-nous en indiquant le détail ci-dessous."
+      }
+    }
   },
   "Landing": {
     "nav": {
@@ -111,7 +146,8 @@
       "subtitle": "Arrêtez de perdre 3 heures chaque lundi à copier-coller des chiffres dans Excel. Connectez votre compte et obtenez un rapport prêt pour vos clients en quelques secondes.",
       "ctaPrimary": "Essayer la démo",
       "ctaSecondary": "Se connecter avec Facebook",
-      "trustLine": "Démo gratuite · Aucune carte bancaire · Aucun compte Meta requis"
+      "trustLine": "Démo gratuite · Aucune carte bancaire · Aucun compte Meta requis",
+      "ctaSecondaryPending": "Redirection vers Meta…"
     },
     "features": {
       "badge": "pourquoi nous choisir",
