@@ -1,4 +1,29 @@
 {
+  "Dashboard": {
+    "demoBadge": "Données de démonstration",
+    "period7": "7 jours",
+    "period30": "30 jours",
+    "period90": "90 jours",
+    "comparison": "vs {days} jours précédents",
+    "metric": {
+      "spendCents": "Dépenses",
+      "impressions": "Impressions",
+      "clicks": "Clics",
+      "conversions": "Conversions"
+    },
+    "trendTitle": "Évolution des dépenses",
+    "trendSubtitle": "Montant dépensé jour par jour sur la période",
+    "breakdownTitle": "Répartition par campagne",
+    "breakdownSubtitle": "Part du budget consommée par chaque campagne",
+    "download": "Télécharger le rapport PDF",
+    "downloadPending": "Génération en cours…",
+    "emptyTitle": "Aucune donnée sur cette période",
+    "emptyDescription": "Ce compte publicitaire n'a enregistré aucune activité entre ces deux dates. Essayez une période plus large.",
+    "emptyAction": "Voir les 90 derniers jours",
+    "errorTitle": "Impossible de charger les données",
+    "errorDescription": "La connexion au compte publicitaire a échoué. Cela peut venir d'une session expirée ou d'une indisponibilité de l'API Meta.",
+    "errorRetry": "Réessayer"
+  },
   "Landing": {
     "nav": {
       "features": "Fonctionnalités",

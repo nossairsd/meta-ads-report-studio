@@ -5,7 +5,11 @@ import Home from "@/app/[locale]/page";
 import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
 
-vi.mock("next/navigation", () => ({
+// next-intl's navigation helpers pull several exports from next/navigation, so
+// keep the real module and override only the two hooks that need an App Router
+// context we do not have when rendering a component in isolation.
+vi.mock("next/navigation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/navigation")>()),
   usePathname: () => "/en",
   useRouter: () => ({ push: vi.fn() }),
 }));

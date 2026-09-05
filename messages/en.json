@@ -1,4 +1,29 @@
 {
+  "Dashboard": {
+    "demoBadge": "Sample data",
+    "period7": "7 days",
+    "period30": "30 days",
+    "period90": "90 days",
+    "comparison": "vs previous {days} days",
+    "metric": {
+      "spendCents": "Spend",
+      "impressions": "Impressions",
+      "clicks": "Clicks",
+      "conversions": "Conversions"
+    },
+    "trendTitle": "Spend over time",
+    "trendSubtitle": "Amount spent day by day across the period",
+    "breakdownTitle": "Breakdown by campaign",
+    "breakdownSubtitle": "Share of budget consumed by each campaign",
+    "download": "Download PDF report",
+    "downloadPending": "Generating…",
+    "emptyTitle": "No data for this period",
+    "emptyDescription": "This ad account recorded no activity between these dates. Try a wider period.",
+    "emptyAction": "View the last 90 days",
+    "errorTitle": "Could not load your data",
+    "errorDescription": "Connecting to the ad account failed. This can happen when a session has expired or the Meta API is unavailable.",
+    "errorRetry": "Try again"
+  },
   "Landing": {
     "nav": {
       "features": "Features",
