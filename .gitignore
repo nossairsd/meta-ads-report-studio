@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but the template carries no secrets and is the documentation for what a
+# contributor has to set, so it must be committed.
+!.env.example
 
 # vercel
 .vercel
@@ -42,3 +45,7 @@ next-env.d.ts
 
 CLAUDE.md
 AGENTS.md
+
+# Prisma generates the client as source into the project (v7 behaviour).
+# It is rebuilt by `prisma generate`, so it is a build artefact, not source.
+/generated/prisma

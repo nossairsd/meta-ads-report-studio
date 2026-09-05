@@ -1,0 +1,123 @@
+// Database schema.
+//
+// The four models Auth.js requires (User, Account, Session, VerificationToken)
+// plus Authenticator, which the Prisma adapter references even when passkeys
+// are unused — omitting it fails to type-check. AdAccount is ours.
+//
+// Prisma 7 note: the datasource carries no `url`. The connection string is
+// supplied by prisma7.config.ts, so a checked-in schema never hints at where
+// the database lives.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  authenticators Authenticator[]
+  adAccounts     AdAccount[]
+}
+
+/// One row per linked OAuth provider. Field names are snake_case where the
+/// Auth.js adapter writes them verbatim from the provider's token response —
+/// renaming them would silently break `linkAccount`.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  /// Stored as `v1.<iv>.<tag>.<ciphertext>` — see lib/auth/crypto.ts. The
+  /// column is Text rather than VarChar because the ciphertext of a
+  /// long-lived Meta token is comfortably longer than the token itself.
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+/// Database-backed sessions. A JWT cannot be revoked before it expires;
+/// a session row can be deleted the moment a user disconnects, which is what
+/// the data-deletion page promises.
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @id
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, credentialID])
+}
+
+/// A Meta ad account the user authorised us to read.
+///
+/// Held separately from Account: one Facebook login can expose several ad
+/// accounts, and the one being reported on is a user choice we must remember.
+/// Only identifiers and display metadata live here — never any statistics,
+/// which are fetched on demand and discarded, as the privacy policy states.
+model AdAccount {
+  id       String @id @default(cuid())
+  userId   String
+  /// Meta's own identifier, e.g. "act_1234567890".
+  metaId   String
+  name     String
+  currency String
+  /// IANA name, e.g. "Europe/Paris". Meta reports days in the account's own
+  /// timezone, so it is needed to label a period honestly.
+  timezone String
+
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, metaId])
+  @@index([userId])
+}
