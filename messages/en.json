@@ -188,6 +188,17 @@
       "dataDeletion": "Data deletion",
       "cta": "Want a custom version for your agency? Get in touch.",
       "credit": "© 2026 Meta Ads Report Studio. Built by Nossair Sedki."
+    },
+    "howItWorks": {
+      "badge": "how it works",
+      "title": "Three steps, about two minutes",
+      "description": "No setup, no spreadsheet template, no configuration file. Connect once and every report after that is a single click.",
+      "step1Title": "Connect your ad account",
+      "step1Description": "Sign in with Facebook and grant read-only access. The connection can only read statistics — it can never change or spend anything.",
+      "step2Title": "Pick your period",
+      "step2Description": "Switch between 7, 30 and 90 days. Every figure is compared with the period immediately before it, so you see direction, not just totals.",
+      "step3Title": "Download the report",
+      "step3Description": "A four-page PDF — cover, KPIs, spend trend and campaign breakdown — ready to send to a client without any clean-up."
     }
   }
 }

@@ -50,7 +50,7 @@ export default function Features() {
   ];
 
   return (
-    <section id="features" className="relative">
+    <section id="features" className="relative scroll-mt-28">
       {/* Dot grid, faded out towards the edges so it never competes with the cards */}
       <div
         aria-hidden
