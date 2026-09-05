@@ -1,4 +1,24 @@
 {
+  "Report": {
+    "title": "Meta Ads Performance Report",
+    "preparedFor": "Prepared for",
+    "generatedOn": "Generated on",
+    "page": "Page",
+    "summaryTitle": "Period summary",
+    "summaryIntro": "The four key indicators for this ad account over the analysed period, compared with the period immediately before it.",
+    "trendTitle": "Spend over time",
+    "trendIntro": "Amount spent day by day. The scale starts at zero so small variations are not exaggerated.",
+    "breakdownTitle": "Breakdown by campaign",
+    "breakdownIntro": "Share of budget consumed by each campaign, with performance detail.",
+    "comparison": "over {days} days",
+    "noBaseline": "No baseline period",
+    "tableCampaign": "Campaign",
+    "tableSpend": "Spend",
+    "tableImpressions": "Impressions",
+    "tableClicks": "Clicks",
+    "tableConversions": "Conversions",
+    "tableShare": "Share"
+  },
   "Dashboard": {
     "demoBadge": "Sample data",
     "period7": "7 days",
@@ -22,7 +42,8 @@
     "emptyAction": "View the last 90 days",
     "errorTitle": "Could not load your data",
     "errorDescription": "Connecting to the ad account failed. This can happen when a session has expired or the Meta API is unavailable.",
-    "errorRetry": "Try again"
+    "errorRetry": "Try again",
+    "downloadError": "The report could not be generated. Please try again in a moment."
   },
   "Landing": {
     "nav": {

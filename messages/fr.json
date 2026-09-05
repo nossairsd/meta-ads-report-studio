@@ -1,4 +1,24 @@
 {
+  "Report": {
+    "title": "Rapport de performance Meta Ads",
+    "preparedFor": "Préparé pour",
+    "generatedOn": "Généré le",
+    "page": "Page",
+    "summaryTitle": "Résumé de la période",
+    "summaryIntro": "Les quatre indicateurs clés du compte publicitaire sur la période analysée, comparés à la période immédiatement précédente.",
+    "trendTitle": "Évolution des dépenses",
+    "trendIntro": "Montant dépensé jour par jour. L'échelle démarre à zéro afin de ne pas exagérer les variations.",
+    "breakdownTitle": "Répartition par campagne",
+    "breakdownIntro": "Part du budget consommée par chaque campagne, avec le détail des performances.",
+    "comparison": "sur {days} jours",
+    "noBaseline": "Aucune période de référence",
+    "tableCampaign": "Campagne",
+    "tableSpend": "Dépenses",
+    "tableImpressions": "Impressions",
+    "tableClicks": "Clics",
+    "tableConversions": "Conversions",
+    "tableShare": "Part"
+  },
   "Dashboard": {
     "demoBadge": "Données de démonstration",
     "period7": "7 jours",
@@ -22,7 +42,8 @@
     "emptyAction": "Voir les 90 derniers jours",
     "errorTitle": "Impossible de charger les données",
     "errorDescription": "La connexion au compte publicitaire a échoué. Cela peut venir d'une session expirée ou d'une indisponibilité de l'API Meta.",
-    "errorRetry": "Réessayer"
+    "errorRetry": "Réessayer",
+    "downloadError": "Le téléchargement du rapport a échoué. Réessayez dans un instant."
   },
   "Landing": {
     "nav": {
