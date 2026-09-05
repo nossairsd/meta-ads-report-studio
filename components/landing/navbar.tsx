@@ -1,6 +1,7 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import { AnchorLink } from "@/components/landing/anchor-link";
 import { AlignJustify, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
@@ -90,12 +91,12 @@ export default function Navbar() {
                     transition={{ type: "spring", stiffness: 380, damping: 32 }}
                   />
                 )}
-                <Link
+                <AnchorLink
                   href={link.href}
                   className="block rounded-full px-3.5 py-2 transition-colors hover:text-black"
                 >
                   {link.name}
-                </Link>
+                </AnchorLink>
               </motion.li>
             ))}
           </ul>
@@ -140,14 +141,14 @@ export default function Navbar() {
             >
               <div className="flex flex-col gap-4 p-6">
                 {navLinks.map((link) => (
-                  <Link
+                  <AnchorLink
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
                     className="py-2 text-base font-medium"
                   >
                     {link.name}
-                  </Link>
+                  </AnchorLink>
                 ))}
                 <LocaleToggle layoutId="locale-pill-mobile" className="self-start" />
                 <Link href="/demo" onClick={() => setIsOpen(false)}>

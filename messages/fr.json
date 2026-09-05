@@ -188,6 +188,17 @@
       "dataDeletion": "Suppression des données",
       "cta": "Vous souhaitez une version personnalisée pour votre agence ? Contactez-moi.",
       "credit": "© 2026 Meta Ads Report Studio. Créé par Nossair Sedki."
+    },
+    "howItWorks": {
+      "badge": "comment ça marche",
+      "title": "Trois étapes, environ deux minutes",
+      "description": "Aucune installation, aucun modèle de tableur, aucun fichier de configuration. Vous connectez le compte une fois, et chaque rapport ensuite tient en un clic.",
+      "step1Title": "Connectez votre compte publicitaire",
+      "step1Description": "Connectez-vous avec Facebook et autorisez un accès en lecture seule. La connexion ne peut que lire les statistiques : elle ne peut rien modifier ni dépenser.",
+      "step2Title": "Choisissez votre période",
+      "step2Description": "Basculez entre 7, 30 et 90 jours. Chaque chiffre est comparé à la période précédente, pour voir une tendance et pas seulement un total.",
+      "step3Title": "Téléchargez le rapport",
+      "step3Description": "Un PDF de quatre pages — couverture, KPI, évolution des dépenses et répartition par campagne — prêt à envoyer au client sans retouche."
     }
   }
 }

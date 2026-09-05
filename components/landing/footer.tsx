@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { ArrowUp, Mail } from "lucide-react";
 import { useLenis } from "lenis/react";
+import { AnchorLink } from "@/components/landing/anchor-link";
 
 // lucide-react dropped brand/logo icons in this version — inline the two we need.
 function GithubIcon() {
@@ -33,10 +34,16 @@ const column = {
   }),
 };
 
-/** Link whose label slides up slightly while an underline sweeps in. */
+/** Link whose label slides up slightly while an underline sweeps in.
+ *
+ *  The list mixes in-page anchors with real routes, and the two need different
+ *  components: the locale-aware Link turns a bare hash into a same-route
+ *  navigation that never scrolls. */
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const Wrapper = href.startsWith("#") ? AnchorLink : Link;
+
   return (
-    <Link
+    <Wrapper
       href={href}
       className="group relative inline-block text-sm text-white/55 transition-colors duration-200 hover:text-white"
     >
@@ -44,7 +51,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
         {children}
       </span>
       <span className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-primary to-sky-300 transition-transform duration-300 ease-out group-hover:scale-x-100" />
-    </Link>
+    </Wrapper>
   );
 }
 
