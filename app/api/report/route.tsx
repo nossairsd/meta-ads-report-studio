@@ -5,6 +5,7 @@ import { ReportDocument, type ReportStrings } from "@/lib/report/report-document
 import { buildDashboardData, toIsoDate } from "@/lib/metrics/aggregate";
 import { DEMO_ACCOUNT, getDemoRows } from "@/lib/metrics/demo-data";
 import { auth } from "@/lib/auth/config";
+import { isAuthConfigured } from "@/lib/env";
 import { loadLiveDashboard } from "@/lib/meta/service";
 import { periodSchema } from "@/lib/metrics/schema";
 import { routing } from "@/i18n/routing";
@@ -61,6 +62,12 @@ export async function POST(request: Request) {
   let endDate;
 
   if (source === "live") {
+    // Without credentials auth() throws; a 503 says "this deployment cannot do
+    // that" rather than "something broke".
+    if (!isAuthConfigured()) {
+      return Response.json({ error: "not_configured" }, { status: 503 });
+    }
+
     const session = await auth();
     if (!session?.user?.id) {
       return Response.json({ error: "unauthorized" }, { status: 401 });
