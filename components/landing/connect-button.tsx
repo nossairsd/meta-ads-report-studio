@@ -8,16 +8,17 @@ import { connectMeta } from "@/lib/auth/actions";
 /**
  * The "Connect with Facebook" call to action.
  *
- * Split out of the hero because it needs a transition and a server action,
- * and because it is the one control on the page that can be genuinely
- * unavailable: a demo-only deployment has no Meta credentials, and offering a
- * button that leads to a broken OAuth screen is worse than not offering it.
+ * Split out of the hero because it needs a transition and a server action.
+ *
+ * It is deliberately always rendered, including on a deployment with no Meta
+ * credentials. The landing page is the product's shop window, and a missing
+ * call to action reads as a page that is broken or unfinished — worse than a
+ * connection that fails with a clear message. A missing configuration is
+ * handled where it actually is a problem: on the server.
  */
-export function ConnectButton({ canConnect }: { canConnect: boolean }) {
+export function ConnectButton() {
   const t = useTranslations("Landing.hero");
   const [isPending, startTransition] = useTransition();
-
-  if (!canConnect) return null;
 
   return (
     <SpecularButton

@@ -4,7 +4,8 @@ import { getTranslations } from "next-intl/server";
 
 import { auth } from "@/lib/auth/config";
 import { loadLiveDashboard } from "@/lib/meta/service";
-import { toDashboardFailure } from "@/lib/meta/error-state";
+import { NOT_CONFIGURED, toDashboardFailure } from "@/lib/meta/error-state";
+import { isAuthConfigured } from "@/lib/env";
 import { DashboardView } from "@/components/dashboard/dashboard-view";
 import { DashboardFailureView } from "@/components/dashboard/failure-view";
 import { DisconnectButton } from "@/components/dashboard/disconnect-button";
@@ -28,6 +29,18 @@ export default async function DashboardPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+
+  // auth() throws outright when AUTH_SECRET is missing, which would surface as
+  // a 500. Checking first turns a deployment mistake into a page that says
+  // what is wrong.
+  if (!isAuthConfigured()) {
+    return (
+      <main className="mx-auto w-full max-w-6xl px-6 pt-28 pb-20">
+        <DashboardFailureView failure={NOT_CONFIGURED} />
+      </main>
+    );
+  }
+
   const session = await auth();
 
   // The proxy only checks that a session cookie exists — it runs on the edge,

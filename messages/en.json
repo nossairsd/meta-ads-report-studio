@@ -132,6 +132,10 @@
       "unexpected": {
         "title": "Something went wrong",
         "description": "The dashboard could not be loaded. If it keeps happening, get in touch and include the detail below."
+      },
+      "notConfigured": {
+        "title": "Meta connection not configured",
+        "description": "This deployment has no Meta credentials set, so no ad account can be connected. The demo works without any configuration and shows the full interface."
       }
     }
   },

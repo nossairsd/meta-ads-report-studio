@@ -11,7 +11,7 @@ import FadeEffect from "@/components/effects/fade-effect";
 import { ArrowRight } from "lucide-react";
 import { ConnectButton } from "@/components/landing/connect-button";
 
-export default function Hero({ canConnect }: { canConnect: boolean }) {
+export default function Hero() {
   const t = useTranslations("Landing.hero");
 
   return (
@@ -68,7 +68,7 @@ export default function Hero({ canConnect }: { canConnect: boolean }) {
                 </span>
               </SpecularButton>
             </Link>
-            <ConnectButton canConnect={canConnect} />
+            <ConnectButton />
           </div>
 
           <p className="text-xs text-foreground/50">{t("trustLine")}</p>

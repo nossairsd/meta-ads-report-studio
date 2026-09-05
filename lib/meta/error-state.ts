@@ -27,6 +27,15 @@ const BY_KIND: Record<MetaErrorKind, { messageKey: string; needsReconnect: boole
   bad_request: { messageKey: "unexpected", needsReconnect: false },
 };
 
+/** The deployment has no Meta credentials at all. Not a Meta failure — nothing
+ *  was ever sent — and the person who can fix it is the operator, not the
+ *  visitor, so it offers no reconnect button. */
+export const NOT_CONFIGURED: DashboardFailure = {
+  messageKey: "notConfigured",
+  needsReconnect: false,
+  detail: null,
+};
+
 export function toDashboardFailure(error: unknown): DashboardFailure {
   if (error instanceof NotConnectedError) {
     return { messageKey: "notConnected", needsReconnect: true, detail: null };
