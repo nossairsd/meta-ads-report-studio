@@ -175,10 +175,10 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <FooterLink href="#">{t("privacy")}</FooterLink>
+                <FooterLink href="/privacy">{t("privacy")}</FooterLink>
               </li>
               <li>
-                <FooterLink href="#">{t("dataDeletion")}</FooterLink>
+                <FooterLink href="/data-deletion">{t("dataDeletion")}</FooterLink>
               </li>
             </ul>
           </motion.div>

@@ -1,4 +1,59 @@
 {
+  "Privacy": {
+    "title": "Privacy policy",
+    "updated": "Last updated: September 2026",
+    "controller": {
+      "heading": "Who handles your data",
+      "body": "Meta Ads Report Studio is an independent project published by Nossair Sedki. For any question about your data, write to nossair.sedki.eng@gmail.com."
+    },
+    "whatWeCollect": {
+      "heading": "What we collect",
+      "body": "If you connect a Meta ad account, we keep your Meta user id, your name, the id of the ad account you authorised, and an encrypted read-only access token. Ad statistics (spend, impressions, clicks, conversions) are fetched on demand to build your report. In demo mode nothing personal is collected: the figures shown are fictional."
+    },
+    "why": {
+      "heading": "Why we need it",
+      "body": "Only to display your dashboard and generate your PDF report. We request the ads_read permission alone, which allows reading and never modifying your campaigns. Your data is not sold, not used for advertising, and not used to train any model."
+    },
+    "retention": {
+      "heading": "How long we keep it",
+      "body": "The access token and account details are kept while your connection is active, and deleted as soon as you revoke access or request deletion. Ad statistics are not stored durably: they are fetched each time you open the dashboard and then discarded."
+    },
+    "sharing": {
+      "heading": "Sharing with third parties",
+      "body": "No data is passed to third parties for commercial purposes. The only technical processors are the application host and its database provider, neither of which accesses the contents of your reports."
+    },
+    "rights": {
+      "heading": "Your rights",
+      "body": "You may at any time access your data, correct it, request its deletion, or revoke access directly from your Facebook account settings. The Data deletion page explains how."
+    },
+    "contact": {
+      "heading": "Contact",
+      "body": "For anything relating to this policy: nossair.sedki.eng@gmail.com. You will get an answer within 30 days."
+    }
+  },
+  "DataDeletion": {
+    "title": "Data deletion",
+    "updated": "Last updated: September 2026",
+    "what": {
+      "heading": "What can be deleted",
+      "body": "The data tied to your connection: your Meta user id, your name, the id of the ad account you authorised, and the encrypted access token. Ad statistics are not stored durably, so there is nothing to delete on that side."
+    },
+    "selfServe": {
+      "heading": "Revoke access yourself",
+      "body": "The most direct route: in Facebook, open Settings & privacy, then Apps and websites, and remove Meta Ads Report Studio. Access is cut immediately and the token becomes unusable."
+    },
+    "request": {
+      "heading": "Request deletion",
+      "body": "To have stored data erased from our servers, send a request to nossair.sedki.eng@gmail.com:",
+      "step1": "Include the email address or Meta user id you signed in with.",
+      "step2": "State that this is a data deletion request.",
+      "step3": "Deletion is carried out within 30 days, and you receive a confirmation."
+    },
+    "demo": {
+      "heading": "Demo mode",
+      "body": "If you only used the demo, no data about you exists: that mode requires no account and no sign-in, and the figures shown are entirely fictional."
+    }
+  },
   "Report": {
     "title": "Meta Ads Performance Report",
     "preparedFor": "Prepared for",
