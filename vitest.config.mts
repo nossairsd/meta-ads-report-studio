@@ -7,5 +7,13 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
+    server: {
+      deps: {
+        // next-intl's navigation helpers import "next/navigation" from inside
+        // node_modules. Left external, Vitest neither resolves that specifier
+        // nor applies our vi.mock to it, so the module must be inlined.
+        inline: ["next-intl"],
+      },
+    },
   },
 });

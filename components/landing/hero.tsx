@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import SpecularButton from "@/components/landing/specular-button";
+import { Link } from "@/i18n/navigation";
 import { DashboardPreview } from "@/components/landing/dashboard-preview";
 import GradientWaves from "@/components/effects/gradient-waves";
 import TextBlurEffect from "@/components/effects/text-blur-effect";
@@ -51,19 +52,21 @@ export default function Hero() {
 
         <SlideEffect className="flex w-full flex-col items-center justify-center gap-5 md:w-fit">
           <div className="mt-1 flex w-full flex-col items-center justify-center gap-3 md:flex-row md:gap-4">
-            <SpecularButton
-              size="lg"
-              baseColor="#2563EB"
-              lineColor="#93C5FD"
-              textColor="#FFFFFF"
-              radius={999}
-              className="w-full gap-2 md:w-fit"
-            >
-              <span className="inline-flex items-center gap-2">
-                {t("ctaPrimary")}
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </SpecularButton>
+            <Link href="/demo" className="w-full md:w-fit">
+              <SpecularButton
+                size="lg"
+                baseColor="#2563EB"
+                lineColor="#93C5FD"
+                textColor="#FFFFFF"
+                radius={999}
+                className="w-full gap-2 md:w-fit"
+              >
+                <span className="inline-flex items-center gap-2">
+                  {t("ctaPrimary")}
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </SpecularButton>
+            </Link>
             <SpecularButton
               size="lg"
               baseColor="#FFFFFF"

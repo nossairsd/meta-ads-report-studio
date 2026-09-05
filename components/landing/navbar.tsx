@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { AlignJustify, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
@@ -111,7 +111,7 @@ export default function Navbar() {
           </motion.div>
 
           <motion.div custom={navLinks.length + 2} variants={itemVariants} initial="hidden" animate="show">
-            <Link href="#hero">
+            <Link href="/demo">
               <MotionButton size="lg" className="rounded-full px-5">
                 {t("cta")}
               </MotionButton>
@@ -150,7 +150,7 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <LocaleToggle layoutId="locale-pill-mobile" className="self-start" />
-                <Link href="#hero" onClick={() => setIsOpen(false)}>
+                <Link href="/demo" onClick={() => setIsOpen(false)}>
                   <MotionButton size="lg" className="w-full justify-center rounded-full">
                     {t("cta")}
                   </MotionButton>

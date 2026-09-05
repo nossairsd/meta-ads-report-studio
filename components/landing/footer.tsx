@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
@@ -157,7 +157,7 @@ export default function Footer() {
                 <FooterLink href="#how-it-works">{t("howItWorks")}</FooterLink>
               </li>
               <li>
-                <FooterLink href="#hero">{t("demo")}</FooterLink>
+                <FooterLink href="/demo">{t("demo")}</FooterLink>
               </li>
             </ul>
           </motion.div>
