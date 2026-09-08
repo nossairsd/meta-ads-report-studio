@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import SpecularButton from "@/components/landing/specular-button";
 import { connectMeta } from "@/lib/auth/actions";
 
@@ -18,6 +18,7 @@ import { connectMeta } from "@/lib/auth/actions";
  */
 export function ConnectButton() {
   const t = useTranslations("Landing.hero");
+  const locale = useLocale();
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -29,7 +30,7 @@ export function ConnectButton() {
       radius={999}
       className="w-full md:w-fit"
       disabled={isPending}
-      onClick={() => startTransition(async () => void (await connectMeta()))}
+      onClick={() => startTransition(async () => void (await connectMeta(locale)))}
     >
       {isPending ? t("ctaSecondaryPending") : t("ctaSecondary")}
     </SpecularButton>

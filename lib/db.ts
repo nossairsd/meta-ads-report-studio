@@ -1,5 +1,15 @@
+import ws from "ws";
 import { PrismaClient } from "@/generated/prisma/client";
+import { neonConfig } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
+
+// Neon connects over a WebSocket, and the driver has no implementation of its
+// own in Node: inside the Next.js runtime it falls back to undici's, whose
+// handshake fails here and surfaces only as an opaque adapter error during
+// sign-in. Handing it the `ws` package — what Neon documents for Node — makes
+// the connection deterministic rather than dependent on which runtime happens
+// to be executing.
+neonConfig.webSocketConstructor = ws;
 
 /**
  * The Prisma client: one instance per process, constructed lazily.
