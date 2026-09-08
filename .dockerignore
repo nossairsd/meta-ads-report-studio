@@ -1,0 +1,19 @@
+# Anything rebuilt inside the image, or that must never enter it.
+node_modules
+.next
+generated
+.git
+.github
+__tests__
+coverage
+
+# Secrets. .env.example is deliberately kept: it documents what must be set.
+.env
+.env.*
+!.env.example
+
+# Local tooling and editor state
+.claude
+.vscode
+*.log
+npm-debug.log*

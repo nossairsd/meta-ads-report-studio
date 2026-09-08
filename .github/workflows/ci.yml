@@ -34,3 +34,51 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  docker:
+    name: Build the container image
+    runs-on: ubuntu-latest
+    # No point building an image from code that does not lint, type-check or
+    # pass its tests.
+    needs: quality
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          # Not pushed anywhere: this job exists to prove the Dockerfile still
+          # builds, which is the part that silently rots.
+          push: false
+          load: true
+          tags: meta-ads-report-studio:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Start the container and check it serves
+        run: |
+          docker run -d --name studio -p 3000:3000 \
+            -e DATABASE_URL="postgresql://ci:ci@localhost:5432/ci" \
+            meta-ads-report-studio:ci
+
+          # The demo needs no database, so a healthy response here proves the
+          # image actually runs rather than merely building.
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:3000/en/demo > /dev/null; then
+              echo "Container serves /en/demo"
+              docker rm -f studio
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Container did not serve within 60s"
+          docker logs studio
+          docker rm -f studio
+          exit 1
