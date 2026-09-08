@@ -1,5 +1,5 @@
 import { PrismaClient } from "@/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaNeon } from "@prisma/adapter-neon";
 
 /**
  * The Prisma client: one instance per process, constructed lazily.
@@ -19,8 +19,16 @@ import { PrismaPg } from "@prisma/adapter-pg";
  * failure lands where the database is genuinely required.
  *
  * Prisma 7 has no bundled query engine: connections are made through a driver
- * adapter, which is why the pg adapter is constructed here rather than a URL
+ * adapter, which is why the adapter is constructed here rather than a URL
  * being declared in the schema.
+ *
+ * The Neon adapter is used rather than a plain PostgreSQL socket. A direct
+ * connection on port 5432 opens its TCP handshake and is then reset the moment
+ * the PostgreSQL protocol starts, on any network that inspects outbound
+ * traffic — which is exactly what happens on the corporate network this is
+ * developed on. Neon speaks the same protocol over TLS on 443, which such
+ * networks allow, and it is also the connection style Neon recommends for
+ * serverless deployment. One adapter therefore serves both.
  */
 
 function createPrismaClient(): PrismaClient {
@@ -34,7 +42,7 @@ function createPrismaClient(): PrismaClient {
   }
 
   return new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
+    adapter: new PrismaNeon({ connectionString }),
     // Full query logging is noise in normal operation; warnings and errors are
     // always worth surfacing.
     log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
