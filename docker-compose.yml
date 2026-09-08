@@ -1,0 +1,54 @@
+# Local development stack: the application plus its own PostgreSQL.
+#
+# Point of this file is that a contributor needs Docker and nothing else — no
+# local PostgreSQL install, no cloud database account — to get a working
+# environment. Neon is still what production uses.
+#
+#   docker compose up --build
+#
+# Then apply the schema once, from the host:
+#   docker compose exec app node scripts/db-migrate.mjs
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: studio
+      POSTGRES_PASSWORD: studio
+      POSTGRES_DB: studio
+    ports:
+      # Exposed so a GUI client on the host can inspect the data.
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      # The app must not start against a server still initialising.
+      test: ["CMD-SHELL", "pg_isready -U studio -d studio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://studio:studio@db:5432/studio
+      # Meta credentials and the two generated secrets are read from a local
+      # .env file, which is git-ignored. Without them the landing page and the
+      # demo still run; only the authenticated dashboard needs them.
+      META_APP_ID: ${META_APP_ID:-}
+      META_APP_SECRET: ${META_APP_SECRET:-}
+      AUTH_SECRET: ${AUTH_SECRET:-}
+      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:-}
+      AUTH_URL: http://localhost:3000
+
+volumes:
+  db-data:
