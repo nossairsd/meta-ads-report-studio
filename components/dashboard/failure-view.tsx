@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { DashboardErrorState } from "@/components/dashboard/states";
 import { connectMeta } from "@/lib/auth/actions";
 import type { DashboardFailure } from "@/lib/meta/error-state";
@@ -16,13 +16,14 @@ import type { DashboardFailure } from "@/lib/meta/error-state";
  */
 export function DashboardFailureView({ failure }: { failure: DashboardFailure }) {
   const t = useTranslations("Dashboard");
+  const locale = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   function handleAction() {
     startTransition(async () => {
       if (failure.needsReconnect) {
-        await connectMeta();
+        await connectMeta(locale);
       } else {
         // Re-runs the server component, which refetches. Cheaper and less
         // jarring than a full page reload.
