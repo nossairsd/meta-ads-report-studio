@@ -9,6 +9,7 @@ import {
   Line as SvgLine,
 } from "@react-pdf/renderer";
 import { buildDonut, buildLineChart } from "./geometry";
+import { computeDerived } from "@/lib/metrics/derived";
 import {
   formatCompact,
   formatCurrencyCents,
@@ -16,6 +17,7 @@ import {
   formatDayShort,
   formatDelta,
   formatNumber,
+  formatRate,
   formatShare,
 } from "@/lib/metrics/format";
 import type { DashboardData } from "@/lib/metrics/schema";
@@ -42,6 +44,12 @@ export type ReportStrings = {
   tableClicks: string;
   tableConversions: string;
   tableShare: string;
+  tableCtr: string;
+  tableCpc: string;
+  /** Ratios a media buyer reads before the raw totals. */
+  derived: { ctr: string; cpc: string; cpm: string; cpa: string };
+  /** Shown where a ratio has no denominator — no clicks yet, no conversions. */
+  notAvailable: string;
 };
 
 const COLORS = {
@@ -61,76 +69,107 @@ const SLICE_COLORS = ["#2563EB", "#16A34A", "#F59E0B", "#8B5CF6", "#0EA5E9"];
 // fetched at render time — which also keeps the serverless bundle small.
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 48,
-    paddingBottom: 56,
-    paddingHorizontal: 48,
+    paddingTop: 38,
+    paddingBottom: 46,
+    paddingHorizontal: 44,
     fontFamily: "Helvetica",
     fontSize: 10,
     color: COLORS.ink,
   },
-  coverPage: {
-    padding: 56,
-    fontFamily: "Helvetica",
-    color: COLORS.ink,
+  /** A band, not a page. The report opened on a cover carrying a title and
+   *  four lines of text, leaving the rest of an A4 sheet blank — and the three
+   *  pages after it were each about a third full. Folding the cover into a
+   *  header is most of what takes this report from four thin pages to two
+   *  dense ones. */
+  header: {
+    flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "flex-start",
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.ink,
+    paddingBottom: 14,
   },
-  logoMark: { width: 44, height: 44, borderRadius: 12, backgroundColor: COLORS.primary },
-  coverTitle: { fontSize: 34, fontFamily: "Helvetica-Bold", lineHeight: 1.15 },
-  coverAccount: { fontSize: 16, color: COLORS.muted, marginTop: 14 },
-  coverPeriod: { fontSize: 12, color: COLORS.muted, marginTop: 6 },
-  coverFooter: { fontSize: 9, color: COLORS.faint },
+  brandRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  logoMark: { width: 18, height: 18, borderRadius: 5, backgroundColor: COLORS.primary },
+  brandName: { fontSize: 8, color: COLORS.faint, letterSpacing: 0.6 },
+  reportTitle: { fontSize: 21, fontFamily: "Helvetica-Bold", marginTop: 10, lineHeight: 1.15 },
+  headerMeta: { alignItems: "flex-end", gap: 3 },
+  headerAccount: { fontSize: 12, fontFamily: "Helvetica-Bold" },
+  headerPeriod: { fontSize: 9, color: COLORS.muted },
+  headerGenerated: { fontSize: 8, color: COLORS.faint },
 
-  sectionTitle: { fontSize: 18, fontFamily: "Helvetica-Bold" },
-  sectionIntro: { fontSize: 10, color: COLORS.muted, marginTop: 6, lineHeight: 1.5 },
+  sectionTitle: { fontSize: 13, fontFamily: "Helvetica-Bold" },
+  sectionIntro: { fontSize: 9, color: COLORS.muted, marginTop: 4, lineHeight: 1.45 },
+  sectionLabel: {
+    fontSize: 8,
+    color: COLORS.faint,
+    letterSpacing: 1,
+    marginTop: 12,
+    marginBottom: 7,
+  },
 
-  kpiGrid: { flexDirection: "row", flexWrap: "wrap", marginTop: 26, gap: 12 },
+  /** Four across rather than two by two: the same information in half the
+   *  vertical space, which is what freed room for the ratios below it. */
+  kpiGrid: { flexDirection: "row", gap: 10 },
   kpiCard: {
-    width: "48%",
+    flex: 1,
     borderWidth: 1,
     borderColor: COLORS.border,
-    borderRadius: 10,
-    padding: 16,
+    borderRadius: 8,
+    padding: 9,
   },
-  kpiLabel: { fontSize: 8, color: COLORS.faint, letterSpacing: 0.8 },
-  kpiValue: { fontSize: 24, fontFamily: "Helvetica-Bold", marginTop: 8 },
-  kpiDelta: { fontSize: 9, marginTop: 8 },
+  kpiLabel: { fontSize: 7, color: COLORS.faint, letterSpacing: 0.7 },
+  kpiValue: { fontSize: 16, fontFamily: "Helvetica-Bold", marginTop: 6 },
+  kpiDelta: { fontSize: 7.5, marginTop: 6 },
+
+  /** The ratios sit on a tinted strip rather than in cards: they are read
+   *  together, and four more bordered boxes would compete with the KPIs. */
+  ratioStrip: {
+    flexDirection: "row",
+    backgroundColor: COLORS.surface,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 13,
+  },
+  ratioCell: { flex: 1 },
+  ratioLabel: { fontSize: 7, color: COLORS.faint, letterSpacing: 0.7 },
+  ratioValue: { fontSize: 13, fontFamily: "Helvetica-Bold", marginTop: 4 },
 
   chartFrame: {
-    marginTop: 24,
     borderWidth: 1,
     borderColor: COLORS.border,
-    borderRadius: 10,
-    padding: 18,
+    borderRadius: 8,
+    padding: 12,
   },
   axisLabel: { fontSize: 7, color: COLORS.faint },
 
-  legendRow: { flexDirection: "row", alignItems: "center", marginTop: 10 },
-  legendDot: { width: 8, height: 8, borderRadius: 4, marginRight: 8 },
-  legendName: { flex: 1, fontSize: 10 },
-  legendValue: { fontSize: 10, fontFamily: "Helvetica-Bold" },
+  legendRow: { flexDirection: "row", alignItems: "center", marginTop: 7 },
+  legendDot: { width: 7, height: 7, borderRadius: 3.5, marginRight: 7 },
+  legendName: { flex: 1, fontSize: 9 },
+  legendValue: { fontSize: 9, fontFamily: "Helvetica-Bold" },
 
-  table: { marginTop: 22, borderWidth: 1, borderColor: COLORS.border, borderRadius: 10 },
+  table: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 8 },
   tableHeader: {
     flexDirection: "row",
     backgroundColor: COLORS.surface,
-    paddingVertical: 9,
-    paddingHorizontal: 12,
+    paddingVertical: 7,
+    paddingHorizontal: 10,
   },
   tableRow: {
     flexDirection: "row",
-    paddingVertical: 9,
-    paddingHorizontal: 12,
+    paddingVertical: 7,
+    paddingHorizontal: 10,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
   },
-  th: { fontSize: 8, color: COLORS.faint, letterSpacing: 0.5 },
-  td: { fontSize: 9 },
+  th: { fontSize: 7, color: COLORS.faint, letterSpacing: 0.4 },
+  td: { fontSize: 8 },
 
   footer: {
     position: "absolute",
-    bottom: 26,
-    left: 48,
-    right: 48,
+    bottom: 20,
+    left: 44,
+    right: 44,
     flexDirection: "row",
     justifyContent: "space-between",
     fontSize: 8,
@@ -191,7 +230,7 @@ export function ReportDocument({
 
   const axisWidth = 54;
   const chartWidth = 406;
-  const chartHeight = 170;
+  const chartHeight = 132;
   const line = buildLineChart({
     values: daily.map((point) => point.spendCents),
     width: chartWidth,
@@ -237,42 +276,68 @@ export function ReportDocument({
   const tickStep = Math.max(1, Math.ceil(daily.length / 6));
   const ticks = daily.filter((_, i) => i % tickStep === 0);
 
+  const derived = computeDerived(totals);
+  const dash = strings.notAvailable;
+
+  const ratios = [
+    {
+      label: strings.derived.ctr,
+      value: derived.ctr === null ? dash : formatRate(derived.ctr, locale),
+    },
+    {
+      label: strings.derived.cpc,
+      value:
+        derived.cpcCents === null
+          ? dash
+          : formatCurrencyCents(derived.cpcCents, locale, currency),
+    },
+    {
+      label: strings.derived.cpm,
+      value:
+        derived.cpmCents === null
+          ? dash
+          : formatCurrencyCents(derived.cpmCents, locale, currency),
+    },
+    {
+      label: strings.derived.cpa,
+      value:
+        derived.cpaCents === null
+          ? dash
+          : formatCurrencyCents(derived.cpaCents, locale, currency),
+    },
+  ];
+
   return (
     <Document
       title={`${strings.reportTitle} — ${account.name}`}
       author="Meta Ads Report Studio"
       language={locale}
     >
-      {/* 1 — Cover */}
-      <Page size="A4" style={styles.coverPage}>
-        <View>
-          <View style={styles.logoMark} />
-          <Text style={[styles.coverFooter, { marginTop: 14 }]}>
-            Meta Ads Report Studio
-          </Text>
-        </View>
-
-        <View>
-          <Text style={styles.coverTitle}>{strings.reportTitle}</Text>
-          <Text style={styles.coverAccount}>
-            {strings.preparedFor} {account.name}
-          </Text>
-          <Text style={styles.coverPeriod}>{rangeLabel}</Text>
-        </View>
-
-        <Text style={styles.coverFooter}>
-          {strings.generatedOn}{" "}
-          {new Intl.DateTimeFormat(locale, {
-            dateStyle: "long",
-            timeZone: "UTC",
-          }).format(generatedAt)}
-        </Text>
-      </Page>
-
-      {/* 2 — Summary */}
+      {/* 1 — Everything a client reads: the figures and the trend. */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.sectionTitle}>{strings.summaryTitle}</Text>
-        <Text style={styles.sectionIntro}>{strings.summaryIntro}</Text>
+        <View style={styles.header}>
+          <View>
+            <View style={styles.brandRow}>
+              <View style={styles.logoMark} />
+              <Text style={styles.brandName}>META ADS REPORT STUDIO</Text>
+            </View>
+            <Text style={styles.reportTitle}>{strings.reportTitle}</Text>
+          </View>
+
+          <View style={styles.headerMeta}>
+            <Text style={styles.headerAccount}>{account.name}</Text>
+            <Text style={styles.headerPeriod}>{rangeLabel}</Text>
+            <Text style={styles.headerGenerated}>
+              {strings.generatedOn}{" "}
+              {new Intl.DateTimeFormat(locale, {
+                dateStyle: "long",
+                timeZone: "UTC",
+              }).format(generatedAt)}
+            </Text>
+          </View>
+        </View>
+
+        <Text style={styles.sectionLabel}>{strings.summaryTitle.toUpperCase()}</Text>
 
         <View style={styles.kpiGrid}>
           {kpis.map((kpi) => (
@@ -290,13 +355,21 @@ export function ReportDocument({
           ))}
         </View>
 
-        <PageFooter label={footerLabel} page={`${strings.page} 2`} />
-      </Page>
+        <View style={{ marginTop: 10 }}>
+          <View style={styles.ratioStrip}>
+            {ratios.map((ratio) => (
+              <View key={ratio.label} style={styles.ratioCell}>
+                <Text style={styles.ratioLabel}>{ratio.label.toUpperCase()}</Text>
+                <Text style={styles.ratioValue}>{ratio.value}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
 
-      {/* 3 — Trend */}
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.sectionTitle}>{strings.trendTitle}</Text>
-        <Text style={styles.sectionIntro}>{strings.trendIntro}</Text>
+        <Text style={styles.sectionLabel}>{strings.trendTitle.toUpperCase()}</Text>
+        <Text style={[styles.sectionIntro, { marginTop: -6, marginBottom: 10 }]}>
+          {strings.trendIntro}
+        </Text>
 
         <View style={styles.chartFrame}>
           <View style={{ flexDirection: "row" }}>
@@ -306,10 +379,7 @@ export function ReportDocument({
               {line.gridLines.map((grid, i) => (
                 <Text
                   key={i}
-                  style={[
-                    styles.axisLabel,
-                    { position: "absolute", top: grid.y - 4, right: 8 },
-                  ]}
+                  style={[styles.axisLabel, { position: "absolute", top: grid.y - 4, right: 8 }]}
                 >
                   {formatCurrencyCents(Math.round(grid.value), locale, currency)}
                 </Text>
@@ -360,16 +430,11 @@ export function ReportDocument({
           </View>
         </View>
 
-        <PageFooter label={footerLabel} page={`${strings.page} 3`} />
-      </Page>
-
-      {/* 4 — Breakdown */}
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.sectionTitle}>{strings.breakdownTitle}</Text>
+        <Text style={styles.sectionLabel}>{strings.breakdownTitle.toUpperCase()}</Text>
         <Text style={styles.sectionIntro}>{strings.breakdownIntro}</Text>
 
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 24, gap: 28 }}>
-          <Svg width={180} height={180} viewBox="0 0 180 180">
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4, gap: 26 }} wrap={false}>
+          <Svg width={120} height={120} viewBox="0 0 180 180">
             {donut.map((segment, i) => (
               <Path key={i} d={segment.path} fill={SLICE_COLORS[i % SLICE_COLORS.length]} />
             ))}
@@ -393,49 +458,70 @@ export function ReportDocument({
           </View>
         </View>
 
+        <Text style={styles.sectionLabel}>{strings.tableCampaign.toUpperCase()}</Text>
+
         <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.th, { flex: 2.6 }]}>{strings.tableCampaign.toUpperCase()}</Text>
-            <Text style={[styles.th, { flex: 1.4, textAlign: "right" }]}>
+          {/* fixed so the header repeats if many campaigns push the table onto
+              a further page — a headerless continuation is unreadable. */}
+          <View style={styles.tableHeader} fixed>
+            <Text style={[styles.th, { flex: 2.4 }]}>{strings.tableCampaign.toUpperCase()}</Text>
+            <Text style={[styles.th, { flex: 1.2, textAlign: "right" }]}>
               {strings.tableSpend.toUpperCase()}
             </Text>
-            <Text style={[styles.th, { flex: 1.4, textAlign: "right" }]}>
+            <Text style={[styles.th, { flex: 1.2, textAlign: "right" }]}>
               {strings.tableImpressions.toUpperCase()}
             </Text>
-            <Text style={[styles.th, { flex: 1, textAlign: "right" }]}>
+            <Text style={[styles.th, { flex: 0.9, textAlign: "right" }]}>
               {strings.tableClicks.toUpperCase()}
             </Text>
-            <Text style={[styles.th, { flex: 1.6, textAlign: "right" }]}>
+            <Text style={[styles.th, { flex: 0.9, textAlign: "right" }]}>
+              {strings.tableCtr.toUpperCase()}
+            </Text>
+            <Text style={[styles.th, { flex: 1, textAlign: "right" }]}>
+              {strings.tableCpc.toUpperCase()}
+            </Text>
+            <Text style={[styles.th, { flex: 1.3, textAlign: "right" }]}>
               {strings.tableConversions.toUpperCase()}
             </Text>
-            <Text style={[styles.th, { flex: 0.9, textAlign: "right" }]}>
+            <Text style={[styles.th, { flex: 0.8, textAlign: "right" }]}>
               {strings.tableShare.toUpperCase()}
             </Text>
           </View>
 
-          {campaigns.map((campaign) => (
-            <View key={campaign.campaignId} style={styles.tableRow}>
-              <Text style={[styles.td, { flex: 2.6 }]}>{campaign.campaignName}</Text>
-              <Text style={[styles.td, { flex: 1.4, textAlign: "right" }]}>
-                {formatCurrencyCents(campaign.spendCents, locale, currency)}
-              </Text>
-              <Text style={[styles.td, { flex: 1.4, textAlign: "right" }]}>
-                {formatCompact(campaign.impressions, locale)}
-              </Text>
-              <Text style={[styles.td, { flex: 1, textAlign: "right" }]}>
-                {formatCompact(campaign.clicks, locale)}
-              </Text>
-              <Text style={[styles.td, { flex: 1.6, textAlign: "right" }]}>
-                {formatNumber(campaign.conversions, locale)}
-              </Text>
-              <Text style={[styles.td, { flex: 0.9, textAlign: "right" }]}>
-                {formatShare(campaign.share, locale)}
-              </Text>
-            </View>
-          ))}
+          {campaigns.map((campaign) => {
+            const perCampaign = computeDerived(campaign);
+            return (
+              <View key={campaign.campaignId} style={styles.tableRow} wrap={false}>
+                <Text style={[styles.td, { flex: 2.4 }]}>{campaign.campaignName}</Text>
+                <Text style={[styles.td, { flex: 1.2, textAlign: "right" }]}>
+                  {formatCurrencyCents(campaign.spendCents, locale, currency)}
+                </Text>
+                <Text style={[styles.td, { flex: 1.2, textAlign: "right" }]}>
+                  {formatCompact(campaign.impressions, locale)}
+                </Text>
+                <Text style={[styles.td, { flex: 0.9, textAlign: "right" }]}>
+                  {formatCompact(campaign.clicks, locale)}
+                </Text>
+                <Text style={[styles.td, { flex: 0.9, textAlign: "right" }]}>
+                  {perCampaign.ctr === null ? dash : formatRate(perCampaign.ctr, locale)}
+                </Text>
+                <Text style={[styles.td, { flex: 1, textAlign: "right" }]}>
+                  {perCampaign.cpcCents === null
+                    ? dash
+                    : formatCurrencyCents(perCampaign.cpcCents, locale, currency)}
+                </Text>
+                <Text style={[styles.td, { flex: 1.3, textAlign: "right" }]}>
+                  {formatNumber(campaign.conversions, locale)}
+                </Text>
+                <Text style={[styles.td, { flex: 0.8, textAlign: "right" }]}>
+                  {formatShare(campaign.share, locale)}
+                </Text>
+              </View>
+            );
+          })}
         </View>
 
-        <PageFooter label={footerLabel} page={`${strings.page} 4`} />
+        <PageFooter label={footerLabel} page={strings.page} />
       </Page>
     </Document>
   );

@@ -5,6 +5,7 @@ import {
   formatDateRange,
   formatDayShort,
   formatDelta,
+  formatRate,
   formatShare,
   normalizeSpaces,
 } from "@/lib/metrics/format";
@@ -84,5 +85,26 @@ describe("formatDateRange", () => {
   it("reads the dates in UTC, so a timezone cannot shift the boundary", () => {
     // 2026-08-07 must stay the 7th regardless of where it is rendered
     expect(formatDayShort("2026-08-07", "en")).toContain("7");
+  });
+});
+
+describe("formatRate", () => {
+  it("keeps two decimals, where a CTR lives", () => {
+    // 2.1% and 2.14% are meaningfully different campaigns; one decimal hides it.
+    expect(formatRate(0.0214, "en")).toContain("2.14");
+  });
+
+  it("follows the locale's decimal separator", () => {
+    expect(formatRate(0.0214, "fr")).toContain("2,14");
+  });
+
+  it("renders an exact zero rate rather than blanking it", () => {
+    expect(formatRate(0, "en")).toContain("0.00");
+  });
+
+  it("emits no space a build could disagree about", () => {
+    // Node and Chrome ship different ICU data; a raw space here caused a
+    // hydration mismatch before.
+    expect(formatRate(0.0214, "fr")).not.toMatch(/[\u0020\u2009\u202F]/);
   });
 });

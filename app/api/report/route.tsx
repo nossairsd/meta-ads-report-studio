@@ -120,6 +120,15 @@ export async function POST(request: Request) {
     tableClicks: t("tableClicks"),
     tableConversions: t("tableConversions"),
     tableShare: t("tableShare"),
+    tableCtr: t("tableCtr"),
+    tableCpc: t("tableCpc"),
+    derived: {
+      ctr: t("derivedCtr"),
+      cpc: t("derivedCpc"),
+      cpm: t("derivedCpm"),
+      cpa: t("derivedCpa"),
+    },
+    notAvailable: t("notAvailable"),
   };
 
   const buffer = await renderToBuffer(
