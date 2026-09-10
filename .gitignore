@@ -49,3 +49,6 @@ AGENTS.md
 # Prisma generates the client as source into the project (v7 behaviour).
 # It is rebuilt by `prisma generate`, so it is a build artefact, not source.
 /generated/prisma
+
+# Scratch files served from public/ during debugging (PDF renders, probes).
+public/_*
