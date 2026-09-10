@@ -72,7 +72,14 @@
     "tableImpressions": "Impressions",
     "tableClicks": "Clics",
     "tableConversions": "Conversions",
-    "tableShare": "Part"
+    "tableShare": "Part",
+    "tableCtr": "CTR",
+    "tableCpc": "CPC",
+    "notAvailable": "—",
+    "derivedCtr": "Taux de clic",
+    "derivedCpc": "Coût par clic",
+    "derivedCpm": "Coût pour 1 000",
+    "derivedCpa": "Coût par conversion"
   },
   "Dashboard": {
     "demoBadge": "Données de démonstration",
@@ -140,7 +147,17 @@
     },
     "adAccountLabel": "Compte publicitaire analysé",
     "noAdAccount": "Aucun compte publicitaire",
-    "switchFailed": "Ce compte n'a pas pu être sélectionné. Réessayez."
+    "switchFailed": "Ce compte n'a pas pu être sélectionné. Réessayez.",
+    "derived": {
+      "ctr": "Taux de clic",
+      "ctrHint": "Clics divisés par impressions",
+      "cpc": "Coût par clic",
+      "cpcHint": "Dépenses divisées par les clics",
+      "cpm": "Coût pour 1 000",
+      "cpmHint": "Dépenses pour mille impressions",
+      "cpa": "Coût par conversion",
+      "cpaHint": "Dépenses divisées par les conversions"
+    }
   },
   "Landing": {
     "nav": {

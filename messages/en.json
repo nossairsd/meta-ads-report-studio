@@ -72,7 +72,14 @@
     "tableImpressions": "Impressions",
     "tableClicks": "Clicks",
     "tableConversions": "Conversions",
-    "tableShare": "Share"
+    "tableShare": "Share",
+    "tableCtr": "CTR",
+    "tableCpc": "CPC",
+    "notAvailable": "—",
+    "derivedCtr": "Click-through rate",
+    "derivedCpc": "Cost per click",
+    "derivedCpm": "Cost per 1,000",
+    "derivedCpa": "Cost per conversion"
   },
   "Dashboard": {
     "demoBadge": "Sample data",
@@ -140,7 +147,17 @@
     },
     "adAccountLabel": "Ad account to report on",
     "noAdAccount": "No ad account",
-    "switchFailed": "That account could not be selected. Try again."
+    "switchFailed": "That account could not be selected. Try again.",
+    "derived": {
+      "ctr": "Click-through rate",
+      "ctrHint": "Clicks divided by impressions",
+      "cpc": "Cost per click",
+      "cpcHint": "Spend divided by clicks",
+      "cpm": "Cost per 1,000",
+      "cpmHint": "Spend per thousand impressions",
+      "cpa": "Cost per conversion",
+      "cpaHint": "Spend divided by conversions"
+    }
   },
   "Landing": {
     "nav": {

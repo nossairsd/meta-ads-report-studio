@@ -10,6 +10,7 @@ import { KpiCard } from "@/components/dashboard/kpi-card";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import { CampaignBreakdown } from "@/components/dashboard/campaign-breakdown";
 import { DashboardEmptyState } from "@/components/dashboard/states";
+import { RatioStrip } from "@/components/dashboard/ratio-strip";
 import { buildDashboardData } from "@/lib/metrics/aggregate";
 import {
   formatCompact,
@@ -172,6 +173,8 @@ export function DashboardView({
               />
             ))}
           </div>
+
+          <RatioStrip totals={data.totals} currency={account.currency} locale={locale} />
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
             <section className="rounded-2xl border border-black/[0.07] bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] lg:col-span-3">

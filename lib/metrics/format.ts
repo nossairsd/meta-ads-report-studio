@@ -73,6 +73,23 @@ export function formatShare(share: number, locale: string): string {
   );
 }
 
+/**
+ * A rate such as a click-through or conversion rate.
+ *
+ * Two decimals rather than the one `formatShare` uses: a CTR is typically
+ * under 3%, where rounding to a tenth of a point throws away most of the
+ * difference between a good campaign and a poor one.
+ */
+export function formatRate(rate: number, locale: string): string {
+  return normalizeSpaces(
+    new Intl.NumberFormat(locale, {
+      style: "percent",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(rate)
+  );
+}
+
 /** "10 mars" / "10 Mar" — used for chart ticks, so no year. */
 export function formatDayShort(isoDate: string, locale: string): string {
   return normalizeSpaces(
