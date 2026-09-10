@@ -33,7 +33,13 @@ describe("route protection", () => {
   it("turns an anonymous visitor away from the dashboard", () => {
     const response = proxy(request("/en/dashboard"));
     expect(isRedirect(response)).toBe(true);
-    expect(location(response).pathname).toBe("/");
+    expect(location(response).pathname).toBe("/en");
+  });
+
+  it("returns the visitor to the language they were already in", () => {
+    // Sending them to "/" would cost a second redirect into the default
+    // locale, and briefly show the wrong language.
+    expect(location(proxy(request("/fr/dashboard"))).pathname).toBe("/fr");
   });
 
   it("protects every locale, not only the default one", () => {
@@ -78,5 +84,28 @@ describe("route protection", () => {
 
   it("still guards the dashboard when no locale prefix is present", () => {
     expect(isRedirect(proxy(request("/dashboard")))).toBe(true);
+  });
+});
+
+describe("matcher", () => {
+  it("runs on ordinary pages, not only the root", async () => {
+    // `"\."` collapses to `"."` in a JavaScript string, which would turn the
+    // exclusion into `.*..*` and match every non-empty path — leaving the
+    // proxy running on "/" alone. That regression shipped once; this pins it.
+    const { config } = await import("@/proxy");
+    const matcher = new RegExp(`^${config.matcher[0]}$`);
+
+    for (const path of ["/", "/demo", "/en", "/en/demo", "/fr/dashboard"]) {
+      expect(matcher.test(path), `${path} should be handled`).toBe(true);
+    }
+  });
+
+  it("stays out of API routes, build assets and files", () => {
+    // Rewriting these would break the OAuth callback and every static asset.
+    const matcher = new RegExp(`^/((?!api|_next|_vercel|.*\..*).*)$`);
+
+    for (const path of ["/api/auth/callback/facebook", "/_next/static/x.js", "/logo.png"]) {
+      expect(matcher.test(path), `${path} should be skipped`).toBe(false);
+    }
   });
 });

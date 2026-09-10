@@ -129,3 +129,62 @@ export async function exchangeForLongLivedToken({
 export function appSecretProof(accessToken: string, appSecret: string): string {
   return createHmac("sha256", appSecret).update(accessToken).digest("hex");
 }
+
+const permissionsSchema = z.object({
+  data: z.array(
+    z.object({
+      permission: z.string(),
+      status: z.string(),
+    })
+  ),
+});
+
+/**
+ * The permissions Meta actually granted, as opposed to the ones we asked for.
+ *
+ * Meta's token response carries no `scope`, so the Account row would otherwise
+ * record nothing about what this connection can do. That matters because the
+ * consent screen lets a user switch `ads_read` off while still completing
+ * sign-in: without this, that choice only surfaces later as a permission error
+ * on the dashboard, with nothing to explain it.
+ *
+ * Returns a comma-separated list, matching the shape `Account.scope` holds for
+ * providers that do send one.
+ */
+export async function fetchGrantedScopes({
+  accessToken,
+  fetchImpl = fetch,
+  timeoutMs = REQUEST_TIMEOUT_MS,
+}: {
+  accessToken: string;
+  fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+}): Promise<string | null> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetchImpl(`${GRAPH_BASE_URL}/me/permissions`, {
+      headers: { Authorization: `Bearer ${accessToken}`, Accept: "application/json" },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) return null;
+
+    const parsed = permissionsSchema.safeParse(await response.json());
+    if (!parsed.success) return null;
+
+    const granted = parsed.data.data
+      .filter((entry) => entry.status === "granted")
+      .map((entry) => entry.permission)
+      .sort();
+
+    return granted.length > 0 ? granted.join(",") : null;
+  } catch {
+    // Recording the scope is a nicety, not a precondition for signing in.
+    // Failing here must never cost the user their connection.
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}

@@ -1,5 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
-import { appSecretProof, exchangeForLongLivedToken } from "@/lib/meta/token";
+import {
+  appSecretProof,
+  exchangeForLongLivedToken,
+  fetchGrantedScopes,
+} from "@/lib/meta/token";
 import { MetaApiError } from "@/lib/meta/errors";
 
 /** A fresh Response per call: a body can only be read once, so a single shared
@@ -139,5 +143,63 @@ describe("appSecretProof", () => {
 
   it("changes when the secret changes", () => {
     expect(appSecretProof("token", "secret")).not.toBe(appSecretProof("token", "other"));
+  });
+});
+
+describe("fetchGrantedScopes", () => {
+  const permissions = (entries: Array<[string, string]>) =>
+    respondWith({ data: entries.map(([permission, status]) => ({ permission, status })) });
+
+  it("returns only the permissions Meta actually granted", async () => {
+    const scopes = await fetchGrantedScopes({
+      accessToken: "t",
+      fetchImpl: permissions([
+        ["public_profile", "granted"],
+        ["ads_read", "granted"],
+        ["email", "declined"],
+      ]),
+    });
+
+    expect(scopes).toBe("ads_read,public_profile");
+  });
+
+  it("reports a declined ads permission by leaving it out", () => {
+    // The consent screen lets someone sign in having switched ads_read off.
+    // Recording what we asked for rather than what was granted would hide it.
+    return fetchGrantedScopes({
+      accessToken: "t",
+      fetchImpl: permissions([
+        ["public_profile", "granted"],
+        ["ads_read", "declined"],
+      ]),
+    }).then((scopes) => expect(scopes).toBe("public_profile"));
+  });
+
+  it("sends the token as a header, never in the URL", async () => {
+    const fetchImpl = permissions([["public_profile", "granted"]]);
+    await fetchGrantedScopes({ accessToken: "secret-token", fetchImpl });
+
+    const [url, init] = fetchImpl.mock.calls[0];
+    expect(String(url)).not.toContain("secret-token");
+    expect((init?.headers as Record<string, string>).Authorization).toContain("secret-token");
+  });
+
+  it("returns null rather than failing the sign-in when Meta refuses", async () => {
+    // Recording the scope is a nicety; it must never cost a working connection.
+    const fetchImpl = vi.fn(async () => new Response("{}", { status: 403 }));
+    await expect(fetchGrantedScopes({ accessToken: "t", fetchImpl })).resolves.toBeNull();
+  });
+
+  it("returns null when the request fails outright", async () => {
+    const fetchImpl = vi.fn(async () => {
+      throw new TypeError("fetch failed");
+    });
+    await expect(fetchGrantedScopes({ accessToken: "t", fetchImpl })).resolves.toBeNull();
+  });
+
+  it("returns null when nothing was granted", async () => {
+    await expect(
+      fetchGrantedScopes({ accessToken: "t", fetchImpl: permissions([["ads_read", "declined"]]) })
+    ).resolves.toBeNull();
   });
 });

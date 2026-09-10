@@ -7,7 +7,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/db";
 import { encryptToken } from "@/lib/auth/crypto";
 import { withTokenEncryption } from "@/lib/auth/encrypted-adapter";
-import { exchangeForLongLivedToken } from "@/lib/meta/token";
+import { exchangeForLongLivedToken, fetchGrantedScopes } from "@/lib/meta/token";
 import { API_VERSION } from "@/lib/meta/client";
 
 /**
@@ -102,9 +102,18 @@ export const authConfig: NextAuthConfig = {
         // Auth.js types `account` as read-only, but this object is what the
         // adapter goes on to persist for a first-time user, and amending it
         // here is the documented way to change what gets stored.
-        const pending = account as { access_token?: string; expires_at?: number };
+        const pending = account as {
+          access_token?: string;
+          expires_at?: number;
+          scope?: string;
+        };
         pending.access_token = longLived.accessToken;
         if (longLived.expiresAt !== null) pending.expires_at = longLived.expiresAt;
+
+        // Meta sends no `scope` with the token, so ask what was actually
+        // granted. A user can complete sign-in having switched ads_read off.
+        const granted = await fetchGrantedScopes({ accessToken: longLived.accessToken });
+        if (granted) pending.scope = granted;
 
         // For a returning user `linkAccount` is never called, so the row has to
         // be updated directly — encrypted here, since it bypasses the wrapper.

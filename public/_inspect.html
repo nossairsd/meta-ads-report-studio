@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Inspection PDF</title>
+<style>
+  body { margin: 0; background: #6b7280; font-family: system-ui; }
+  #out { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; }
+  .cell { display: grid; }
+  .page { margin: 0 auto 14px; display: block; box-shadow: 0 2px 12px rgba(0,0,0,.4); background: #fff; }
+  .label { color: #fff; text-align: center; font-size: 12px; padding: 6px 0 2px; }
+</style>
+<div id="out"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs" type="module"></script>
+<script type="module">
+  const pdfjs = await import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs");
+  pdfjs.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs";
+  const doc = await pdfjs.getDocument("/_inspect.pdf").promise;
+  const out = document.getElementById("out");
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const viewport = page.getViewport({ scale: 0.52 });
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = "page " + i + " / " + doc.numPages;
+    cell.appendChild(label);
+    const canvas = document.createElement("canvas");
+    canvas.className = "page";
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    cell.appendChild(canvas);
+    out.appendChild(cell);
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+  }
+  document.title = "PDF pret " + doc.numPages + " pages";
+</script>
