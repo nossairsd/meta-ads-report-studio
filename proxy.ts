@@ -15,6 +15,11 @@ const PROTECTED_PATHS = ["/dashboard"];
  */
 const SESSION_COOKIES = ["authjs.session-token", "__Secure-authjs.session-token"];
 
+function localeOf(pathname: string): string | null {
+  const [, maybeLocale] = pathname.split("/");
+  return (routing.locales as readonly string[]).includes(maybeLocale) ? maybeLocale : null;
+}
+
 function pathWithoutLocale(pathname: string): string {
   const [, maybeLocale, ...rest] = pathname.split("/");
   return (routing.locales as readonly string[]).includes(maybeLocale)
@@ -40,7 +45,9 @@ export function proxy(request: NextRequest) {
 
     if (!hasSessionCookie) {
       const url = request.nextUrl.clone();
-      url.pathname = "/";
+      // Keep the language the visitor was already in; falling back to "/"
+      // would bounce them through a second redirect into the default locale.
+      url.pathname = `/${localeOf(request.nextUrl.pathname) ?? routing.defaultLocale}`;
       // Where the user was heading, so sign-in can return them there instead
       // of dropping them on the home page.
       url.searchParams.set("signin", "required");
@@ -53,5 +60,9 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|.*\..*).*)"],
+  // The backslash before the dot must survive into the string: `"\."` is just
+  // `"."` in JavaScript, which turns the exclusion into `.*..*` — a pattern
+  // matching every non-empty path, so the proxy would only ever run on "/".
+  // A regression test in __tests__/auth/proxy.test.ts pins this.
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };

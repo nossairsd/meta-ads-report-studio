@@ -137,7 +137,10 @@
         "title": "Connexion Meta non configurée",
         "description": "Ce déploiement n'a pas d'identifiants Meta renseignés : aucun compte publicitaire ne peut donc être connecté. La démo fonctionne sans aucune configuration et montre l'interface complète."
       }
-    }
+    },
+    "adAccountLabel": "Compte publicitaire analysé",
+    "noAdAccount": "Aucun compte publicitaire",
+    "switchFailed": "Ce compte n'a pas pu être sélectionné. Réessayez."
   },
   "Landing": {
     "nav": {
@@ -203,6 +206,28 @@
       "step2Description": "Basculez entre 7, 30 et 90 jours. Chaque chiffre est comparé à la période précédente, pour voir une tendance et pas seulement un total.",
       "step3Title": "Téléchargez le rapport",
       "step3Description": "Un PDF de quatre pages — couverture, KPI, évolution des dépenses et répartition par campagne — prêt à envoyer au client sans retouche."
+    },
+    "notice": {
+      "signinRequired": {
+        "title": "Connectez-vous pour ouvrir votre tableau de bord",
+        "body": "Cette page affiche votre propre compte publicitaire : elle nécessite une connexion Meta. La démo, elle, n'en demande aucune."
+      },
+      "Configuration": {
+        "title": "La connexion n'a pas pu aboutir",
+        "body": "Un problème côté serveur a empêché l'authentification. Si cela se reproduit, vérifiez d'abord les identifiants Meta du déploiement."
+      },
+      "AccessDenied": {
+        "title": "L'accès a été refusé",
+        "body": "Meta n'a pas accordé l'autorisation de lire les statistiques publicitaires. Reconnectez-vous en laissant cette permission activée sur l'écran de consentement."
+      },
+      "Verification": {
+        "title": "Ce lien de connexion n'est plus valide",
+        "body": "Il a déjà été utilisé, ou il a expiré. Relancez la connexion."
+      },
+      "Default": {
+        "title": "La connexion ne s'est pas terminée",
+        "body": "L'échange avec Meta a été interrompu. Réessayer suffit généralement."
+      }
     }
   }
 }

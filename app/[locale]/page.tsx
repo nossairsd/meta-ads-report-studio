@@ -4,11 +4,25 @@ import Features from "@/components/landing/features";
 import HowItWorks from "@/components/landing/how-it-works";
 import CtaBand from "@/components/landing/cta-band";
 import Footer from "@/components/landing/footer";
+import { SignInNotice } from "@/components/landing/sign-in-notice";
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ signin?: string; error?: string }>;
+}) {
+  // Auth.js reports failures by redirecting here with a reason, and the proxy
+  // adds one of its own when it turns an anonymous visitor away. Reading them
+  // is what stops a failed sign-in looking like a page that did nothing.
+  const { signin, error } = await searchParams;
+
   return (
     <>
       <Navbar />
+
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <SignInNotice signin={signin} error={error} />
+      </div>
 
       <div className="mx-auto w-full max-w-6xl space-y-24 px-6 md:space-y-32">
         <Hero />

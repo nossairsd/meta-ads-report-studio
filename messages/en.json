@@ -137,7 +137,10 @@
         "title": "Meta connection not configured",
         "description": "This deployment has no Meta credentials set, so no ad account can be connected. The demo works without any configuration and shows the full interface."
       }
-    }
+    },
+    "adAccountLabel": "Ad account to report on",
+    "noAdAccount": "No ad account",
+    "switchFailed": "That account could not be selected. Try again."
   },
   "Landing": {
     "nav": {
@@ -203,6 +206,28 @@
       "step2Description": "Switch between 7, 30 and 90 days. Every figure is compared with the period immediately before it, so you see direction, not just totals.",
       "step3Title": "Download the report",
       "step3Description": "A four-page PDF — cover, KPIs, spend trend and campaign breakdown — ready to send to a client without any clean-up."
+    },
+    "notice": {
+      "signinRequired": {
+        "title": "Sign in to open your dashboard",
+        "body": "That page shows your own ad account, so it needs a Meta connection. The demo needs none."
+      },
+      "Configuration": {
+        "title": "The connection could not be completed",
+        "body": "Something on the server side prevented sign-in. If it keeps happening, the deployment's Meta credentials are the first thing to check."
+      },
+      "AccessDenied": {
+        "title": "Access was declined",
+        "body": "Meta did not grant the permission to read ad statistics. Connect again and leave the ads permission enabled on the consent screen."
+      },
+      "Verification": {
+        "title": "This sign-in link is no longer valid",
+        "body": "It has already been used, or it expired. Start the connection again."
+      },
+      "Default": {
+        "title": "Sign-in did not complete",
+        "body": "The connection to Meta was interrupted. Trying again usually works."
+      }
     }
   }
 }

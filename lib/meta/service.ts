@@ -57,11 +57,18 @@ async function getAccessToken(userId: string): Promise<string> {
 /**
  * Which ad account to report on.
  *
- * One Facebook login can expose several. The user's remembered choice wins;
- * otherwise the first account Meta returns is adopted and recorded, so the
- * dashboard does not silently switch accounts between visits.
+ * One Facebook login can expose several — an agency typically has one per
+ * client, and they can share a name. The user's remembered choice wins; only
+ * when there is none does the first account Meta returns get adopted, and it
+ * is recorded so the dashboard does not silently switch between visits.
+ *
+ * Returns the full list as well, because the user has to be able to change it:
+ * picking for them by arrival order is a default, not a decision.
  */
-async function resolveAdAccount(userId: string, accessToken: string): Promise<AdAccount> {
+async function resolveAdAccount(
+  userId: string,
+  accessToken: string
+): Promise<{ chosen: AdAccount; available: AdAccount[] }> {
   const remembered = await prisma.adAccount.findFirst({
     where: { userId, isDefault: true },
   });
@@ -98,11 +105,13 @@ async function resolveAdAccount(userId: string, accessToken: string): Promise<Ad
     ]);
   }
 
-  return chosen;
+  return { chosen, available };
 }
 
 export type LiveDashboard = {
   account: AdAccount;
+  /** Every ad account this token can read, so the UI can offer a choice. */
+  available: AdAccount[];
   rows: InsightRow[];
   /** Anchor for the period windows, resolved on the server so that the server
    *  and client renders agree. */
@@ -111,12 +120,50 @@ export type LiveDashboard = {
 
 export async function loadLiveDashboard(userId: string): Promise<LiveDashboard> {
   const accessToken = await getAccessToken(userId);
-  const account = await resolveAdAccount(userId, accessToken);
+  const { chosen, available } = await resolveAdAccount(userId, accessToken);
 
   const rows = await fetchInsights(
-    { adAccountId: account.id, period: FETCH_PERIOD },
+    { adAccountId: chosen.id, period: FETCH_PERIOD },
     { accessToken }
   );
 
-  return { account, rows, endDate: toIsoDate(new Date()) };
+  return { account: chosen, available, rows, endDate: toIsoDate(new Date()) };
+}
+
+/**
+ * Records which ad account the user wants reported on.
+ *
+ * The requested id is checked against what this user's own token can actually
+ * read, rather than trusted from the request. Without that check, anyone could
+ * post an arbitrary `act_…` and have the dashboard try to read a stranger's
+ * account — Meta would refuse, but the attempt should never be made in our
+ * name, and the row would be written regardless.
+ */
+export async function selectAdAccount(userId: string, metaId: string): Promise<void> {
+  const accessToken = await getAccessToken(userId);
+  const available = await fetchAdAccounts({ accessToken });
+
+  const chosen = available.find((account) => account.id === metaId);
+  if (!chosen) {
+    throw new NotConnectedError("That ad account is not readable with this connection");
+  }
+
+  await prisma.$transaction([
+    prisma.adAccount.updateMany({
+      where: { userId, isDefault: true },
+      data: { isDefault: false },
+    }),
+    prisma.adAccount.upsert({
+      where: { userId_metaId: { userId, metaId: chosen.id } },
+      create: {
+        userId,
+        metaId: chosen.id,
+        name: chosen.name,
+        currency: chosen.currency,
+        timezone: "UTC",
+        isDefault: true,
+      },
+      update: { name: chosen.name, currency: chosen.currency, isDefault: true },
+    }),
+  ]);
 }
