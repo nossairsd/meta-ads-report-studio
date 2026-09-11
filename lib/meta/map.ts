@@ -1,4 +1,6 @@
-import type { MetaInsight } from "./api-schema";
+import type { MetaCampaign, MetaInsight } from "./api-schema";
+import { toCampaignStatus } from "@/lib/agency/status";
+import type { CampaignMeta } from "@/lib/agency/types";
 import type { InsightRow } from "@/lib/metrics/schema";
 
 /**
@@ -69,11 +71,14 @@ export function extractConversions(actions: MetaInsight["actions"]): number {
  * period the caller actually asked for.
  */
 export function mapInsightToRow(insight: MetaInsight): InsightRow {
+  // An account-level row has no campaign; it stands for the whole account,
+  // which is all the agency overview sums.
+  const campaignId = insight.campaign_id ?? insight.account_id ?? "account";
   return {
     date: insight.date_start,
-    campaignId: insight.campaign_id,
+    campaignId,
     // An unnamed campaign still has to be identifiable in the report.
-    campaignName: insight.campaign_name?.trim() || `#${insight.campaign_id}`,
+    campaignName: insight.campaign_name?.trim() || `#${campaignId}`,
     spendCents: insight.spend ? decimalStringToCents(insight.spend) : 0,
     impressions: toInt(insight.impressions),
     clicks: toInt(insight.clicks),
@@ -83,6 +88,33 @@ export function mapInsightToRow(insight: MetaInsight): InsightRow {
 
 export function mapInsightsToRows(insights: MetaInsight[]): InsightRow[] {
   return insights.map(mapInsightToRow);
+}
+
+/**
+ * The calendar date of a Meta timestamp, in the account's own timezone.
+ *
+ * Meta writes campaign times with the account's offset already applied
+ * ("2026-08-26T23:59:59+0100"), so the date is the first ten characters.
+ * Parsing into a Date would convert to the server's timezone and could move it
+ * by a day.
+ */
+export function metaTimeToDate(time: string | undefined): string | null {
+  return time && /^\d{4}-\d{2}-\d{2}/.test(time) ? time.slice(0, 10) : null;
+}
+
+export function mapCampaign(campaign: MetaCampaign, today: string): CampaignMeta {
+  const endDate = metaTimeToDate(campaign.stop_time);
+  return {
+    id: campaign.id,
+    name: campaign.name?.trim() || `#${campaign.id}`,
+    objective: campaign.objective ?? null,
+    status: toCampaignStatus(campaign.effective_status, endDate, today),
+    // Minor units already — the same "cents" as every other amount here.
+    dailyBudgetCents: campaign.daily_budget ? toInt(campaign.daily_budget) : null,
+    lifetimeBudgetCents: campaign.lifetime_budget ? toInt(campaign.lifetime_budget) : null,
+    startDate: metaTimeToDate(campaign.start_time),
+    endDate,
+  };
 }
 
 /** "act_123456" is what the API returns and what its paths expect; the bare

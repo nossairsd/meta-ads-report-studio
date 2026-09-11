@@ -79,7 +79,8 @@
     "derivedCtr": "Taux de clic",
     "derivedCpc": "Coût par clic",
     "derivedCpm": "Coût pour 1 000",
-    "derivedCpa": "Coût par conversion"
+    "derivedCpa": "Coût par conversion",
+    "preparedBy": "Préparé par"
   },
   "Dashboard": {
     "demoBadge": "Données de démonstration",
@@ -245,6 +246,144 @@
         "title": "La connexion ne s'est pas terminée",
         "body": "L'échange avec Meta a été interrompu. Réessayer suffit généralement."
       }
+    }
+  },
+  "Agency": {
+    "nav": {
+      "overview": "Vue d'ensemble",
+      "clients": "Clients",
+      "organize": "Organisation des clients",
+      "agency": "Votre agence",
+      "openMenu": "Ouvrir le menu",
+      "closeMenu": "Fermer le menu",
+      "noClients": "Aucun client pour l'instant"
+    },
+    "overview": {
+      "title": "Vue d'ensemble",
+      "subtitle": "{count, plural, one {# client} other {# clients}} · {range}",
+      "totalSpend": "Dépenses totales",
+      "conversions": "Conversions",
+      "activeClients": "Clients actifs",
+      "activeOf": "sur {total}",
+      "toWatch": "À surveiller",
+      "toWatchHint": "Voir les alertes",
+      "noBaseline": "pas de référence",
+      "search": "Rechercher un client",
+      "filter": {
+        "all": "Tous",
+        "watch": "À surveiller",
+        "active": "Actifs",
+        "paused": "En pause"
+      },
+      "sortLabel": "Trier",
+      "sort": {
+        "priority": "Priorité",
+        "name": "Nom",
+        "change": "Variation des dépenses",
+        "conversions": "Conversions"
+      },
+      "columns": {
+        "client": "Client",
+        "spend": "Dépenses",
+        "trend": "Tendance",
+        "conversions": "Conversions",
+        "cpa": "Coût / conv.",
+        "alerts": "Alertes"
+      },
+      "accounts": "{count, plural, one {# compte} other {# comptes}}",
+      "noMatch": "Aucun client ne correspond à ces critères.",
+      "noAlerts": "Rien à signaler",
+      "unassigned": "{count, plural, one {# compte publicitaire n'est rattaché à aucun client.} other {# comptes publicitaires ne sont rattachés à aucun client.}}",
+      "unassignedAction": "Les classer",
+      "failedAccounts": "{count, plural, one {# compte illisible} other {# comptes illisibles}}",
+      "noData": "Aucune dépense"
+    },
+    "activity": {
+      "active": "Actif",
+      "paused": "En pause",
+      "inactive": "Inactif"
+    },
+    "alert": {
+      "accountStatus": {
+        "disabled": "Compte désactivé",
+        "payment_issue": "Problème de paiement",
+        "under_review": "Compte en vérification"
+      },
+      "no_conversions": "0 conversion en 7 jours",
+      "cpa_up": "Coût / conv. {change}",
+      "spend_up": "Dépenses {change}",
+      "spend_down": "Dépenses {change}"
+    },
+    "accountStatus": {
+      "active": "Actif",
+      "disabled": "Désactivé",
+      "payment_issue": "Problème de paiement",
+      "under_review": "En vérification",
+      "closed": "Fermé",
+      "unknown": "Statut inconnu"
+    },
+    "client": {
+      "breadcrumb": "Clients",
+      "accounts": "Comptes publicitaires",
+      "unreadable": "Ce compte n'est plus lisible avec votre connexion Meta. Vérifiez l'accès dans les paramètres de l'entreprise, puis reconnectez-vous.",
+      "campaignsTitle": "Campagnes",
+      "campaignsSubtitle": "Statut réel, budget et performances sur la période",
+      "showInactive": "{count, plural, one {Afficher # campagne sans activité} other {Afficher les # campagnes sans activité}}",
+      "hideInactive": "Masquer les campagnes sans activité",
+      "columns": {
+        "campaign": "Campagne",
+        "status": "Statut",
+        "budget": "Budget / jour",
+        "spend": "Dépenses",
+        "share": "Part",
+        "ctr": "CTR",
+        "cpc": "CPC",
+        "conversions": "Conv.",
+        "cpa": "Coût / conv."
+      },
+      "noCampaigns": "Aucune campagne sur cette période.",
+      "lifetimeBudget": "{amount} au total",
+      "endedOn": "Terminée le {date}",
+      "since": "Depuis le {date}",
+      "sortBy": "Trier par {column}"
+    },
+    "campaignStatus": {
+      "active": "Active",
+      "paused": "En pause",
+      "ended": "Terminée",
+      "in_review": "En examen",
+      "rejected": "Refusée",
+      "with_issues": "À corriger",
+      "archived": "Archivée"
+    },
+    "objective": {
+      "sales": "Ventes",
+      "leads": "Prospects",
+      "traffic": "Trafic",
+      "awareness": "Notoriété",
+      "engagement": "Interactions",
+      "app": "Application",
+      "other": "Autre objectif"
+    },
+    "setup": {
+      "title": "Organisation des clients",
+      "intro": "Rattachez chaque compte publicitaire à un client. Les comptes portant le même nom de client sont réunis ; un compte masqué n'est jamais lu.",
+      "agencyLabel": "Nom de votre agence",
+      "agencyHint": "Affiché sur les rapports PDF, sous la forme « Préparé par … ». Facultatif.",
+      "agencyPlaceholder": "Ex. Atelier Nova",
+      "accountsTitle": "Comptes publicitaires",
+      "clientLabel": "Client",
+      "hide": "Masquer",
+      "suggested": "Suggestion",
+      "preview": "{count, plural, =0 {Aucun client} one {# client} other {# clients}} après enregistrement",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "error": "L'enregistrement a échoué. Réessayez dans un instant.",
+      "empty": "Aucun compte publicitaire n'est lisible avec cette connexion."
+    },
+    "demo": {
+      "banner": "Démo : une agence fictive et six clients. Connectez votre compte Meta pour voir les vôtres.",
+      "connect": "Essayer avec mes comptes"
     }
   }
 }

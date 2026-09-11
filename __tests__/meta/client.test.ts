@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { fetchAdAccounts, fetchInsights } from "@/lib/meta/client";
+import { fetchAdAccounts, fetchCampaigns, fetchInsights } from "@/lib/meta/client";
 import { MetaApiError } from "@/lib/meta/errors";
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -8,6 +8,8 @@ function jsonResponse(body: unknown, status = 200): Response {
     headers: { "Content-Type": "application/json" },
   });
 }
+
+const RANGE = { adAccountId: "123", since: "2026-03-01", until: "2026-03-10" };
 
 const insight = (overrides: Record<string, unknown> = {}) => ({
   date_start: "2026-03-10",
@@ -26,7 +28,7 @@ describe("fetchInsights", () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ data: [insight()] }));
 
     const rows = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "token", fetchImpl }
     );
 
@@ -46,7 +48,7 @@ describe("fetchInsights", () => {
   it("sends the token as a Bearer header, never in the URL", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ data: [] }));
 
-    await fetchInsights({ adAccountId: "123", period: 7 }, { accessToken: "secret", fetchImpl });
+    await fetchInsights(RANGE, { accessToken: "secret", fetchImpl });
 
     const [url, init] = fetchImpl.mock.calls[0];
     // A token in the query string leaks into access logs and Referer headers
@@ -57,13 +59,29 @@ describe("fetchInsights", () => {
   it("requests a daily breakdown at campaign level", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ data: [] }));
 
-    await fetchInsights({ adAccountId: "123", period: 90 }, { accessToken: "t", fetchImpl });
+    await fetchInsights(RANGE, { accessToken: "t", fetchImpl });
 
-    const url = String(fetchImpl.mock.calls[0][0]);
-    expect(url).toContain("act_123/insights");
-    expect(url).toContain("time_increment=1");
-    expect(url).toContain("level=campaign");
-    expect(url).toContain("date_preset=last_90d");
+    const url = new URL(String(fetchImpl.mock.calls[0][0]));
+    expect(url.pathname).toContain("act_123/insights");
+    expect(url.searchParams.get("time_increment")).toBe("1");
+    expect(url.searchParams.get("level")).toBe("campaign");
+    expect(JSON.parse(url.searchParams.get("time_range")!)).toEqual({
+      since: "2026-03-01",
+      until: "2026-03-10",
+    });
+  });
+
+  it("maps account-level rows, which carry no campaign, onto the account", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      jsonResponse({ data: [insight({ campaign_id: undefined, campaign_name: undefined, account_id: "123" })] })
+    );
+
+    const rows = await fetchInsights({ ...RANGE, level: "account" }, { accessToken: "t", fetchImpl });
+
+    const url = new URL(String(fetchImpl.mock.calls[0][0]));
+    expect(url.searchParams.get("level")).toBe("account");
+    expect(url.searchParams.get("fields")).not.toContain("campaign");
+    expect(rows[0]).toMatchObject({ campaignId: "123", spendCents: 1000 });
   });
 
   it("follows pagination until Meta stops offering a next page", async () => {
@@ -78,7 +96,7 @@ describe("fetchInsights", () => {
       .mockResolvedValueOnce(jsonResponse({ data: [insight({ campaign_id: "c2" })] }));
 
     const rows = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl }
     );
 
@@ -95,7 +113,7 @@ describe("fetchInsights", () => {
       })
     );
 
-    await fetchInsights({ adAccountId: "123", period: 7 }, { accessToken: "t", fetchImpl });
+    await fetchInsights(RANGE, { accessToken: "t", fetchImpl });
 
     // Bounded by MAX_PAGES instead of hanging until the function times out
     expect(fetchImpl.mock.calls.length).toBeLessThanOrEqual(20);
@@ -119,7 +137,7 @@ describe("fetchInsights", () => {
     );
 
     const error = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl }
     ).catch((e) => e);
 
@@ -139,7 +157,7 @@ describe("fetchInsights", () => {
     );
 
     const error = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl }
     ).catch((e) => e);
 
@@ -154,7 +172,7 @@ describe("fetchInsights", () => {
     );
 
     const error = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl }
     ).catch((e) => e);
 
@@ -166,7 +184,7 @@ describe("fetchInsights", () => {
     const fetchImpl = vi.fn().mockRejectedValue(new TypeError("fetch failed"));
 
     const error = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl }
     ).catch((e) => e);
 
@@ -187,7 +205,7 @@ describe("fetchInsights", () => {
     });
 
     const error = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl, timeoutMs: 20 }
     ).catch((e) => e);
 
@@ -202,7 +220,7 @@ describe("fetchInsights", () => {
       .mockResolvedValue(jsonResponse({ data: [{ ...insight(), spend: 12.34 }] }));
 
     const error = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl }
     ).catch((e) => e);
 
@@ -217,7 +235,7 @@ describe("fetchInsights", () => {
       .mockResolvedValue(new Response("<html>502 Bad Gateway</html>", { status: 502 }));
 
     const error = await fetchInsights(
-      { adAccountId: "123", period: 7 },
+      RANGE,
       { accessToken: "t", fetchImpl }
     ).catch((e) => e);
 
@@ -226,11 +244,17 @@ describe("fetchInsights", () => {
 });
 
 describe("fetchAdAccounts", () => {
-  it("normalises names and defaults a missing currency", async () => {
+  it("normalises names and defaults what Meta leaves out", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(
       jsonResponse({
         data: [
-          { id: "act_1", name: "  Dupont & Co  ", currency: "EUR" },
+          {
+            id: "act_1",
+            name: "  Dupont & Co  ",
+            currency: "EUR",
+            account_status: 1,
+            timezone_name: "Africa/Casablanca",
+          },
           { id: "act_2" },
         ],
       })
@@ -239,8 +263,67 @@ describe("fetchAdAccounts", () => {
     const accounts = await fetchAdAccounts({ accessToken: "t", fetchImpl });
 
     expect(accounts).toEqual([
-      { id: "act_1", name: "Dupont & Co", currency: "EUR" },
-      { id: "act_2", name: "act_2", currency: "EUR" },
+      { id: "act_1", name: "Dupont & Co", currency: "EUR", timezone: "Africa/Casablanca", status: "active" },
+      { id: "act_2", name: "act_2", currency: "EUR", timezone: "UTC", status: "unknown" },
+    ]);
+  });
+
+  it("asks only for fields ads_read can see", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ data: [] }));
+    await fetchAdAccounts({ accessToken: "t", fetchImpl });
+
+    const fields = new URL(String(fetchImpl.mock.calls[0][0])).searchParams.get("fields");
+    // `business` would need business_management, which the app does not request.
+    expect(fields).toBe("name,currency,account_status,timezone_name");
+  });
+});
+
+describe("fetchCampaigns", () => {
+  it("reads budgets, schedule and a status that respects the end date", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      jsonResponse({
+        data: [
+          {
+            id: "c1",
+            name: "Rentrée",
+            objective: "OUTCOME_SALES",
+            effective_status: "ACTIVE",
+            daily_budget: "5000",
+            start_time: "2026-08-01T10:00:00+0100",
+            stop_time: "2026-08-26T23:59:59+0100",
+          },
+          { id: "c2", effective_status: "PAUSED" },
+        ],
+      })
+    );
+
+    const campaigns = await fetchCampaigns(
+      { adAccountId: "123", today: "2026-09-10" },
+      { accessToken: "t", fetchImpl }
+    );
+
+    expect(String(fetchImpl.mock.calls[0][0])).toContain("act_123/campaigns");
+    expect(campaigns).toEqual([
+      {
+        id: "c1",
+        name: "Rentrée",
+        objective: "OUTCOME_SALES",
+        status: "ended",
+        dailyBudgetCents: 5000,
+        lifetimeBudgetCents: null,
+        startDate: "2026-08-01",
+        endDate: "2026-08-26",
+      },
+      {
+        id: "c2",
+        name: "#c2",
+        objective: null,
+        status: "paused",
+        dailyBudgetCents: null,
+        lifetimeBudgetCents: null,
+        startDate: null,
+        endDate: null,
+      },
     ]);
   });
 });

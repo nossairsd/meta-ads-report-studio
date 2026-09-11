@@ -24,17 +24,23 @@ function mulberry32(seed: number) {
   };
 }
 
-type CampaignProfile = {
+export type CampaignProfile = {
   id: string;
   name: string;
   /** Average daily spend in cents. */
   dailySpendCents: number;
-  /** Impressions bought per euro — cheap awareness vs expensive retargeting. */
+  /** Impressions bought per currency unit — cheap awareness vs expensive retargeting. */
   impressionsPerEuro: number;
   clickRate: number;
   conversionRate: number;
   /** Multiplies spend across the window: >1 ramps up, <1 winds down. */
   trend: number;
+  /** Days before the end date that delivery began; absent means before the window. */
+  startsDaysAgo?: number;
+  /** Days before the end date that delivery stopped; absent means still running. */
+  endsDaysAgo?: number;
+  /** Multiplies spend over the most recent days — a budget raised last week. */
+  recent?: { days: number; spend: number; conversions: number };
 };
 
 /**
@@ -42,7 +48,7 @@ type CampaignProfile = {
  * and the per-campaign table have something meaningful to show rather than
  * three near-identical slices.
  */
-const CAMPAIGN_PROFILES: CampaignProfile[] = [
+export const CAMPAIGN_PROFILES: CampaignProfile[] = [
   {
     id: "demo-camp-1",
     name: "Soldes d'hiver — Retargeting",
@@ -92,10 +98,12 @@ export function generateDemoRows({
   endDate,
   days = 190,
   seed = 20260101,
+  profiles = CAMPAIGN_PROFILES,
 }: {
   endDate: string;
   days?: number;
   seed?: number;
+  profiles?: CampaignProfile[];
 }): InsightRow[] {
   const random = mulberry32(seed);
   const rows: InsightRow[] = [];
@@ -106,16 +114,30 @@ export function generateDemoRows({
     const progress = (days - 1 - offset) / Math.max(days - 1, 1);
     const weekday = weekdayFactor(date);
 
-    for (const profile of CAMPAIGN_PROFILES) {
-      const trend = 1 + (profile.trend - 1) * progress;
+    for (const profile of profiles) {
+      // Draw the noise before deciding to skip, so every campaign consumes the
+      // same random sequence whatever its schedule — adding an end date to one
+      // profile must not reshuffle the figures of all the others.
       const noise = 0.82 + random() * 0.36;
+      const impressionNoise = 0.9 + random() * 0.2;
+      const clickNoise = 0.85 + random() * 0.3;
+      const conversionNoise = 0.7 + random() * 0.6;
 
-      const spendCents = Math.round(profile.dailySpendCents * trend * weekday * noise);
+      if (profile.startsDaysAgo !== undefined && offset > profile.startsDaysAgo) continue;
+      if (profile.endsDaysAgo !== undefined && offset < profile.endsDaysAgo) continue;
+
+      const isRecent = profile.recent !== undefined && offset < profile.recent.days;
+      const trend = 1 + (profile.trend - 1) * progress;
+      const boost = isRecent ? profile.recent!.spend : 1;
+
+      const spendCents = Math.round(profile.dailySpendCents * trend * weekday * noise * boost);
       const impressions = Math.round(
-        (spendCents / 100) * profile.impressionsPerEuro * (0.9 + random() * 0.2)
+        (spendCents / 100) * profile.impressionsPerEuro * impressionNoise
       );
-      const clicks = Math.round(impressions * profile.clickRate * (0.85 + random() * 0.3));
-      const conversions = Math.round(clicks * profile.conversionRate * (0.7 + random() * 0.6));
+      const clicks = Math.round(impressions * profile.clickRate * clickNoise);
+      const conversionRate =
+        profile.conversionRate * (isRecent ? profile.recent!.conversions : 1);
+      const conversions = Math.round(clicks * conversionRate * conversionNoise);
 
       rows.push({
         date,

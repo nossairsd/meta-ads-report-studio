@@ -2,11 +2,12 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { ReportDocument, type ReportStrings } from "@/lib/report/report-document";
-import { buildDashboardData, toIsoDate } from "@/lib/metrics/aggregate";
-import { DEMO_ACCOUNT, getDemoRows } from "@/lib/metrics/demo-data";
+import { buildDashboardData } from "@/lib/metrics/aggregate";
+import { getDemoClient } from "@/lib/agency/demo";
 import { auth } from "@/lib/auth/config";
 import { isAuthConfigured } from "@/lib/env";
-import { loadLiveDashboard } from "@/lib/meta/service";
+import { loadClient } from "@/lib/agency/service";
+import type { ClientDetail } from "@/lib/agency/types";
 import { periodSchema } from "@/lib/metrics/schema";
 import { routing } from "@/i18n/routing";
 
@@ -26,6 +27,10 @@ const requestSchema = z.object({
   source: z.enum(["demo", "live"]),
   period: periodSchema,
   locale: z.enum(routing.locales),
+  // Identifiers only. A live client is looked up within the signed-in user's
+  // own data, so another agency's id resolves to nothing.
+  clientId: z.string().min(1).max(64).optional(),
+  accountId: z.string().min(1).max(64).optional(),
 });
 
 /** ASCII-safe filename, plus RFC 5987 form for the real one. Campaign and
@@ -52,14 +57,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const { source, period, locale } = parsed.data;
+  const { source, period, locale, clientId, accountId } = parsed.data;
 
   // The client says which dataset it wants, never what is in it. A live report
   // is rebuilt here from the user's own connection, so the figures in the PDF
   // cannot be anything the browser chose to send.
-  let account;
-  let rows;
-  let endDate;
+  let detail: ClientDetail | null;
 
   if (source === "live") {
     // Without credentials auth() throws; a 503 says "this deployment cannot do
@@ -72,12 +75,12 @@ export async function POST(request: Request) {
     if (!session?.user?.id) {
       return Response.json({ error: "unauthorized" }, { status: 401 });
     }
+    if (!clientId) {
+      return Response.json({ error: "invalid_request" }, { status: 400 });
+    }
 
     try {
-      const live = await loadLiveDashboard(session.user.id);
-      account = live.account;
-      rows = live.rows;
-      endDate = live.endDate;
+      detail = await loadClient(session.user.id, clientId, accountId);
     } catch {
       // The dashboard already explains a failed connection in context; here the
       // only useful answer is that the report could not be built. The reason is
@@ -85,11 +88,19 @@ export async function POST(request: Request) {
       return Response.json({ error: "report_unavailable" }, { status: 502 });
     }
   } else {
-    account = DEMO_ACCOUNT;
-    rows = getDemoRows();
-    endDate = toIsoDate(new Date());
+    // The original single-account demo stays the default.
+    detail = getDemoClient(clientId ?? "dupont", accountId);
   }
 
+  if (!detail) {
+    return Response.json({ error: "not_found" }, { status: 404 });
+  }
+  if (detail.selected.failure) {
+    return Response.json({ error: "report_unavailable" }, { status: 502 });
+  }
+
+  const { account, rows, endDate } = detail.selected;
+  const clientName = detail.client.name;
   const data = buildDashboardData({ account, rows, period, endDate });
 
   const t = await getTranslations({ locale, namespace: "Report" });
@@ -98,6 +109,7 @@ export async function POST(request: Request) {
   const strings: ReportStrings = {
     reportTitle: t("title"),
     preparedFor: t("preparedFor"),
+    preparedBy: t("preparedBy"),
     generatedOn: t("generatedOn"),
     page: t("page"),
     summaryTitle: t("summaryTitle"),
@@ -134,13 +146,15 @@ export async function POST(request: Request) {
   const buffer = await renderToBuffer(
     <ReportDocument
       data={data}
+      clientName={clientName}
+      agencyName={detail.agencyName}
       locale={locale}
       strings={strings}
       generatedAt={new Date()}
     />
   );
 
-  const filename = `${account.name} — ${data.rangeStart} → ${data.rangeEnd}.pdf`;
+  const filename = `${clientName} — ${data.rangeStart} → ${data.rangeEnd}.pdf`;
 
   return new Response(new Uint8Array(buffer), {
     headers: {

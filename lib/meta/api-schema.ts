@@ -24,7 +24,9 @@ export const metaActionSchema = z.object({
 export const metaInsightSchema = z.object({
   date_start: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   date_stop: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  campaign_id: z.string().min(1),
+  // Present at campaign level; at account level only account_id is.
+  campaign_id: z.string().min(1).optional(),
+  account_id: z.string().min(1).optional(),
   campaign_name: z.string().optional(),
   // Omitted entirely on days with no delivery, rather than sent as "0".
   spend: numericString.optional(),
@@ -49,10 +51,31 @@ export const metaAdAccountSchema = z.object({
   id: z.string().min(1),
   name: z.string().optional(),
   currency: z.string().optional(),
+  account_status: z.number().optional(),
+  timezone_name: z.string().optional(),
 });
 
 export const metaAdAccountsResponseSchema = z.object({
   data: z.array(metaAdAccountSchema),
+  paging: metaPagingSchema.optional(),
+});
+
+/** Budgets arrive as strings of minor units ("5000" is 50.00); times as ISO
+ *  8601 with the account's own offset ("2026-08-01T10:00:00+0100"). */
+export const metaCampaignSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().optional(),
+  objective: z.string().optional(),
+  effective_status: z.string().optional(),
+  daily_budget: numericString.optional(),
+  lifetime_budget: numericString.optional(),
+  start_time: z.string().optional(),
+  stop_time: z.string().optional(),
+});
+export type MetaCampaign = z.infer<typeof metaCampaignSchema>;
+
+export const metaCampaignsResponseSchema = z.object({
+  data: z.array(metaCampaignSchema),
   paging: metaPagingSchema.optional(),
 });
 

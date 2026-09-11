@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { DashboardView } from "@/components/dashboard/dashboard-view";
-import { DEMO_ACCOUNT, getDemoRows } from "@/lib/metrics/demo-data";
-import { toIsoDate } from "@/lib/metrics/aggregate";
+import { AgencyOverview } from "@/components/agency/agency-overview";
+import { getDemoAgency } from "@/lib/agency/demo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Dashboard");
@@ -13,21 +12,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function DemoPage() {
-  // The anchor date is resolved once on the server and handed to the client
-  // component, so both renders derive the same period windows. Deriving it
-  // from `new Date()` on the client would hydrate inconsistently around
-  // midnight UTC.
-  const endDate = toIsoDate(new Date());
+/** The demo is anchored on today; prerendering would freeze it on build day. */
+export const dynamic = "force-dynamic";
 
-  return (
-    <main className="mx-auto w-full max-w-6xl px-6 pt-28 pb-20">
-      <DashboardView
-        account={DEMO_ACCOUNT}
-        rows={getDemoRows()}
-        endDate={endDate}
-        source="demo"
-      />
-    </main>
-  );
+export default function DemoPage() {
+  // Generated once on the server and handed to the client component, so both
+  // renders derive the same period windows.
+  return <AgencyOverview data={getDemoAgency()} basePath="/demo" isDemo />;
 }
