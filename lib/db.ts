@@ -59,7 +59,9 @@ function createPrismaClient(): PrismaClient {
   });
 }
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+const globalForPrisma = globalThis as unknown as {
+  prisma?: { instance: PrismaClient; built: typeof PrismaClient };
+};
 
 let client: PrismaClient | undefined;
 
@@ -68,11 +70,27 @@ function getClient(): PrismaClient {
   // access, so it must never construct more than once per process.
   if (client) return client;
 
-  client = globalForPrisma.prisma ?? createPrismaClient();
+  // The global cache remembers which generated class built it. After a schema
+  // change, `prisma generate` rewrites that class and the dev server loads the
+  // new one — but a client cached from the old class has no delegate for a new
+  // model, and `prisma.client` reads as undefined. That happened when the
+  // Client model was added: sign-in failed with "Cannot read properties of
+  // undefined (reading 'findMany')" until the server was restarted. A client
+  // built by an older class is now replaced instead of reused.
+  const cached = globalForPrisma.prisma;
+  if (cached && cached.built === PrismaClient) {
+    client = cached.instance;
+  } else {
+    if (cached) void cached.instance.$disconnect().catch(() => {});
+    client = createPrismaClient();
+  }
+
   // Mirror to globalThis in development only, where module re-evaluation is
   // the thing being defended against. In production the module is evaluated
   // once per instance and the local cache is enough.
-  if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = client;
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = { instance: client, built: PrismaClient };
+  }
   return client;
 }
 
