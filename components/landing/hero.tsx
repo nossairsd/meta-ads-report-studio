@@ -38,7 +38,11 @@ export default function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-white" />
       </div>
 
-      <section className="flex flex-col items-center gap-7 pt-24 text-center lg:gap-10">
+      {/* The top padding clears the fixed navbar and then leaves the headline
+          room to breathe — it used to be measured with the beta chip sitting
+          above the title, and without it the headline came up under the nav.
+          It grows with the screen, as the headline itself does. */}
+      <section className="flex flex-col items-center gap-7 pt-32 text-center md:pt-40 lg:gap-10 lg:pt-48">
         <h1 className="text-4xl leading-none font-medium tracking-tight text-black md:text-6xl lg:text-hero xl:max-w-4xl">
           <TextBlurEffect className="bg-gradient-to-b from-black to-black/60 bg-clip-text text-transparent">
             {t("title")}
