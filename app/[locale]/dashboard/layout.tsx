@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth/config";
 import { isAuthConfigured } from "@/lib/env";
 import { loadShell } from "@/lib/agency/service";
+import { isAdmin } from "@/lib/admin/access";
 import { AgencyShell } from "@/components/agency/agency-shell";
 import { DisconnectButton } from "@/components/dashboard/disconnect-button";
 
@@ -30,9 +31,10 @@ export default async function DashboardLayout({
     redirect(`/${locale}?signin=required&next=/${locale}/dashboard`);
   }
 
-  const [{ agencyName, clients }, t] = await Promise.all([
+  const [{ agencyName, clients }, t, admin] = await Promise.all([
     loadShell(session.user.id),
     getTranslations("Dashboard"),
+    isAdmin(session.user.id),
   ]);
 
   return (
@@ -40,6 +42,7 @@ export default async function DashboardLayout({
       basePath="/dashboard"
       clients={clients}
       agencyName={agencyName}
+      isAdmin={admin}
       footer={
         <div className="space-y-2">
           {session.user.name && (

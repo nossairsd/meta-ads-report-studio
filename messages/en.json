@@ -29,6 +29,10 @@
     "contact": {
       "heading": "Contact",
       "body": "For anything relating to this policy: nossair.sedki.eng@gmail.com. You will get an answer within 30 days."
+    },
+    "earlyAccess": {
+      "heading": "Early-access requests",
+      "body": "If you request early access from the home page, we keep your name, your email address, your agency's name, the client range you chose and any message you add. This is used only to contact you about the beta: it is not shared, not used for advertising, and is deleted on request."
     }
   },
   "DataDeletion": {
@@ -176,7 +180,9 @@
     "nav": {
       "features": "Features",
       "howItWorks": "How it works",
-      "cta": "Try the demo"
+      "cta": "Try the demo",
+      "pricing": "Pricing",
+      "earlyAccess": "Beta access"
     },
     "hero": {
       "title": "Meta Ads reports in one click",
@@ -184,7 +190,8 @@
       "ctaPrimary": "Try the demo",
       "ctaSecondary": "Connect with Facebook",
       "trustLine": "Free demo · No credit card · No Meta account required",
-      "ctaSecondaryPending": "Redirecting to Meta…"
+      "ctaSecondaryPending": "Redirecting to Meta…",
+      "betaPill": "Private beta open to agencies — request access"
     },
     "features": {
       "badge": "why teams switch",
@@ -211,7 +218,8 @@
       "stat3Value": "€0",
       "stat3Label": "full demo with sample data, no account and no credit card",
       "button": "Try the demo",
-      "buttonNote": "No Meta connection required"
+      "buttonNote": "No Meta connection required",
+      "secondary": "Request early access"
     },
     "footer": {
       "backToTop": "Back to top",
@@ -259,6 +267,109 @@
         "body": "The connection to Meta was interrupted. Trying again usually works."
       },
       "dismiss": "Dismiss"
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "Pricing that follows your number of clients",
+      "subtitle": "You pay for the clients you manage, not for add-ons. The prices below will apply at public launch.",
+      "betaBanner": "Free during the private beta — a preferential price guaranteed afterwards",
+      "recommended": "Recommended",
+      "cta": "Join the beta",
+      "note": "Indicative prices excluding tax, which may change before public launch.",
+      "plans": {
+        "free": {
+          "name": "Starter",
+          "price": "€0",
+          "period": "forever",
+          "description": "To try it on a first client.",
+          "features": [
+            "1 client",
+            "Full dashboard",
+            "One-page PDF reports",
+            "Meta Ads Report Studio credit on reports"
+          ]
+        },
+        "pro": {
+          "name": "Pro",
+          "price": "€19",
+          "period": "/ month",
+          "description": "For freelancers and small agencies.",
+          "features": [
+            "Up to 10 clients",
+            "Reports under your agency's name",
+            "Performance alerts",
+            "Email support"
+          ]
+        },
+        "agency": {
+          "name": "Agency",
+          "price": "€49",
+          "period": "/ month",
+          "description": "For agencies managing a portfolio.",
+          "features": [
+            "Unlimited clients",
+            "Everything in Pro",
+            "Scheduled report delivery (coming soon)",
+            "Priority onboarding"
+          ]
+        }
+      }
+    },
+    "earlyAccess": {
+      "eyebrow": "Early access",
+      "title": "Join the private beta",
+      "subtitle": "We are opening access gradually, to a small number of agencies. Free for the whole beta, in exchange for your feedback.",
+      "perks": [
+        {
+          "title": "Free during the beta",
+          "body": "Every feature, no credit card."
+        },
+        {
+          "title": "Guided onboarding",
+          "body": "We connect your Meta accounts with you."
+        },
+        {
+          "title": "Built around you",
+          "body": "Your feedback decides what comes next."
+        }
+      ],
+      "form": {
+        "title": "Request access",
+        "name": "Full name",
+        "email": "Work email",
+        "agency": "Agency or business",
+        "clientCount": "Clients you manage",
+        "clientCountPlaceholder": "Choose a range",
+        "ranges": {
+          "1-5": "1 to 5",
+          "6-20": "6 to 20",
+          "21-50": "21 to 50",
+          "50+": "More than 50"
+        },
+        "message": "What you need",
+        "optional": "optional",
+        "messagePlaceholder": "e.g. monthly reports for 8 e-commerce clients",
+        "consent": "Your details are used only to contact you about the beta. See the <link>privacy policy</link>.",
+        "submit": "Send my request",
+        "submitting": "Sending…"
+      },
+      "errors": {
+        "invalid": "Please check the highlighted fields.",
+        "rate_limited": "Too many requests from this connection. Try again in a few minutes.",
+        "failed": "Sending failed. Please try again in a moment."
+      },
+      "fieldErrors": {
+        "name": "Enter your name.",
+        "email": "Invalid email address.",
+        "agency": "Enter your agency or business.",
+        "clientCount": "Choose a range.",
+        "message": "1,000 characters at most."
+      },
+      "success": {
+        "title": "Request received",
+        "body": "Thank you, {name}. We will write to {email} as soon as a place opens in the beta.",
+        "again": "Send another request"
+      }
     }
   },
   "Agency": {
@@ -269,7 +380,8 @@
       "agency": "Your agency",
       "openMenu": "Open menu",
       "closeMenu": "Close menu",
-      "noClients": "No clients yet"
+      "noClients": "No clients yet",
+      "requests": "Access requests"
     },
     "overview": {
       "title": "Overview",
@@ -398,5 +510,26 @@
       "banner": "Demo: a fictitious agency with six clients. Connect your Meta account to see your own.",
       "connect": "Try with my accounts"
     }
+  },
+  "Admin": {
+    "title": "Early-access requests",
+    "intro": "Agencies asking to join the beta. Add the ones you accept as testers of the Meta app, then mark them “Invited”.",
+    "count": "{count, plural, =0 {No requests} one {# request} other {# requests}}",
+    "empty": "No requests yet. They will appear here as soon as the home-page form is sent.",
+    "export": "Export as CSV",
+    "columns": {
+      "contact": "Contact",
+      "agency": "Agency",
+      "clients": "Clients",
+      "message": "Message",
+      "status": "Status"
+    },
+    "status": {
+      "new": "New",
+      "invited": "Invited",
+      "declined": "Declined"
+    },
+    "statusLabel": "Status of {name}'s request",
+    "saveFailed": "Not saved"
   }
 }

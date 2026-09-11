@@ -10,6 +10,7 @@ import SlideEffect from "@/components/effects/slide-effect";
 import FadeEffect from "@/components/effects/fade-effect";
 import { ArrowRight } from "lucide-react";
 import { ConnectButton } from "@/components/landing/connect-button";
+import { AnchorLink } from "@/components/landing/anchor-link";
 
 export default function Hero() {
   const t = useTranslations("Landing.hero");
@@ -38,6 +39,20 @@ export default function Hero() {
       </div>
 
       <section className="flex flex-col items-center gap-7 pt-24 text-center lg:gap-10">
+        <SlideEffect delay={0}>
+          <AnchorLink
+            href="#early-access"
+            className="group inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/75 px-3.5 py-1.5 text-xs font-medium text-primary shadow-[0_4px_16px_-8px_rgba(37,99,235,0.45)] backdrop-blur-md transition-colors hover:bg-white sm:text-sm"
+          >
+            <span className="relative flex h-2 w-2" aria-hidden>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+            </span>
+            {t("betaPill")}
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+          </AnchorLink>
+        </SlideEffect>
+
         <h1 className="text-4xl leading-none font-medium tracking-tight text-black md:text-6xl lg:text-hero xl:max-w-4xl">
           <TextBlurEffect className="bg-gradient-to-b from-black to-black/60 bg-clip-text text-transparent">
             {t("title")}

@@ -66,6 +66,11 @@ export function createRateLimiter({
  * shared bucket rather than no limit at all.
  */
 export function clientAddress(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return forwarded || request.headers.get("x-real-ip")?.trim() || "unknown";
+  return addressFromHeaders(request.headers);
+}
+
+/** The same, from headers alone — what a Server Action has to go on. */
+export function addressFromHeaders(headers: Headers): string {
+  const forwarded = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return forwarded || headers.get("x-real-ip")?.trim() || "unknown";
 }

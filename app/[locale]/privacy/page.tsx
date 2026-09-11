@@ -13,6 +13,7 @@ export default async function PrivacyPage() {
   const sections = [
     "controller",
     "whatWeCollect",
+    "earlyAccess",
     "why",
     "retention",
     "sharing",
