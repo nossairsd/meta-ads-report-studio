@@ -6,8 +6,12 @@
 #
 #   docker compose up --build
 #
-# Then apply the schema once, from the host:
-#   docker compose exec app node scripts/db-migrate.mjs
+# Then apply the schema once, from the host, against the exposed port:
+#   DATABASE_URL=postgresql://studio:studio@localhost:5432/studio npx prisma migrate deploy
+#
+# (scripts/db-migrate.mjs is not the tool here: it speaks Neon's HTTPS
+# protocol, which exists to get past a corporate proxy, and a plain
+# PostgreSQL server does not answer it.)
 
 services:
   db:
