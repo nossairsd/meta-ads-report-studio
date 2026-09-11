@@ -231,7 +231,7 @@ export function AgencyOverview({
           />
         </div>
 
-        <label className="relative flex-1 lg:max-w-xs">
+        <label className="relative w-full lg:w-60 lg:flex-none">
           <span className="sr-only">{t("overview.search")}</span>
           <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-foreground/40" />
           <input
