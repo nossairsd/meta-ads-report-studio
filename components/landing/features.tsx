@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import SpotlightCard from "@/components/landing/spotlight-card";
+import { SectionHeading } from "@/components/landing/section-heading";
 import {
   BilingualVisual,
   ChartVisual,
@@ -66,40 +67,7 @@ export default function Features() {
       />
 
       <div className="mx-auto space-y-8 text-center md:space-y-10">
-        <motion.div
-          custom={0}
-          variants={reveal}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.5 }}
-        >
-          <span className="inline-flex items-center gap-2 rounded-full border border-black/[0.07] bg-white/80 px-4 py-1.5 text-xs font-semibold tracking-[0.14em] text-primary uppercase shadow-sm backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            {t("badge")}
-          </span>
-        </motion.div>
-
-        <motion.h2
-          custom={1}
-          variants={reveal}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.5 }}
-          className="bg-gradient-to-b from-black to-black/60 bg-clip-text text-3xl leading-tight font-medium tracking-tight text-transparent md:text-4xl lg:text-5xl"
-        >
-          {t("title")}
-        </motion.h2>
-
-        <motion.p
-          custom={2}
-          variants={reveal}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.5 }}
-          className="mx-auto w-full px-2 text-sm text-foreground/70 sm:px-10 md:max-w-2xl md:px-0 lg:text-base"
-        >
-          {t("description")}
-        </motion.p>
+        <SectionHeading eyebrow={t("badge")} title={t("title")} description={t("description")} />
 
         <div className="grid grid-cols-1 gap-5 pt-4 lg:grid-cols-5">
           {cards.map((card, i) => (

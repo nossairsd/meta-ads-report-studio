@@ -57,7 +57,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
           // A plain anchor on purpose: the export is a file download, not a
           // page. next/link would prefetch it and try a client-side navigation.
           <a
-            href="/api/admin/early-access"
+            href={`/api/admin/early-access?locale=${locale}`}
             download
             className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-black/[0.1] bg-white px-4 text-sm font-semibold text-black transition-colors hover:bg-black/[0.03] sm:min-h-10"
           >

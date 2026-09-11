@@ -7,6 +7,7 @@ import { CheckCircle2, Gift, Handshake, Loader2, MessagesSquare } from "lucide-r
 import { Link } from "@/i18n/navigation";
 import { requestEarlyAccess } from "@/lib/early-access/actions";
 import { CLIENT_RANGES } from "@/lib/early-access/schema";
+import { SectionHeading } from "@/components/landing/section-heading";
 
 type Field = "name" | "email" | "agency" | "clientCount" | "message";
 const PERK_ICONS = [Gift, Handshake, MessagesSquare];
@@ -65,15 +66,20 @@ export default function EarlyAccess() {
   return (
     <section id="early-access" className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-16">
       <div>
-        <p className="text-sm font-semibold tracking-[0.14em] text-primary uppercase">{t("eyebrow")}</p>
-        <h2 className="mt-3 text-3xl font-medium tracking-tight text-black md:text-5xl">{t("title")}</h2>
-        <p className="mt-4 max-w-lg text-base leading-relaxed text-foreground/60">{t("subtitle")}</p>
+        <SectionHeading align="left" eyebrow={t("eyebrow")} title={t("title")} description={t("subtitle")} />
 
-        <ul className="mt-8 space-y-5">
+        <ul className="mt-9 space-y-5">
           {perks.map((perk, i) => {
             const Icon = PERK_ICONS[i % PERK_ICONS.length];
             return (
-              <li key={perk.title} className="flex items-start gap-4">
+              <motion.li
+                key={perk.title}
+                initial={{ opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="flex items-start gap-4"
+              >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Icon className="h-5 w-5" aria-hidden />
                 </span>
@@ -81,13 +87,25 @@ export default function EarlyAccess() {
                   <p className="font-semibold text-black">{perk.title}</p>
                   <p className="mt-0.5 text-sm text-foreground/60">{perk.body}</p>
                 </div>
-              </li>
+              </motion.li>
             );
           })}
         </ul>
       </div>
 
-      <div className="card-surface relative p-6 sm:p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ delay: 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="card-surface relative p-6 sm:p-8"
+      >
+        {/* A soft brand glow behind the form, so the one place to act stands
+            out from the text beside it. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -inset-px -z-10 rounded-[1.05rem] bg-gradient-to-br from-primary/25 via-transparent to-sky-400/25 blur-xl"
+        />
         {sent ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
@@ -244,7 +262,7 @@ export default function EarlyAccess() {
             </p>
           </form>
         )}
-      </div>
+      </motion.div>
     </section>
   );
 }

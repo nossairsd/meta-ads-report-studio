@@ -153,3 +153,26 @@
     transform: scaleX(0);
   }
 }
+
+/* The light that crosses the beta chip in the hero: a quick pass, then a
+   long rest, so it catches the eye once in a while instead of flickering. */
+@keyframes beta-chip-sheen {
+  0% {
+    transform: translateX(0);
+  }
+  18%,
+  100% {
+    transform: translateX(450%);
+  }
+}
+
+.beta-chip-sheen {
+  animation: beta-chip-sheen 5s ease-in-out 1.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beta-chip-sheen {
+    animation: none;
+    display: none;
+  }
+}

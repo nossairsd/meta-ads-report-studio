@@ -191,7 +191,8 @@
       "ctaSecondary": "Connect with Facebook",
       "trustLine": "Free demo · No credit card · No Meta account required",
       "ctaSecondaryPending": "Redirecting to Meta…",
-      "betaPill": "Private beta open to agencies — request access"
+      "betaPill": "Now open to agencies · Request access",
+      "betaTag": "Beta"
     },
     "features": {
       "badge": "why teams switch",
@@ -231,8 +232,10 @@
       "demo": "Live demo",
       "privacy": "Privacy policy",
       "dataDeletion": "Data deletion",
-      "cta": "Want a custom version for your agency? Get in touch.",
-      "credit": "© 2026 Meta Ads Report Studio. Built by Nossair Sedki."
+      "tagline": "Meta Ads reporting built for agencies: every client on one dashboard, a report ready to send in one click.",
+      "rights": "© 2026 Meta Ads Report Studio. All rights reserved.",
+      "pricing": "Pricing",
+      "earlyAccess": "Beta access"
     },
     "howItWorks": {
       "badge": "how it works",
@@ -272,7 +275,6 @@
       "eyebrow": "Pricing",
       "title": "Pricing that follows your number of clients",
       "subtitle": "You pay for the clients you manage, not for add-ons. The prices below will apply at public launch.",
-      "betaBanner": "Free during the private beta — a preferential price guaranteed afterwards",
       "recommended": "Recommended",
       "cta": "Join the beta",
       "note": "Indicative prices excluding tax, which may change before public launch.",
@@ -313,7 +315,9 @@
             "Priority onboarding"
           ]
         }
-      }
+      },
+      "betaTitle": "Free for the whole private beta",
+      "betaBody": "Beta agencies keep a preferential price after launch."
     },
     "earlyAccess": {
       "eyebrow": "Early access",
@@ -530,6 +534,16 @@
       "declined": "Declined"
     },
     "statusLabel": "Status of {name}'s request",
-    "saveFailed": "Not saved"
+    "saveFailed": "Not saved",
+    "csv": {
+      "date": "Date (UTC)",
+      "name": "Name",
+      "email": "Email",
+      "agency": "Agency",
+      "clients": "Clients",
+      "status": "Status",
+      "language": "Language",
+      "message": "Message"
+    }
   }
 }
