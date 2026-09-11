@@ -135,6 +135,28 @@ model AdAccount {
   @@index([clientId])
 }
 
+/// A request to join the private beta, sent from the landing page.
+///
+/// Not tied to a User: the people asking do not have an account yet — that
+/// is what they are asking for. One row per email address; asking again
+/// updates the request rather than queueing a duplicate.
+model EarlyAccessRequest {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  agency      String
+  /// A range, not a number: "1-5", "6-20", "21-50" or "50+".
+  clientCount String
+  message     String?
+  locale      String
+  /// "new", "invited" or "declined" — set by the admin reviewing requests.
+  status      String   @default("new")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
 /// A brand the agency reports for, grouping one or more ad accounts.
 ///
 /// Our concept, not Meta's: with `ads_read` alone Meta will not say which

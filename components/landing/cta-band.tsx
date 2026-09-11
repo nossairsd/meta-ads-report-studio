@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import ParticleOrb from "@/components/effects/particle-orb";
 import SpecularButton from "@/components/landing/specular-button";
+import { AnchorLink } from "@/components/landing/anchor-link";
+import { Link } from "@/i18n/navigation";
 
 /** Headline revealed word by word out of a clipping mask. */
 function AnimatedWords({ text, className }: { text: string; className?: string }) {
@@ -132,15 +134,23 @@ export default function CtaBand() {
           transition={{ delay: 0.75, duration: 0.6 }}
           className="mt-14 flex flex-wrap items-center gap-4"
         >
-          <SpecularButton
-            size="lg"
-            baseColor="#2563EB"
-            lineColor="#93C5FD"
-            textColor="#FFFFFF"
-            radius={999}
+          <Link href="/demo">
+            <SpecularButton
+              size="lg"
+              baseColor="#2563EB"
+              lineColor="#93C5FD"
+              textColor="#FFFFFF"
+              radius={999}
+            >
+              {t("button")}
+            </SpecularButton>
+          </Link>
+          <AnchorLink
+            href="#early-access"
+            className="inline-flex min-h-11 items-center rounded-full border border-white/20 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
           >
-            {t("button")}
-          </SpecularButton>
+            {t("secondary")}
+          </AnchorLink>
           <span className="text-sm text-white/40">{t("buttonNote")}</span>
         </motion.div>
       </motion.div>

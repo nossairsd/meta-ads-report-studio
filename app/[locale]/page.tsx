@@ -2,6 +2,8 @@ import Navbar from "@/components/landing/navbar";
 import Hero from "@/components/landing/hero";
 import Features from "@/components/landing/features";
 import HowItWorks from "@/components/landing/how-it-works";
+import Pricing from "@/components/landing/pricing";
+import EarlyAccess from "@/components/landing/early-access";
 import CtaBand from "@/components/landing/cta-band";
 import Footer from "@/components/landing/footer";
 import { SignInNotice } from "@/components/landing/sign-in-notice";
@@ -27,6 +29,8 @@ export default async function Home({
         <Hero />
         <Features />
         <HowItWorks />
+        <Pricing />
+        <EarlyAccess />
       </div>
 
       {/* Both sit outside the max-width column so they span the viewport, and

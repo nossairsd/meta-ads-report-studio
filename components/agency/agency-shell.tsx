@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { LayoutGrid, Menu, Settings2, X } from "lucide-react";
+import { Inbox, LayoutGrid, Menu, Settings2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/landing/logo";
@@ -15,6 +15,8 @@ type ShellProps = {
   clients: { id: string; name: string }[];
   agencyName: string | null;
   isDemo?: boolean;
+  /** Shows the early-access requests link. */
+  isAdmin?: boolean;
   /** Rendered at the bottom of the sidebar: sign-out, or the demo's call to action. */
   footer?: React.ReactNode;
   /** Rendered above the page content — the demo's explanation banner. */
@@ -35,6 +37,7 @@ export function AgencyShell({
   clients,
   agencyName,
   isDemo = false,
+  isAdmin = false,
   footer,
   banner,
   children,
@@ -57,6 +60,7 @@ export function AgencyShell({
       clients={clients}
       agencyName={agencyName}
       isDemo={isDemo}
+      isAdmin={isAdmin}
       footer={footer}
       onNavigate={() => setOpen(false)}
     />
@@ -129,6 +133,7 @@ function SidebarContent({
   clients,
   agencyName,
   isDemo,
+  isAdmin,
   footer,
   onNavigate,
 }: Omit<ShellProps, "children" | "banner"> & { onNavigate: () => void }) {
@@ -201,6 +206,17 @@ function SidebarContent({
           >
             <Settings2 className="h-4 w-4 shrink-0" />
             {t("organize")}
+          </Link>
+        )}
+
+        {isAdmin && (
+          <Link
+            href={`${basePath}/admin`}
+            onClick={onNavigate}
+            className={itemClass(pathname === `${basePath}/admin`)}
+          >
+            <Inbox className="h-4 w-4 shrink-0" />
+            {t("requests")}
           </Link>
         )}
       </nav>
