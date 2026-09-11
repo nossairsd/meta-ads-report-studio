@@ -9,7 +9,6 @@ import TextBlurEffect from "@/components/effects/text-blur-effect";
 import SlideEffect from "@/components/effects/slide-effect";
 import FadeEffect from "@/components/effects/fade-effect";
 import { ArrowRight } from "lucide-react";
-import { ConnectButton } from "@/components/landing/connect-button";
 import { AnchorLink } from "@/components/landing/anchor-link";
 
 export default function Hero() {
@@ -73,7 +72,22 @@ export default function Hero() {
                 </span>
               </SpecularButton>
             </Link>
-            <ConnectButton />
+            {/* During the private beta the second action is joining it, not
+                signing in: a visitor who is not yet a tester would only meet
+                Meta's "app unavailable" screen. Signing in lives in the
+                navbar, where the invited agencies will look for it. */}
+            <AnchorLink href="#early-access" className="w-full md:w-fit">
+              <SpecularButton
+                size="lg"
+                baseColor="#FFFFFF"
+                lineColor="#2563EB"
+                textColor="#1F2937"
+                radius={999}
+                className="w-full md:w-fit"
+              >
+                {t("ctaRequest")}
+              </SpecularButton>
+            </AnchorLink>
           </div>
 
           <p className="text-xs text-foreground/50">{t("trustLine")}</p>

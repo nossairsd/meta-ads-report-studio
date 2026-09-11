@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { AlertTriangle, Info, X } from "lucide-react";
+import { AlertTriangle, ArrowRight, Info, X } from "lucide-react";
+import { AnchorLink } from "@/components/landing/anchor-link";
 
 /** Long enough to read two lines; errors stay longer, being the ones a user
  *  may need to act on. Hovering or focusing pauses the countdown. */
@@ -21,11 +22,15 @@ export function NoticeToast({
   title,
   body,
   dismissLabel,
+  action,
 }: {
   tone: "info" | "error";
   title: string;
   body: string;
   dismissLabel: string;
+  /** The one thing that would resolve the notice, when there is one — a
+   *  refused sign-in is only useful if it says what to do instead. */
+  action?: { label: string; href: string };
 }) {
   const [open, setOpen] = useState(true);
   const [paused, setPaused] = useState(false);
@@ -85,6 +90,17 @@ export function NoticeToast({
             <div className="min-w-0 flex-1 pt-0.5">
               <p className="text-sm font-semibold text-black">{title}</p>
               <p className="mt-1 text-[13px] leading-relaxed text-foreground/60">{body}</p>
+
+              {action && (
+                <AnchorLink
+                  href={action.href}
+                  onClick={() => setOpen(false)}
+                  className="mt-2.5 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary px-3.5 text-[13px] font-semibold text-white transition-colors hover:bg-primary/90"
+                >
+                  {action.label}
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </AnchorLink>
+              )}
             </div>
 
             <button
