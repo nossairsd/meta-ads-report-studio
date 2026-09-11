@@ -1,0 +1,11 @@
+# Editor settings honoured by VS Code (with the EditorConfig extension),
+# JetBrains IDEs and most other editors.
+#
+# The one rule that matters here: keep the final newline. An editor set to
+# trim it has stripped the one at the end of .github/workflows/ci.yml twice,
+# each time slipping a whitespace-only change into an unrelated commit.
+root = true
+
+[*]
+insert_final_newline = true
+charset = utf-8
