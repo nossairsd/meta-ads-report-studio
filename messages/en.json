@@ -182,7 +182,9 @@
       "howItWorks": "How it works",
       "cta": "Try the demo",
       "pricing": "Pricing",
-      "earlyAccess": "Beta access"
+      "earlyAccess": "Beta access",
+      "signIn": "Sign in",
+      "signInPending": "Redirecting…"
     },
     "hero": {
       "title": "Meta Ads reports in one click",
@@ -193,7 +195,8 @@
       "ctaSecondaryPending": "Redirecting to Meta…",
       "betaPill": "Now open to agencies",
       "betaTag": "Beta",
-      "betaPillAction": "Request access"
+      "betaPillAction": "Request access",
+      "ctaRequest": "Request access"
     },
     "features": {
       "badge": "why teams switch",
@@ -270,7 +273,12 @@
         "title": "Sign-in did not complete",
         "body": "The connection to Meta was interrupted. Trying again usually works."
       },
-      "dismiss": "Dismiss"
+      "dismiss": "Dismiss",
+      "NotInBeta": {
+        "title": "Your agency is not in the beta yet",
+        "body": "Access opens gradually, one agency at a time. Request yours and we will come back to you as soon as a place opens."
+      },
+      "action": "Request access"
     },
     "pricing": {
       "eyebrow": "Pricing",

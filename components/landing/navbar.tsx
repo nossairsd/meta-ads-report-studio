@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import Logo from "@/components/landing/logo";
 import LocaleToggle from "@/components/landing/locale-toggle";
 import { MotionButton } from "@/components/landing/motion-button";
+import { ConnectButton } from "@/components/landing/connect-button";
 import { useScrolled } from "@/lib/use-scrolled";
 
 const itemVariants = {
@@ -108,8 +109,15 @@ export default function Navbar() {
             variants={itemVariants}
             initial="hidden"
             animate="show"
-            className="mx-1"
+            className="mx-1 flex items-center gap-1"
           >
+            {/* Quiet on purpose: during the beta, signing in is for the
+                agencies already invited. */}
+            <ConnectButton
+              variant="ghost"
+              label={t("signIn")}
+              pendingLabel={t("signInPending")}
+            />
             <LocaleToggle layoutId="locale-pill-desktop" />
           </motion.div>
 
@@ -152,7 +160,15 @@ export default function Navbar() {
                     {link.name}
                   </AnchorLink>
                 ))}
-                <LocaleToggle layoutId="locale-pill-mobile" className="self-start" />
+                <div className="flex items-center justify-between gap-3">
+                  <LocaleToggle layoutId="locale-pill-mobile" />
+                  <ConnectButton
+                    variant="ghost"
+                    label={t("signIn")}
+                    pendingLabel={t("signInPending")}
+                    onNavigate={() => setIsOpen(false)}
+                  />
+                </div>
                 <Link href="/demo" onClick={() => setIsOpen(false)}>
                   <MotionButton size="lg" className="w-full justify-center rounded-full">
                     {t("cta")}
