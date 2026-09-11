@@ -107,6 +107,7 @@
     "errorDescription": "La connexion au compte publicitaire a échoué. Cela peut venir d'une session expirée ou d'une indisponibilité de l'API Meta.",
     "errorRetry": "Réessayer",
     "downloadError": "Le téléchargement du rapport a échoué. Réessayez dans un instant.",
+    "downloadRateLimited": "Trop de rapports générés en peu de temps. Réessayez dans {seconds} s.",
     "title": "Tableau de bord",
     "signedInAs": "Connecté en tant que {name}",
     "disconnect": "Se déconnecter",
@@ -185,7 +186,7 @@
       "card2Title": "Visualisation en temps réel",
       "card2Description": "Dépenses, impressions, clics et conversions se mettent à jour instantanément selon la période choisie (7, 30 ou 90 jours).",
       "card3Title": "Rapports PDF prêts pour vos clients",
-      "card3Description": "Générez un PDF propre et professionnel de 4 pages en quelques secondes — couverture, KPIs, courbe d'évolution et répartition par campagne.",
+      "card3Description": "Générez en quelques secondes un rapport PDF d'une page, au nom de votre agence — KPIs, ratios, courbe d'évolution et détail par campagne.",
       "card4Title": "Pensé pour les freelances et agences",
       "card4Description": "Gratuit à l'essai, rapide à utiliser, et entièrement bilingue — l'interface et le rapport PDF basculent instantanément entre le français et l'anglais."
     },
@@ -194,8 +195,8 @@
       "subtitle": "Chaque lundi, la même corvée : ouvrir le Gestionnaire de publicités, recopier les chiffres, refaire la mise en page. Meta Ads Report Studio produit le rapport à votre place, prêt à envoyer.",
       "stat1Value": "~3 h",
       "stat1Label": "économisées chaque semaine et par compte client, sur un reporting non facturable",
-      "stat2Value": "4 pages",
-      "stat2Label": "couverture, KPIs, évolution et répartition par campagne — sans retouche",
+      "stat2Value": "1 page",
+      "stat2Label": "KPIs, ratios, évolution et détail par campagne — sans retouche",
       "stat3Value": "0 €",
       "stat3Label": "démo complète avec données d'exemple, sans compte ni carte bancaire",
       "button": "Essayer la démo",
@@ -223,7 +224,7 @@
       "step2Title": "Choisissez votre période",
       "step2Description": "Basculez entre 7, 30 et 90 jours. Chaque chiffre est comparé à la période précédente, pour voir une tendance et pas seulement un total.",
       "step3Title": "Téléchargez le rapport",
-      "step3Description": "Un PDF de quatre pages — couverture, KPI, évolution des dépenses et répartition par campagne — prêt à envoyer au client sans retouche."
+      "step3Description": "Un PDF d'une page, au nom de votre agence — KPI, ratios, évolution des dépenses et détail par campagne — prêt à envoyer au client sans retouche."
     },
     "notice": {
       "signinRequired": {

@@ -107,6 +107,7 @@
     "errorDescription": "Connecting to the ad account failed. This can happen when a session has expired or the Meta API is unavailable.",
     "errorRetry": "Try again",
     "downloadError": "The report could not be generated. Please try again in a moment.",
+    "downloadRateLimited": "Too many reports in a short time. Try again in {seconds} s.",
     "title": "Dashboard",
     "signedInAs": "Signed in as {name}",
     "disconnect": "Sign out",
@@ -185,7 +186,7 @@
       "card2Title": "Real-time visualization",
       "card2Description": "Spend, impressions, clicks and conversions update instantly as you switch between 7, 30 or 90-day periods.",
       "card3Title": "Agency-ready PDF reports",
-      "card3Description": "Generate a clean, professional 4-page PDF in seconds — cover page, KPIs, trend chart, and campaign breakdown.",
+      "card3Description": "Generate a clean one-page PDF in seconds, under your agency's name — KPIs, ratios, trend chart and campaign detail.",
       "card4Title": "Built for freelancers and agencies",
       "card4Description": "Free to try, fast to use, and fully bilingual — the interface and the PDF report both switch instantly between French and English."
     },
@@ -194,8 +195,8 @@
       "subtitle": "Every Monday, the same chore: open Ads Manager, copy the numbers across, rebuild the layout. Meta Ads Report Studio produces the report for you, ready to send.",
       "stat1Value": "~3 h",
       "stat1Label": "saved every week per client account, on reporting you cannot bill for",
-      "stat2Value": "4 pages",
-      "stat2Label": "cover, KPIs, trend and campaign breakdown — no manual clean-up",
+      "stat2Value": "1 page",
+      "stat2Label": "KPIs, ratios, trend and campaign detail — no manual clean-up",
       "stat3Value": "€0",
       "stat3Label": "full demo with sample data, no account and no credit card",
       "button": "Try the demo",
@@ -223,7 +224,7 @@
       "step2Title": "Pick your period",
       "step2Description": "Switch between 7, 30 and 90 days. Every figure is compared with the period immediately before it, so you see direction, not just totals.",
       "step3Title": "Download the report",
-      "step3Description": "A four-page PDF — cover, KPIs, spend trend and campaign breakdown — ready to send to a client without any clean-up."
+      "step3Description": "A one-page PDF under your agency's name — KPIs, ratios, spend trend and campaign detail — ready to send to a client without any clean-up."
     },
     "notice": {
       "signinRequired": {
