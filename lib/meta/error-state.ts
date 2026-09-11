@@ -36,6 +36,14 @@ export const NOT_CONFIGURED: DashboardFailure = {
   detail: null,
 };
 
+/** A failure already reduced to its kind — one account among several, whose
+ *  error was recorded rather than thrown. */
+export function failureFromKind(kind: MetaErrorKind | "unexpected"): DashboardFailure {
+  const { messageKey, needsReconnect } =
+    kind === "unexpected" ? { messageKey: "unexpected", needsReconnect: false } : BY_KIND[kind];
+  return { messageKey, needsReconnect, detail: null };
+}
+
 export function toDashboardFailure(error: unknown): DashboardFailure {
   if (error instanceof NotConnectedError) {
     return { messageKey: "notConnected", needsReconnect: true, detail: null };

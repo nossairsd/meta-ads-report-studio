@@ -1,11 +1,14 @@
 import {
   metaAdAccountsResponseSchema,
+  metaCampaignsResponseSchema,
   metaErrorResponseSchema,
   metaInsightsResponseSchema,
 } from "./api-schema";
 import { classifyMetaError, MetaApiError } from "./errors";
-import { mapInsightsToRows, normalizeAdAccountId } from "./map";
-import type { AdAccount, InsightRow, Period } from "@/lib/metrics/schema";
+import { mapCampaign, mapInsightsToRows, normalizeAdAccountId } from "./map";
+import { toAccountStatus } from "@/lib/agency/status";
+import type { AgencyAccount, CampaignMeta } from "@/lib/agency/types";
+import type { InsightRow } from "@/lib/metrics/schema";
 
 /** Exported so the OAuth flow pins the same version. A provider talking to one
  *  Graph version while the data client talks to another is a bug that only
@@ -123,9 +126,16 @@ function parseOrThrow<T>(
   return result.data;
 }
 
-/** Ad accounts the connected user can read. */
-export async function fetchAdAccounts(options: MetaClientOptions): Promise<AdAccount[]> {
-  const url = `${BASE_URL}/me/adaccounts?fields=${encodeURIComponent("name,currency")}&limit=50`;
+/**
+ * Ad accounts the connected user can read, with what an agency needs to know
+ * about each: its status with Meta and the timezone its days are cut in.
+ *
+ * Both fields are readable with `ads_read` alone. Which business owns the
+ * account would need `business_management`, which this app does not request.
+ */
+export async function fetchAdAccounts(options: MetaClientOptions): Promise<AgencyAccount[]> {
+  const fields = "name,currency,account_status,timezone_name";
+  const url = `${BASE_URL}/me/adaccounts?fields=${encodeURIComponent(fields)}&limit=50`;
 
   const accounts = await fetchAllPages(url, options, (payload) => {
     const parsed = parseOrThrow(metaAdAccountsResponseSchema, payload, "ad accounts");
@@ -136,33 +146,48 @@ export async function fetchAdAccounts(options: MetaClientOptions): Promise<AdAcc
     id: account.id,
     name: account.name?.trim() || account.id,
     currency: account.currency ?? "EUR",
+    timezone: account.timezone_name ?? "UTC",
+    status: toAccountStatus(account.account_status),
   }));
 }
 
 /**
- * Daily, per-campaign insights for the last `period` days.
+ * Daily insights between two dates, inclusive, in the account's timezone.
  *
  * Asks for a daily breakdown rather than one aggregate row, because every
  * derived view — the trend line, the previous-period comparison — needs the
  * per-day detail, and re-requesting it per period would multiply calls
  * against a rate-limited API.
+ *
+ * `level: "account"` returns one row per day instead of one per campaign per
+ * day: all the agency overview needs, and a fraction of the pages to fetch
+ * when it covers every client at once.
  */
 export async function fetchInsights(
   {
     adAccountId,
-    period,
+    since,
+    until,
+    level = "campaign",
   }: {
     adAccountId: string;
-    period: Period;
+    since: string;
+    until: string;
+    level?: "campaign" | "account";
   },
   options: MetaClientOptions
 ): Promise<InsightRow[]> {
   const accountPath = normalizeAdAccountId(adAccountId);
   const params = new URLSearchParams({
-    level: "campaign",
+    level,
     time_increment: "1",
-    date_preset: period === 7 ? "last_7d" : period === 30 ? "last_30d" : "last_90d",
-    fields: "campaign_id,campaign_name,spend,impressions,clicks,actions",
+    // An explicit range rather than a preset: the previous-period comparison
+    // needs twice the longest period, and no preset spans exactly that.
+    time_range: JSON.stringify({ since, until }),
+    fields:
+      level === "campaign"
+        ? "campaign_id,campaign_name,spend,impressions,clicks,actions"
+        : "account_id,spend,impressions,clicks,actions",
     limit: "500",
   });
 
@@ -176,4 +201,34 @@ export async function fetchInsights(
   );
 
   return mapInsightsToRows(rows);
+}
+
+/**
+ * The campaigns of one ad account, with what the rows of insights cannot say:
+ * objective, budget, schedule and real status.
+ *
+ * `today` is the account's own date, needed to tell an ended campaign from a
+ * running one — see toCampaignStatus.
+ */
+export async function fetchCampaigns(
+  { adAccountId, today }: { adAccountId: string; today: string },
+  options: MetaClientOptions
+): Promise<CampaignMeta[]> {
+  const accountPath = normalizeAdAccountId(adAccountId);
+  const params = new URLSearchParams({
+    fields:
+      "name,objective,effective_status,daily_budget,lifetime_budget,start_time,stop_time",
+    limit: "200",
+  });
+
+  const campaigns = await fetchAllPages(
+    `${BASE_URL}/${accountPath}/campaigns?${params.toString()}`,
+    options,
+    (payload) => {
+      const parsed = parseOrThrow(metaCampaignsResponseSchema, payload, "campaigns");
+      return { items: parsed.data, next: parsed.paging?.next };
+    }
+  );
+
+  return campaigns.map((campaign) => mapCampaign(campaign, today));
 }

@@ -19,6 +19,8 @@ import {
 } from "@/lib/metrics/format";
 import type { InsightRow, MetricKey, Period } from "@/lib/metrics/schema";
 import type { AdAccount } from "@/lib/metrics/schema";
+import { CampaignTable } from "@/components/agency/campaign-table";
+import type { CampaignMeta } from "@/lib/agency/types";
 
 const METRICS: MetricKey[] = ["spendCents", "impressions", "clicks", "conversions"];
 
@@ -27,6 +29,9 @@ export function DashboardView({
   rows,
   endDate,
   source = "demo",
+  title,
+  campaignMeta,
+  reportTarget,
 }: {
   account: AdAccount;
   rows: InsightRow[];
@@ -38,6 +43,13 @@ export function DashboardView({
    *  source of truth rather than from anything this component could post — a
    *  client that could supply its own rows could put any numbers in a report. */
   source?: "demo" | "live";
+  /** The page heading — the client's name; defaults to the account's. */
+  title?: string;
+  /** Status, objective and budget per campaign, for the campaign table. */
+  campaignMeta?: CampaignMeta[];
+  /** Which client and account the report is for. Identifiers only: the
+   *  server checks them against the user's own data before reading anything. */
+  reportTarget?: { clientId: string; accountId: string };
 }) {
   const isDemo = source === "demo";
   const t = useTranslations("Dashboard");
@@ -63,7 +75,7 @@ export function DashboardView({
         const response = await fetch("/api/report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ source, period, locale }),
+          body: JSON.stringify({ source, period, locale, ...reportTarget }),
         });
         if (!response.ok) throw new Error(`report failed: ${response.status}`);
 
@@ -101,14 +113,16 @@ export function DashboardView({
             </span>
           )}
           <h1 className="text-2xl font-semibold tracking-tight text-black md:text-3xl">
-            {account.name}
+            {title ?? account.name}
           </h1>
           <p className="mt-1.5 text-sm text-foreground/55">
             {formatDateRange(data.rangeStart, data.rangeEnd, locale)}
+            {title && title !== account.name && ` · ${account.name}`}
+            {title && ` · ${account.currency}`}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <PeriodSelector
             value={period}
             onChange={setPeriod}
@@ -120,7 +134,7 @@ export function DashboardView({
           />
           <Button
             size="lg"
-            className="gap-2"
+            className="min-h-11 w-full gap-2 sm:w-auto"
             onClick={handleDownload}
             disabled={isDownloading || data.isEmpty}
           >
@@ -160,7 +174,7 @@ export function DashboardView({
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="space-y-5"
         >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {METRICS.map((metric) => (
               <KpiCard
                 key={metric}
@@ -177,7 +191,7 @@ export function DashboardView({
           <RatioStrip totals={data.totals} currency={account.currency} locale={locale} />
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-            <section className="rounded-2xl border border-black/[0.07] bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] lg:col-span-3">
+            <section className="rounded-2xl border border-black/[0.07] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-6 lg:col-span-3">
               <h2 className="text-sm font-semibold text-black">{t("trendTitle")}</h2>
               <p className="mt-1 text-xs text-foreground/50">{t("trendSubtitle")}</p>
               <div className="mt-5">
@@ -190,7 +204,7 @@ export function DashboardView({
               </div>
             </section>
 
-            <section className="rounded-2xl border border-black/[0.07] bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] lg:col-span-2">
+            <section className="rounded-2xl border border-black/[0.07] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-6 lg:col-span-2">
               <h2 className="text-sm font-semibold text-black">{t("breakdownTitle")}</h2>
               <p className="mt-1 text-xs text-foreground/50">{t("breakdownSubtitle")}</p>
               <div className="mt-5">
@@ -203,6 +217,15 @@ export function DashboardView({
               </div>
             </section>
           </div>
+
+          {campaignMeta && (
+            <CampaignTable
+              slices={data.campaigns}
+              meta={campaignMeta}
+              currency={account.currency}
+              locale={locale}
+            />
+          )}
         </motion.div>
       )}
     </div>

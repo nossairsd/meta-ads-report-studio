@@ -27,6 +27,8 @@ import type { DashboardData } from "@/lib/metrics/schema";
 export type ReportStrings = {
   reportTitle: string;
   preparedFor: string;
+  /** "Prepared by" — followed by the agency's name, when it has one. */
+  preparedBy: string;
   generatedOn: string;
   page: string;
   summaryTitle: string;
@@ -214,19 +216,28 @@ function DeltaText({
 
 export function ReportDocument({
   data,
+  clientName,
+  agencyName = null,
   locale,
   strings,
   generatedAt,
 }: {
   data: DashboardData;
+  /** Who the report is for — the client, which may own several accounts. */
+  clientName?: string;
+  /** Who it is from. The report goes out under the agency's name, not ours:
+   *  it is the agency's deliverable to its client. */
+  agencyName?: string | null;
   locale: string;
   strings: ReportStrings;
   generatedAt: Date;
 }) {
   const { account, totals, deltas, daily, campaigns } = data;
   const currency = account.currency;
+  const client = clientName ?? account.name;
+  const brand = agencyName ?? "Meta Ads Report Studio";
   const rangeLabel = formatDateRange(data.rangeStart, data.rangeEnd, locale);
-  const footerLabel = `${account.name} — ${rangeLabel}`;
+  const footerLabel = `${client} — ${rangeLabel}`;
 
   const axisWidth = 54;
   const chartWidth = 406;
@@ -309,8 +320,8 @@ export function ReportDocument({
 
   return (
     <Document
-      title={`${strings.reportTitle} — ${account.name}`}
-      author="Meta Ads Report Studio"
+      title={`${strings.reportTitle} — ${client}`}
+      author={brand}
       language={locale}
     >
       {/* 1 — Everything a client reads: the figures and the trend. */}
@@ -319,14 +330,24 @@ export function ReportDocument({
           <View>
             <View style={styles.brandRow}>
               <View style={styles.logoMark} />
-              <Text style={styles.brandName}>META ADS REPORT STUDIO</Text>
+              <Text style={styles.brandName}>{brand.toUpperCase()}</Text>
             </View>
             <Text style={styles.reportTitle}>{strings.reportTitle}</Text>
           </View>
 
           <View style={styles.headerMeta}>
-            <Text style={styles.headerAccount}>{account.name}</Text>
+            <Text style={styles.headerAccount}>{client}</Text>
+            {/* Which account, when the client has several — and always the
+                currency, since a client may be billed in more than one. */}
+            <Text style={styles.headerPeriod}>
+              {client !== account.name ? `${account.name} · ${currency}` : currency}
+            </Text>
             <Text style={styles.headerPeriod}>{rangeLabel}</Text>
+            {agencyName && (
+              <Text style={styles.headerGenerated}>
+                {strings.preparedBy} {agencyName}
+              </Text>
+            )}
             <Text style={styles.headerGenerated}>
               {strings.generatedOn}{" "}
               {new Intl.DateTimeFormat(locale, {

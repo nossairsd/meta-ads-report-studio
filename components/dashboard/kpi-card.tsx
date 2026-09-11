@@ -44,16 +44,18 @@ export function KpiCard({
       : "text-destructive bg-destructive/10";
 
   return (
-    <div className="rounded-2xl border border-black/[0.07] bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+    <div className="rounded-2xl border border-black/[0.07] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
       <p className="text-[11px] font-semibold tracking-[0.12em] text-foreground/45 uppercase">
         {label}
       </p>
 
-      <p className="mt-2.5 text-3xl font-semibold tracking-tight text-black tabular-nums">
+      {/* Two cards per row on a phone: the value steps down a size so an
+          amount like "12 345,67 €" still fits on one line. */}
+      <p className="mt-2 text-xl font-semibold tracking-tight text-black tabular-nums sm:mt-2.5 sm:text-3xl">
         {value}
       </p>
 
-      <div className="mt-3 flex items-center gap-2">
+      <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
         {hasDelta ? (
           <span
             className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ${tone}`}

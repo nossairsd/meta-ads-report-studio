@@ -79,7 +79,8 @@
     "derivedCtr": "Click-through rate",
     "derivedCpc": "Cost per click",
     "derivedCpm": "Cost per 1,000",
-    "derivedCpa": "Cost per conversion"
+    "derivedCpa": "Cost per conversion",
+    "preparedBy": "Prepared by"
   },
   "Dashboard": {
     "demoBadge": "Sample data",
@@ -245,6 +246,144 @@
         "title": "Sign-in did not complete",
         "body": "The connection to Meta was interrupted. Trying again usually works."
       }
+    }
+  },
+  "Agency": {
+    "nav": {
+      "overview": "Overview",
+      "clients": "Clients",
+      "organize": "Organise clients",
+      "agency": "Your agency",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "noClients": "No clients yet"
+    },
+    "overview": {
+      "title": "Overview",
+      "subtitle": "{count, plural, one {# client} other {# clients}} · {range}",
+      "totalSpend": "Total spend",
+      "conversions": "Conversions",
+      "activeClients": "Active clients",
+      "activeOf": "of {total}",
+      "toWatch": "Needs attention",
+      "toWatchHint": "See alerts",
+      "noBaseline": "no baseline",
+      "search": "Search clients",
+      "filter": {
+        "all": "All",
+        "watch": "Needs attention",
+        "active": "Active",
+        "paused": "Paused"
+      },
+      "sortLabel": "Sort",
+      "sort": {
+        "priority": "Priority",
+        "name": "Name",
+        "change": "Spend change",
+        "conversions": "Conversions"
+      },
+      "columns": {
+        "client": "Client",
+        "spend": "Spend",
+        "trend": "Trend",
+        "conversions": "Conversions",
+        "cpa": "Cost / conv.",
+        "alerts": "Alerts"
+      },
+      "accounts": "{count, plural, one {# account} other {# accounts}}",
+      "noMatch": "No client matches these filters.",
+      "noAlerts": "Nothing to report",
+      "unassigned": "{count, plural, one {# ad account is not assigned to a client.} other {# ad accounts are not assigned to a client.}}",
+      "unassignedAction": "Assign them",
+      "failedAccounts": "{count, plural, one {# unreadable account} other {# unreadable accounts}}",
+      "noData": "No spend"
+    },
+    "activity": {
+      "active": "Active",
+      "paused": "Paused",
+      "inactive": "Inactive"
+    },
+    "alert": {
+      "accountStatus": {
+        "disabled": "Account disabled",
+        "payment_issue": "Payment problem",
+        "under_review": "Account under review"
+      },
+      "no_conversions": "0 conversions in 7 days",
+      "cpa_up": "Cost / conv. {change}",
+      "spend_up": "Spend {change}",
+      "spend_down": "Spend {change}"
+    },
+    "accountStatus": {
+      "active": "Active",
+      "disabled": "Disabled",
+      "payment_issue": "Payment problem",
+      "under_review": "Under review",
+      "closed": "Closed",
+      "unknown": "Unknown status"
+    },
+    "client": {
+      "breadcrumb": "Clients",
+      "accounts": "Ad accounts",
+      "unreadable": "This account is no longer readable with your Meta connection. Check access in your business settings, then reconnect.",
+      "campaignsTitle": "Campaigns",
+      "campaignsSubtitle": "Real status, budget and performance over the period",
+      "showInactive": "{count, plural, one {Show # campaign with no activity} other {Show the # campaigns with no activity}}",
+      "hideInactive": "Hide campaigns with no activity",
+      "columns": {
+        "campaign": "Campaign",
+        "status": "Status",
+        "budget": "Daily budget",
+        "spend": "Spend",
+        "share": "Share",
+        "ctr": "CTR",
+        "cpc": "CPC",
+        "conversions": "Conv.",
+        "cpa": "Cost / conv."
+      },
+      "noCampaigns": "No campaigns in this period.",
+      "lifetimeBudget": "{amount} lifetime",
+      "endedOn": "Ended {date}",
+      "since": "Since {date}",
+      "sortBy": "Sort by {column}"
+    },
+    "campaignStatus": {
+      "active": "Active",
+      "paused": "Paused",
+      "ended": "Ended",
+      "in_review": "In review",
+      "rejected": "Rejected",
+      "with_issues": "Needs fixing",
+      "archived": "Archived"
+    },
+    "objective": {
+      "sales": "Sales",
+      "leads": "Leads",
+      "traffic": "Traffic",
+      "awareness": "Awareness",
+      "engagement": "Engagement",
+      "app": "App promotion",
+      "other": "Other objective"
+    },
+    "setup": {
+      "title": "Organise clients",
+      "intro": "Assign each ad account to a client. Accounts given the same client name are grouped together; a hidden account is never read.",
+      "agencyLabel": "Your agency's name",
+      "agencyHint": "Shown on PDF reports as “Prepared by …”. Optional.",
+      "agencyPlaceholder": "e.g. Atelier Nova",
+      "accountsTitle": "Ad accounts",
+      "clientLabel": "Client",
+      "hide": "Hide",
+      "suggested": "Suggested",
+      "preview": "{count, plural, =0 {No clients} one {# client} other {# clients}} once saved",
+      "save": "Save",
+      "saving": "Saving…",
+      "error": "Saving failed. Try again in a moment.",
+      "empty": "No ad account is readable with this connection."
+    },
+    "demo": {
+      "banner": "Demo: a fictitious agency with six clients. Connect your Meta account to see your own.",
+      "connect": "Try with my accounts"
     }
   }
 }

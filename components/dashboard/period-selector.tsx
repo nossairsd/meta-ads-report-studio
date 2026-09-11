@@ -31,7 +31,7 @@ export function PeriodSelector({
             type="button"
             onClick={() => onChange(period)}
             aria-pressed={isActive}
-            className="relative cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-medium whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            className="relative min-h-10 cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-medium whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-primary/40 lg:min-h-0"
           >
             {isActive && (
               <motion.span

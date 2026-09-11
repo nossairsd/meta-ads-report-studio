@@ -23,6 +23,9 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  /// Shown on reports as "Prepared by …". Optional: without it, reports carry
+  /// only the client's name.
+  agencyName    String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -30,6 +33,7 @@ model User {
   sessions       Session[]
   authenticators Authenticator[]
   adAccounts     AdAccount[]
+  clients        Client[]
 }
 
 /// One row per linked OAuth provider. Field names are snake_case where the
@@ -112,12 +116,41 @@ model AdAccount {
   /// timezone, so it is needed to label a period honestly.
   timezone String
 
+  /// The client this account reports for. Null until the agency places it;
+  /// deleting a client returns its accounts here rather than deleting them.
+  clientId String?
+  /// Visible to the connection but of no interest to the agency — a personal
+  /// or test account. Hidden accounts are never read.
+  hidden   Boolean @default(false)
+
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
 
   @@unique([userId, metaId])
+  @@index([userId])
+  @@index([clientId])
+}
+
+/// A brand the agency reports for, grouping one or more ad accounts.
+///
+/// Our concept, not Meta's: with `ads_read` alone Meta will not say which
+/// business owns an account, so the agency arranges its accounts itself.
+/// Names are unique per agency because the setup screen assigns accounts to a
+/// client by name — typing an existing name is how two groups are merged.
+model Client {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adAccounts AdAccount[]
+
+  @@unique([userId, name])
   @@index([userId])
 }
