@@ -317,8 +317,9 @@
           ]
         }
       },
-      "betaTitle": "Gratuit pendant toute la bêta privée",
-      "betaBody": "Les agences de la bêta conservent ensuite un tarif préférentiel au lancement."
+      "betaTitle": "Bêta privée en cours",
+      "betaBody": "toutes les offres sont gratuites, et les agences de la bêta gardent un tarif préférentiel au lancement.",
+      "freeDuringBeta": "Gratuit pendant la bêta"
     },
     "earlyAccess": {
       "eyebrow": "Accès anticipé",

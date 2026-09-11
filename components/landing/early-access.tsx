@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { requestEarlyAccess } from "@/lib/early-access/actions";
 import { CLIENT_RANGES } from "@/lib/early-access/schema";
 import { SectionHeading } from "@/components/landing/section-heading";
+import { ClientRangeSelect } from "@/components/landing/client-range-select";
 
 type Field = "name" | "email" | "agency" | "clientCount" | "message";
 const PERK_ICONS = [Gift, Handshake, MessagesSquare];
@@ -196,24 +197,17 @@ export default function EarlyAccess() {
                 <label htmlFor="ea-clients" className="mb-1.5 block text-sm font-medium text-black">
                   {t("form.clientCount")}
                 </label>
-                <select
+                <ClientRangeSelect
                   id="ea-clients"
                   name="clientCount"
-                  required
-                  defaultValue=""
-                  aria-invalid={invalid.includes("clientCount")}
-                  aria-describedby={describedBy("clientCount")}
-                  className={`${inputClass(invalid.includes("clientCount"))} cursor-pointer`}
-                >
-                  <option value="" disabled>
-                    {t("form.clientCountPlaceholder")}
-                  </option>
-                  {CLIENT_RANGES.map((range) => (
-                    <option key={range} value={range}>
-                      {t(`form.ranges.${range}`)}
-                    </option>
-                  ))}
-                </select>
+                  placeholder={t("form.clientCountPlaceholder")}
+                  options={CLIENT_RANGES.map((range) => ({
+                    value: range,
+                    label: t(`form.ranges.${range}`),
+                  }))}
+                  invalid={invalid.includes("clientCount")}
+                  describedBy={describedBy("clientCount")}
+                />
                 {fieldError("clientCount")}
               </div>
             </div>

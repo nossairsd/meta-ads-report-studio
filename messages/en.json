@@ -317,8 +317,9 @@
           ]
         }
       },
-      "betaTitle": "Free for the whole private beta",
-      "betaBody": "Beta agencies keep a preferential price after launch."
+      "betaTitle": "Private beta in progress",
+      "betaBody": "every plan is free, and beta agencies keep a preferential price at launch.",
+      "freeDuringBeta": "Free during the beta"
     },
     "earlyAccess": {
       "eyebrow": "Early access",
