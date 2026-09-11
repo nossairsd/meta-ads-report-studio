@@ -175,9 +175,11 @@ export function CampaignTable({
   ];
 
   return (
-    <section className="rounded-2xl border border-black/[0.07] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-      <div className="flex flex-col gap-1 p-4 sm:p-6 sm:pb-4">
-        <h2 className="text-sm font-semibold text-black">{t("client.campaignsTitle")}</h2>
+    <section className="card-surface overflow-hidden">
+      <div className="flex flex-col gap-0.5 p-5 sm:p-6 sm:pb-4">
+        <h2 className="text-[15px] font-semibold tracking-tight text-black">
+          {t("client.campaignsTitle")}
+        </h2>
         <p className="text-xs text-foreground/50">{t("client.campaignsSubtitle")}</p>
       </div>
 
@@ -222,7 +224,10 @@ export function CampaignTable({
               </thead>
               <tbody>
                 {sorted.map((row) => (
-                  <tr key={row.id} className="border-b border-black/[0.05] last:border-0">
+                  <tr
+                    key={row.id}
+                    className="border-b border-black/[0.05] transition-colors last:border-0 hover:bg-primary/[0.025]"
+                  >
                     <td className="max-w-[280px] py-3 pr-3 pl-6">
                       <p className="truncate font-medium text-black" title={row.name}>
                         {row.name}
@@ -246,7 +251,19 @@ export function CampaignTable({
                       {money(row.spendCents)}
                     </td>
                     <td className="px-3 py-3 text-right text-foreground/70 tabular-nums">
-                      {row.spendCents > 0 ? formatShare(row.share, locale) : "—"}
+                      {row.spendCents > 0 ? (
+                        <span className="inline-flex items-center justify-end gap-2">
+                          <span aria-hidden className="h-1.5 w-12 overflow-hidden rounded-full bg-black/[0.06]">
+                            <span
+                              className="block h-full rounded-full bg-primary"
+                              style={{ width: `${Math.max(row.share * 100, 2)}%` }}
+                            />
+                          </span>
+                          {formatShare(row.share, locale)}
+                        </span>
+                      ) : (
+                        "—"
+                      )}
                     </td>
                     <td className="px-3 py-3 text-right tabular-nums">
                       {row.ctr === null ? "—" : formatRate(row.ctr, locale)}

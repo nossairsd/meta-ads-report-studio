@@ -76,13 +76,15 @@ export function computeDeltas(current: Totals, previous: Totals): Deltas {
 export function buildDailySeries(rows: InsightRow[], start: string, end: string): DailyPoint[] {
   const byDate = new Map<string, DailyPoint>();
   for (let date = start; date <= end; date = addDays(date, 1)) {
-    byDate.set(date, { date, spendCents: 0, clicks: 0 });
+    byDate.set(date, { date, spendCents: 0, impressions: 0, clicks: 0, conversions: 0 });
   }
   for (const row of rows) {
     const point = byDate.get(row.date);
     if (!point) continue;
     point.spendCents += row.spendCents;
+    point.impressions += row.impressions;
     point.clicks += row.clicks;
+    point.conversions += row.conversions;
   }
   return [...byDate.values()];
 }
@@ -141,6 +143,7 @@ export function buildDashboardData({
   const previous = rowsInRange(rows, previousRange.start, previousRange.end);
 
   const totals = sumTotals(current);
+  const previousTotals = sumTotals(previous);
 
   return {
     account,
@@ -148,8 +151,10 @@ export function buildDashboardData({
     rangeStart: start,
     rangeEnd: end,
     totals,
-    deltas: computeDeltas(totals, sumTotals(previous)),
+    previousTotals,
+    deltas: computeDeltas(totals, previousTotals),
     daily: buildDailySeries(current, start, end),
+    previousDaily: buildDailySeries(previous, previousRange.start, previousRange.end),
     campaigns: buildCampaignBreakdown(current),
     // Spend alone is not enough: a campaign can serve impressions with no
     // spend recorded yet, and that is still data worth charting.

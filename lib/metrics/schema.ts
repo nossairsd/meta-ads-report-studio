@@ -56,7 +56,9 @@ export type Deltas = Record<MetricKey, number | null>;
 export type DailyPoint = {
   date: string;
   spendCents: number;
+  impressions: number;
   clicks: number;
+  conversions: number;
 };
 
 export type CampaignSlice = {
@@ -77,8 +79,12 @@ export type DashboardData = {
   rangeStart: string;
   rangeEnd: string;
   totals: Totals;
+  /** The period immediately before, same length: what every change is
+   *  measured against, and the dashed line on the trend chart. */
+  previousTotals: Totals;
   deltas: Deltas;
   daily: DailyPoint[];
+  previousDaily: DailyPoint[];
   campaigns: CampaignSlice[];
   isEmpty: boolean;
 };
