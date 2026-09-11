@@ -7,6 +7,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/db";
 import { encryptToken } from "@/lib/auth/crypto";
 import { withTokenEncryption } from "@/lib/auth/encrypted-adapter";
+import { authorizationParams } from "@/lib/auth/authorization-params";
 import { exchangeForLongLivedToken, fetchGrantedScopes } from "@/lib/meta/token";
 import { API_VERSION } from "@/lib/meta/client";
 
@@ -22,7 +23,21 @@ import { API_VERSION } from "@/lib/meta/client";
 
 /** Read-only access to ad statistics. `public_profile` needs no review and is
  *  what gives us a name to put on the report. */
-const META_SCOPES = ["public_profile", "ads_read"].join(",");
+const META_SCOPE_LIST = ["public_profile", "ads_read"] as const;
+
+/**
+ * Facebook Login for Business, where the app offers it instead of the classic
+ * product.
+ *
+ * Meta's newer app dashboards no longer expose plain Facebook Login: the only
+ * login product is "for Business", whose authorization dialog takes a
+ * `config_id` naming a saved configuration rather than a `scope` list. The
+ * permissions live in that configuration, created once in the app dashboard.
+ *
+ * Optional on purpose. Left unset, the classic scope-based flow is used, so an
+ * app created under the older dashboard keeps working unchanged.
+ */
+const LOGIN_CONFIG_ID = process.env.META_LOGIN_CONFIG_ID;
 
 /** The adapter's published signature names a Prisma 6/7 `PrismaClient` type
  *  that the v7 `prisma-client` generator no longer exports under that path.
@@ -54,7 +69,10 @@ export const authConfig: NextAuthConfig = {
         // Pinned to the same Graph version the data client uses; the built-in
         // provider defaults to an older one.
         url: `https://www.facebook.com/${API_VERSION}/dialog/oauth`,
-        params: { scope: META_SCOPES },
+        // A Login for Business configuration carries the permissions; the
+        // scope list rides along only because Auth.js always sets one, and its
+        // value matters. See lib/auth/authorization-params.ts.
+        params: authorizationParams(LOGIN_CONFIG_ID, META_SCOPE_LIST),
       },
       token: `https://graph.facebook.com/${API_VERSION}/oauth/access_token`,
       userinfo: {
