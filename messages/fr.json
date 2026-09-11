@@ -257,7 +257,8 @@
       "Default": {
         "title": "La connexion ne s'est pas terminée",
         "body": "L'échange avec Meta a été interrompu. Réessayer suffit généralement."
-      }
+      },
+      "dismiss": "Fermer"
     }
   },
   "Agency": {
