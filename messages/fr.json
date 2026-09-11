@@ -191,7 +191,8 @@
       "ctaSecondary": "Se connecter avec Facebook",
       "trustLine": "Démo gratuite · Aucune carte bancaire · Aucun compte Meta requis",
       "ctaSecondaryPending": "Redirection vers Meta…",
-      "betaPill": "Bêta privée ouverte aux agences — demander un accès"
+      "betaPill": "Ouverte aux agences · Demander un accès",
+      "betaTag": "Bêta"
     },
     "features": {
       "badge": "pourquoi nous choisir",
@@ -231,8 +232,10 @@
       "demo": "Démo en direct",
       "privacy": "Politique de confidentialité",
       "dataDeletion": "Suppression des données",
-      "cta": "Vous souhaitez une version personnalisée pour votre agence ? Contactez-moi.",
-      "credit": "© 2026 Meta Ads Report Studio. Créé par Nossair Sedki."
+      "tagline": "Le reporting Meta Ads pensé pour les agences : tous vos clients sur un tableau de bord, un rapport prêt à envoyer en un clic.",
+      "rights": "© 2026 Meta Ads Report Studio. Tous droits réservés.",
+      "pricing": "Tarifs",
+      "earlyAccess": "Accès bêta"
     },
     "howItWorks": {
       "badge": "comment ça marche",
@@ -272,7 +275,6 @@
       "eyebrow": "Tarifs",
       "title": "Un prix qui suit votre nombre de clients",
       "subtitle": "Vous payez pour les clients que vous gérez, pas pour des options. Les tarifs ci-dessous s'appliqueront au lancement public.",
-      "betaBanner": "Gratuit pendant la bêta privée — tarif préférentiel garanti ensuite",
       "recommended": "Recommandé",
       "cta": "Rejoindre la bêta",
       "note": "Prix indicatifs hors taxes, susceptibles d'évoluer d'ici au lancement public.",
@@ -313,7 +315,9 @@
             "Accompagnement prioritaire"
           ]
         }
-      }
+      },
+      "betaTitle": "Gratuit pendant toute la bêta privée",
+      "betaBody": "Les agences de la bêta conservent ensuite un tarif préférentiel au lancement."
     },
     "earlyAccess": {
       "eyebrow": "Accès anticipé",
@@ -530,6 +534,16 @@
       "declined": "Refusée"
     },
     "statusLabel": "Statut de la demande de {name}",
-    "saveFailed": "Non enregistré"
+    "saveFailed": "Non enregistré",
+    "csv": {
+      "date": "Date (UTC)",
+      "name": "Nom",
+      "email": "E-mail",
+      "agency": "Agence",
+      "clients": "Clients",
+      "status": "Statut",
+      "language": "Langue",
+      "message": "Message"
+    }
   }
 }

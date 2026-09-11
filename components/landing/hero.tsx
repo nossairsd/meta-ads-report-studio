@@ -40,16 +40,26 @@ export default function Hero() {
 
       <section className="flex flex-col items-center gap-7 pt-24 text-center lg:gap-10">
         <SlideEffect delay={0}>
+          {/* An announcement chip: a solid "Beta" tag, one line of news, an
+              arrow. A light sweeps across it now and then — enough to be
+              noticed, not enough to compete with the headline. */}
           <AnchorLink
             href="#early-access"
-            className="group inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/75 px-3.5 py-1.5 text-xs font-medium text-primary shadow-[0_4px_16px_-8px_rgba(37,99,235,0.45)] backdrop-blur-md transition-colors hover:bg-white sm:text-sm"
+            className="group relative inline-flex max-w-full items-center gap-2.5 overflow-hidden rounded-full bg-white/85 p-1 pr-3.5 text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.06),0_10px_28px_-14px_rgba(37,99,235,0.55)] ring-1 ring-black/[0.06] backdrop-blur-md transition-shadow hover:ring-primary/30 sm:pr-4 sm:text-sm"
           >
-            <span className="relative flex h-2 w-2" aria-hidden>
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+            <span
+              aria-hidden
+              className="beta-chip-sheen pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/90 to-transparent"
+            />
+            <span className="relative shrink-0 rounded-full bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] px-2.5 py-1 text-[11px] font-semibold tracking-[0.08em] text-white uppercase shadow-[0_4px_10px_-4px_rgba(37,99,235,0.8)]">
+              {t("betaTag")}
             </span>
-            {t("betaPill")}
-            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            <span className="relative truncate font-medium text-foreground/75 transition-colors group-hover:text-black">
+              {t("betaPill")}
+            </span>
+            <span className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black/[0.05] transition-colors group-hover:bg-primary group-hover:text-white">
+              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-px" />
+            </span>
           </AnchorLink>
         </SlideEffect>
 

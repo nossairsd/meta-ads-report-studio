@@ -8,13 +8,27 @@
  */
 const FORMULA_START = /^[=+\-@\t\r]/;
 
-export function csvCell(value: string): string {
+/**
+ * The separator Excel expects depends on the user's regional settings: a
+ * comma in English, a semicolon in French (where the comma is the decimal
+ * mark). With the wrong one Excel puts each whole row into column A.
+ */
+export function csvDelimiter(locale: string): "," | ";" {
+  return locale === "fr" ? ";" : ",";
+}
+
+export function csvCell(value: string, delimiter: "," | ";" = ","): string {
   const text = FORMULA_START.test(value) ? `'${value}` : value;
-  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  const needsQuotes = text.includes(delimiter) || /["\r\n]/.test(text);
+  return needsQuotes ? `"${text.replace(/"/g, '""')}"` : text;
 }
 
 /** With a byte-order mark, so Excel opens accented names as UTF-8 rather than
  *  mangling them. */
-export function toCsv(rows: string[][]): string {
-  return "﻿" + rows.map((row) => row.map(csvCell).join(",")).join("\r\n") + "\r\n";
+export function toCsv(rows: string[][], delimiter: "," | ";" = ","): string {
+  return (
+    "﻿" +
+    rows.map((row) => row.map((cell) => csvCell(cell, delimiter)).join(delimiter)).join("\r\n") +
+    "\r\n"
+  );
 }

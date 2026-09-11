@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { Check, Sparkles } from "lucide-react";
 import { AnchorLink } from "@/components/landing/anchor-link";
+import { SectionHeading } from "@/components/landing/section-heading";
 
 type PlanKey = "free" | "pro" | "agency";
 const PLANS: PlanKey[] = ["free", "pro", "agency"];
@@ -21,15 +22,29 @@ export default function Pricing() {
 
   return (
     <section id="pricing" className="relative">
-      <div className="mx-auto max-w-2xl text-center">
-        <p className="text-sm font-semibold tracking-[0.14em] text-primary uppercase">{t("eyebrow")}</p>
-        <h2 className="mt-3 text-3xl font-medium tracking-tight text-black md:text-5xl">{t("title")}</h2>
-        <p className="mt-4 text-base leading-relaxed text-foreground/60">{t("subtitle")}</p>
-        <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.07] px-4 py-1.5 text-sm font-medium text-primary">
-          <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-          {t("betaBanner")}
-        </p>
-      </div>
+      <SectionHeading eyebrow={t("eyebrow")} title={t("title")} description={t("subtitle")} />
+
+      {/* The beta offer, as a callout of its own: it is the one thing on this
+          section a visitor can act on today. */}
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.98 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="relative mx-auto mt-9 flex max-w-xl items-center gap-4 overflow-hidden rounded-2xl border border-primary/15 bg-white p-4 text-left shadow-[0_12px_32px_-18px_rgba(37,99,235,0.45)] sm:p-5"
+      >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-primary/[0.07] via-transparent to-sky-500/[0.07]"
+        />
+        <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#2563EB] to-[#0EA5E9] text-white shadow-[0_8px_18px_-8px_rgba(37,99,235,0.8)]">
+          <Sparkles className="h-5 w-5" aria-hidden />
+        </span>
+        <div className="relative min-w-0">
+          <p className="text-sm font-semibold text-black sm:text-[15px]">{t("betaTitle")}</p>
+          <p className="mt-0.5 text-sm text-foreground/60">{t("betaBody")}</p>
+        </div>
+      </motion.div>
 
       <div className="mt-12 grid gap-5 lg:grid-cols-3 lg:items-stretch">
         {PLANS.map((plan, i) => {
