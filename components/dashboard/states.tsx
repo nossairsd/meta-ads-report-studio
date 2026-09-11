@@ -7,12 +7,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function DashboardSkeleton() {
   return (
     <div className="space-y-5" aria-busy="true" aria-live="polite">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="card-surface flex items-center gap-4 p-5 sm:p-6">
+        <Skeleton className="h-12 w-12 rounded-xl" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-3.5 w-56" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="rounded-2xl border border-black/[0.07] bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
-          >
+          <div key={i} className="card-surface p-4 sm:p-5">
             <Skeleton className="h-3 w-20" />
             <Skeleton className="mt-3.5 h-8 w-28" />
             <Skeleton className="mt-3.5 h-4 w-32" />

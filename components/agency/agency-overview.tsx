@@ -2,7 +2,17 @@
 
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowRight, ChevronRight, Search } from "lucide-react";
+import {
+  ArrowRight,
+  BellRing,
+  ChevronRight,
+  Search,
+  Target,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
+import { Monogram } from "@/components/agency/monogram";
 import { Link } from "@/i18n/navigation";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
 import { ActivityBadge } from "@/components/agency/status-badge";
@@ -162,7 +172,7 @@ export function AgencyOverview({
 
       {/* The four answers, before any list. */}
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <SummaryCard label={t("overview.totalSpend")}>
+        <SummaryCard label={t("overview.totalSpend")} icon={Wallet} tone="bg-[#2563EB]/10 text-[#2563EB]">
           {summary.currencyTotals.length === 0 && <BigValue>—</BigValue>}
           {summary.currencyTotals.map((total) => (
             <div key={total.currency} className="flex flex-wrap items-baseline gap-x-2">
@@ -174,7 +184,7 @@ export function AgencyOverview({
           ))}
         </SummaryCard>
 
-        <SummaryCard label={t("overview.conversions")}>
+        <SummaryCard label={t("overview.conversions")} icon={Target} tone="bg-[#16A34A]/10 text-[#16A34A]">
           <div className="flex flex-wrap items-baseline gap-x-2">
             <BigValue>{formatNumber(totalConversions, locale)}</BigValue>
             <Delta
@@ -185,7 +195,7 @@ export function AgencyOverview({
           </div>
         </SummaryCard>
 
-        <SummaryCard label={t("overview.activeClients")}>
+        <SummaryCard label={t("overview.activeClients")} icon={Users} tone="bg-[#8B5CF6]/10 text-[#8B5CF6]">
           <div className="flex items-baseline gap-2">
             <BigValue>{summary.counts.active}</BigValue>
             <span className="text-sm text-foreground/50">
@@ -204,10 +214,17 @@ export function AgencyOverview({
               : "border-black/[0.07] bg-white"
           } ${filter === "watch" ? "ring-2 ring-[#F59E0B]/50" : ""}`}
         >
-          <p className="text-[11px] font-semibold tracking-[0.12em] text-foreground/45 uppercase">
-            {t("overview.toWatch")}
-          </p>
-          <BigValue>{summary.counts.toWatch}</BigValue>
+          <div className="flex items-start justify-between gap-2">
+            <p className="pt-1 text-[11px] font-semibold tracking-[0.12em] text-foreground/45 uppercase">
+              {t("overview.toWatch")}
+            </p>
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F59E0B]/15 text-[#B45309]">
+              <BellRing className="h-4 w-4" aria-hidden />
+            </span>
+          </div>
+          <div className="mt-2">
+            <BigValue>{summary.counts.toWatch}</BigValue>
+          </div>
           {summary.counts.toWatch > 0 && (
             <span className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-[#B45309]">
               {t("overview.toWatchHint")}
@@ -279,7 +296,7 @@ export function AgencyOverview({
 
       <section aria-label={t("nav.clients")}>
         {/* Wide screens: a table, compared down the columns. */}
-        <div className="hidden overflow-hidden rounded-2xl border border-black/[0.07] bg-white xl:block">
+        <div className="card-surface hidden overflow-hidden xl:block">
           <div className="grid grid-cols-[minmax(0,1.7fr)_minmax(0,1.2fr)_112px_minmax(0,0.8fr)_minmax(0,0.9fr)_minmax(0,1.7fr)_20px] gap-4 border-b border-black/[0.07] bg-black/[0.02] px-5 py-3 text-[11px] font-semibold tracking-[0.1em] text-foreground/45 uppercase">
             <span>{t("overview.columns.client")}</span>
             <span>{t("overview.columns.spend")}</span>
@@ -317,12 +334,28 @@ export function AgencyOverview({
   );
 }
 
-function SummaryCard({ label, children }: { label: string; children: React.ReactNode }) {
+function SummaryCard({
+  label,
+  icon: Icon,
+  tone,
+  children,
+}: {
+  label: string;
+  icon: LucideIcon;
+  /** Icon colours, e.g. "bg-primary/10 text-primary". */
+  tone: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="rounded-2xl border border-black/[0.07] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
-      <p className="text-[11px] font-semibold tracking-[0.12em] text-foreground/45 uppercase">
-        {label}
-      </p>
+    <div className="card-surface min-w-0 p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-2">
+        <p className="pt-1 text-[11px] font-semibold tracking-[0.12em] text-foreground/45 uppercase">
+          {label}
+        </p>
+        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tone}`}>
+          <Icon className="h-4 w-4" aria-hidden />
+        </span>
+      </div>
       <div className="mt-2 space-y-1">{children}</div>
     </div>
   );
@@ -412,12 +445,15 @@ function ClientIdentity({ client }: { client: ClientSummary }) {
   const t = useTranslations("Agency");
   const currencies = client.currencies.map((c) => c.currency);
   return (
-    <div className="min-w-0">
+    <div className="flex min-w-0 items-center gap-3">
+      <Monogram name={client.name} />
+      <div className="min-w-0">
       <p className="truncate font-semibold text-black">{client.name}</p>
       <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-foreground/50">
         <ActivityBadge status={client.activity} label={t(`activity.${client.activity}`)} />
         <span>{t("overview.accounts", { count: client.accountCount })}</span>
         {currencies.length > 0 && <span>· {currencies.join(" · ")}</span>}
+      </div>
       </div>
     </div>
   );

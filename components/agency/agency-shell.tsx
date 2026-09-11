@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/landing/logo";
 import LocaleToggle from "@/components/landing/locale-toggle";
+import { Monogram } from "@/components/agency/monogram";
 
 type ShellProps = {
   /** "/dashboard" for the live app, "/demo" for the sample agency. */
@@ -184,14 +185,7 @@ function SidebarContent({
                   className={itemClass(active)}
                   aria-current={active ? "page" : undefined}
                 >
-                  <span
-                    aria-hidden
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[11px] font-semibold ${
-                      active ? "bg-primary text-white" : "bg-black/[0.06] text-foreground/60"
-                    }`}
-                  >
-                    {client.name.trim().charAt(0).toUpperCase()}
-                  </span>
+                  <Monogram name={client.name} size="sm" />
                   <span className="truncate">{client.name}</span>
                 </Link>
               </li>

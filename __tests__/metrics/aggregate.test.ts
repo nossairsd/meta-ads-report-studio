@@ -123,7 +123,13 @@ describe("buildDailySeries", () => {
     );
     expect(series).toHaveLength(3);
     expect(series.map((p) => p.date)).toEqual(["2026-03-04", "2026-03-05", "2026-03-06"]);
-    expect(series[1]).toEqual({ date: "2026-03-05", spendCents: 0, clicks: 0 });
+    expect(series[1]).toEqual({
+      date: "2026-03-05",
+      spendCents: 0,
+      impressions: 0,
+      clicks: 0,
+      conversions: 0,
+    });
   });
 
   it("merges several campaigns landing on the same day", () => {
@@ -135,7 +141,7 @@ describe("buildDailySeries", () => {
       "2026-03-04",
       "2026-03-04"
     );
-    expect(series[0]).toEqual({ date: "2026-03-04", spendCents: 750, clicks: 7 });
+    expect(series[0]).toMatchObject({ date: "2026-03-04", spendCents: 750, clicks: 7 });
   });
 });
 

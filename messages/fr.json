@@ -94,8 +94,8 @@
       "clicks": "Clics",
       "conversions": "Conversions"
     },
-    "trendTitle": "Évolution des dépenses",
-    "trendSubtitle": "Montant dépensé jour par jour sur la période",
+    "trendTitle": "Évolution jour par jour",
+    "trendSubtitle": "Période sélectionnée, comparée à la précédente (pointillés)",
     "breakdownTitle": "Répartition par campagne",
     "breakdownSubtitle": "Part du budget consommée par chaque campagne",
     "download": "Télécharger le rapport PDF",
@@ -159,7 +159,18 @@
       "cpmHint": "Dépenses pour mille impressions",
       "cpa": "Coût par conversion",
       "cpaHint": "Dépenses divisées par les conversions"
-    }
+    },
+    "trendCurrent": "Période actuelle",
+    "trendPrevious": "Période précédente",
+    "trendTotal": "Total",
+    "trendAverage": "Moyenne / jour",
+    "trendPeak": "Jour le plus élevé",
+    "breakdownTotal": "Total",
+    "breakdownCampaigns": "{count, plural, one {# campagne} other {# campagnes}}",
+    "breakdownOthers": "Autres campagnes",
+    "performanceTitle": "Performance",
+    "performanceSubtitle": "Ratios clés, comparés à la période précédente",
+    "kpiTitle": "Indicateurs clés"
   },
   "Landing": {
     "nav": {

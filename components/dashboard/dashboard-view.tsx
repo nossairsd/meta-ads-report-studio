@@ -3,23 +3,20 @@
 import { useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "motion/react";
-import { Download, Loader2 } from "lucide-react";
+import { Building2, CalendarDays, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import { CampaignBreakdown } from "@/components/dashboard/campaign-breakdown";
 import { DashboardEmptyState } from "@/components/dashboard/states";
-import { RatioStrip } from "@/components/dashboard/ratio-strip";
-import { buildDashboardData } from "@/lib/metrics/aggregate";
-import {
-  formatCompact,
-  formatCurrencyCents,
-  formatDateRange,
-} from "@/lib/metrics/format";
-import type { InsightRow, MetricKey, Period } from "@/lib/metrics/schema";
-import type { AdAccount } from "@/lib/metrics/schema";
+import { PerformancePanel } from "@/components/dashboard/performance-panel";
+import { Panel } from "@/components/dashboard/panel";
+import { Monogram } from "@/components/agency/monogram";
 import { CampaignTable } from "@/components/agency/campaign-table";
+import { buildDashboardData } from "@/lib/metrics/aggregate";
+import { formatCompact, formatCurrencyCents, formatDateRange } from "@/lib/metrics/format";
+import type { AdAccount, InsightRow, MetricKey, Period } from "@/lib/metrics/schema";
 import type { CampaignMeta } from "@/lib/agency/types";
 
 const METRICS: MetricKey[] = ["spendCents", "impressions", "clicks", "conversions"];
@@ -56,17 +53,21 @@ export function DashboardView({
   const locale = useLocale();
   const [period, setPeriod] = useState<Period>(30);
   const [isDownloading, startDownload] = useTransition();
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   // Recomputed synchronously from rows already in memory: switching period is
   // instant, with no refetch and no loading flash.
   const data = buildDashboardData({ account, rows, period, endDate });
+  const heading = title ?? account.name;
 
   const kpiValue = (metric: MetricKey) =>
     metric === "spendCents"
       ? formatCurrencyCents(data.totals.spendCents, locale, account.currency)
       : formatCompact(data.totals[metric], locale);
 
-  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const metricLabels = Object.fromEntries(
+    METRICS.map((metric) => [metric, t(`metric.${metric}`)])
+  ) as Record<MetricKey, string>;
 
   function handleDownload() {
     setDownloadError(null);
@@ -89,9 +90,7 @@ export function DashboardView({
         // blob: URL has no name of its own, so mirror it onto the anchor.
         const disposition = response.headers.get("Content-Disposition") ?? "";
         const encoded = /filename\*=UTF-8''([^;]+)/i.exec(disposition)?.[1];
-        const filename = encoded
-          ? decodeURIComponent(encoded)
-          : `${account.name}.pdf`;
+        const filename = encoded ? decodeURIComponent(encoded) : `${heading}.pdf`;
 
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
@@ -108,26 +107,40 @@ export function DashboardView({
   }
 
   return (
-    <div className="space-y-7">
-      <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          {isDemo && (
-            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              {t("demoBadge")}
-            </span>
-          )}
-          <h1 className="text-2xl font-semibold tracking-tight text-black md:text-3xl">
-            {title ?? account.name}
-          </h1>
-          <p className="mt-1.5 text-sm text-foreground/55">
-            {formatDateRange(data.rangeStart, data.rangeEnd, locale)}
-            {title && title !== account.name && ` · ${account.name}`}
-            {title && ` · ${account.currency}`}
-          </p>
+    <div className="space-y-5">
+      {/* Who, when, which account — then the two things a user does here. */}
+      <header className="card-surface flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex min-w-0 items-center gap-4">
+          <Monogram name={heading} size="lg" />
+          <div className="min-w-0">
+            {isDemo && (
+              <span className="mb-1.5 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                {t("demoBadge")}
+              </span>
+            )}
+            <h1 className="truncate text-xl font-semibold tracking-tight text-black sm:text-2xl">
+              {heading}
+            </h1>
+            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-foreground/55">
+              <span className="inline-flex items-center gap-1.5">
+                <CalendarDays className="h-3.5 w-3.5" aria-hidden />
+                {formatDateRange(data.rangeStart, data.rangeEnd, locale)}
+              </span>
+              {title && title !== account.name && (
+                <span className="inline-flex min-w-0 items-center gap-1.5">
+                  <Building2 className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  <span className="truncate">{account.name}</span>
+                </span>
+              )}
+              <span className="rounded-md bg-black/[0.05] px-1.5 py-0.5 text-[11px] font-semibold text-foreground/65">
+                {account.currency}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <PeriodSelector
             value={period}
             onChange={setPeriod}
@@ -179,7 +192,7 @@ export function DashboardView({
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="space-y-5"
         >
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <section aria-label={t("kpiTitle")} className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {METRICS.map((metric) => (
               <KpiCard
                 key={metric}
@@ -189,38 +202,57 @@ export function DashboardView({
                 delta={data.deltas[metric]}
                 comparisonLabel={t("comparison", { days: period })}
                 locale={locale}
+                series={data.daily.map((point) => point[metric])}
               />
             ))}
-          </div>
+          </section>
 
-          <RatioStrip totals={data.totals} currency={account.currency} locale={locale} />
+          <PerformancePanel
+            totals={data.totals}
+            previous={data.previousTotals}
+            currency={account.currency}
+            locale={locale}
+          />
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-            <section className="rounded-2xl border border-black/[0.07] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-6 lg:col-span-3">
-              <h2 className="text-sm font-semibold text-black">{t("trendTitle")}</h2>
-              <p className="mt-1 text-xs text-foreground/50">{t("trendSubtitle")}</p>
-              <div className="mt-5">
-                <TrendChart
-                  data={data.daily}
-                  locale={locale}
-                  currency={account.currency}
-                  label={t("metric.spendCents")}
-                />
-              </div>
-            </section>
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-5">
+            <Panel
+              className="xl:col-span-3"
+              title={t("trendTitle")}
+              subtitle={t("trendSubtitle")}
+            >
+              <TrendChart
+                data={data.daily}
+                previous={data.previousDaily}
+                locale={locale}
+                currency={account.currency}
+                labels={{
+                  metrics: metricLabels,
+                  current: t("trendCurrent"),
+                  previous: t("trendPrevious"),
+                  total: t("trendTotal"),
+                  average: t("trendAverage"),
+                  peak: t("trendPeak"),
+                }}
+              />
+            </Panel>
 
-            <section className="rounded-2xl border border-black/[0.07] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-6 lg:col-span-2">
-              <h2 className="text-sm font-semibold text-black">{t("breakdownTitle")}</h2>
-              <p className="mt-1 text-xs text-foreground/50">{t("breakdownSubtitle")}</p>
-              <div className="mt-5">
-                <CampaignBreakdown
-                  campaigns={data.campaigns}
-                  locale={locale}
-                  currency={account.currency}
-                  spendLabel={t("metric.spendCents")}
-                />
-              </div>
-            </section>
+            <Panel
+              className="xl:col-span-2"
+              title={t("breakdownTitle")}
+              subtitle={t("breakdownSubtitle")}
+            >
+              <CampaignBreakdown
+                campaigns={data.campaigns}
+                locale={locale}
+                currency={account.currency}
+                labels={{
+                  spend: t("metric.spendCents"),
+                  total: t("breakdownTotal"),
+                  campaigns: t("breakdownCampaigns", { count: data.campaigns.length }),
+                  others: t("breakdownOthers"),
+                }}
+              />
+            </Panel>
           </div>
 
           {campaignMeta && (
