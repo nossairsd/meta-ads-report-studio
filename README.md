@@ -125,6 +125,13 @@ This starts the app and its own PostgreSQL. Meta credentials are read from a loc
 | `npm test` | Test suite |
 | `npm run lint` / `npm run type-check` | ESLint and TypeScript |
 
+## Deployment
+
+[DEPLOYMENT.md](DEPLOYMENT.md) covers the whole path: the Vercel project, the
+environment variables (and the two that are easy to get wrong), applying the
+schema to the production database, pointing the Meta app at the deployed
+address, and what to check once it is live.
+
 ## Continuous integration
 
 Every pull request and every push to `main` runs lint, type-check, the test suite and a
