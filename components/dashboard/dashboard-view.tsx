@@ -77,6 +77,11 @@ export function DashboardView({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ source, period, locale, ...reportTarget }),
         });
+        if (response.status === 429) {
+          const seconds = Number(response.headers.get("Retry-After")) || 60;
+          setDownloadError(t("downloadRateLimited", { seconds }));
+          return;
+        }
         if (!response.ok) throw new Error(`report failed: ${response.status}`);
 
         const blob = await response.blob();

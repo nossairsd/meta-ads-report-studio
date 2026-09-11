@@ -8,6 +8,7 @@ import { auth } from "@/lib/auth/config";
 import { isAuthConfigured } from "@/lib/env";
 import { loadClient } from "@/lib/agency/service";
 import type { ClientDetail } from "@/lib/agency/types";
+import { clientAddress, createRateLimiter } from "@/lib/rate-limit";
 import { periodSchema } from "@/lib/metrics/schema";
 import { routing } from "@/i18n/routing";
 
@@ -41,7 +42,22 @@ function contentDisposition(name: string): string {
   return `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(name)}`;
 }
 
+/** Ten reports a minute is far beyond what a person clicking needs, and far
+ *  below what would strain the server or Meta's quota. */
+const limiter = createRateLimiter({ limit: 10, windowMs: 60_000 });
+
 export async function POST(request: Request) {
+  // Checked before anything is parsed or read: a refused request must cost as
+  // little as possible. Keyed by address, since the demo needs no account;
+  // a signed-in agency behind a shared office address still has ten a minute.
+  const verdict = limiter.check(clientAddress(request));
+  if (!verdict.allowed) {
+    return Response.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(verdict.retryAfterSeconds) } }
+    );
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();

@@ -81,7 +81,7 @@ export function ChartVisual() {
   );
 }
 
-/** A 4-page report stacking itself into place. */
+/** A report sliding into place on top of the previous ones. */
 export function PdfVisual() {
   return (
     <div className="flex w-full items-center justify-center rounded-2xl bg-slate-50/80 px-5 py-7">
