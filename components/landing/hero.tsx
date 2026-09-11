@@ -54,8 +54,11 @@ export default function Hero() {
             <span className="relative shrink-0 rounded-full bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] px-2.5 py-1 text-[11px] font-semibold tracking-[0.08em] text-white uppercase shadow-[0_4px_10px_-4px_rgba(37,99,235,0.8)]">
               {t("betaTag")}
             </span>
+            {/* On a phone the chip keeps to the page margins: the call to
+                action is the arrow, so the words for it can go. */}
             <span className="relative truncate font-medium text-foreground/75 transition-colors group-hover:text-black">
               {t("betaPill")}
+              <span className="beta-chip-action"> · {t("betaPillAction")}</span>
             </span>
             <span className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black/[0.05] transition-colors group-hover:bg-primary group-hover:text-white">
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-px" />

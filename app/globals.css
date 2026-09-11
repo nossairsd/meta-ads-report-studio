@@ -176,3 +176,15 @@
     display: none;
   }
 }
+
+/* The action words of the beta chip, from the small breakpoint up. On a
+   phone the chip keeps to the page margins and the arrow says it alone. */
+.beta-chip-action {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .beta-chip-action {
+    display: inline;
+  }
+}
