@@ -191,8 +191,9 @@
       "ctaSecondary": "Connect with Facebook",
       "trustLine": "Free demo · No credit card · No Meta account required",
       "ctaSecondaryPending": "Redirecting to Meta…",
-      "betaPill": "Now open to agencies · Request access",
-      "betaTag": "Beta"
+      "betaPill": "Now open to agencies",
+      "betaTag": "Beta",
+      "betaPillAction": "Request access"
     },
     "features": {
       "badge": "why teams switch",
