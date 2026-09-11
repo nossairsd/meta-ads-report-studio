@@ -257,7 +257,8 @@
       "Default": {
         "title": "Sign-in did not complete",
         "body": "The connection to Meta was interrupted. Trying again usually works."
-      }
+      },
+      "dismiss": "Dismiss"
     }
   },
   "Agency": {

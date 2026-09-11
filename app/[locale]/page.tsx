@@ -20,9 +20,8 @@ export default async function Home({
     <>
       <Navbar />
 
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <SignInNotice signin={signin} error={error} />
-      </div>
+      {/* Floats above the page; it no longer pushes the hero down. */}
+      <SignInNotice signin={signin} error={error} />
 
       <div className="mx-auto w-full max-w-6xl space-y-24 px-6 md:space-y-32">
         <Hero />

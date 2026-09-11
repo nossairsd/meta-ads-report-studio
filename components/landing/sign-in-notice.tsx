@@ -1,5 +1,5 @@
-import { AlertTriangle, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { NoticeToast } from "@/components/landing/notice-toast";
 
 /**
  * Explains why the visitor was sent back here.
@@ -9,6 +9,9 @@ import { useTranslations } from "next-intl";
  * anonymous visitor away from the dashboard. Neither was being read, so a
  * failed sign-in dropped the user on the landing page with no explanation —
  * which is exactly how a working application looks broken.
+ *
+ * Shown as a temporary toast rather than a banner in the page: it is news
+ * about what just happened, not part of the page.
  */
 
 /** Auth.js error codes we can say something specific about. Anything else
@@ -27,30 +30,18 @@ export function SignInNotice({ signin, error }: Props) {
 
   if (!error && signin !== "required") return null;
 
-  const isError = Boolean(error);
   const key = error
     ? (KNOWN_ERRORS as readonly string[]).includes(error)
       ? error
       : "Default"
     : "signinRequired";
 
-  const Icon = isError ? AlertTriangle : Info;
-
   return (
-    <div
-      role={isError ? "alert" : "status"}
-      className={
-        "mx-auto mt-24 mb-2 flex w-full max-w-3xl items-start gap-3 rounded-xl border px-4 py-3.5 text-sm " +
-        (isError
-          ? "border-destructive/25 bg-destructive/[0.06] text-destructive"
-          : "border-primary/25 bg-primary/[0.06] text-primary")
-      }
-    >
-      <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-      <div className="space-y-0.5">
-        <p className="font-medium">{t(`${key}.title`)}</p>
-        <p className="text-foreground/70">{t(`${key}.body`)}</p>
-      </div>
-    </div>
+    <NoticeToast
+      tone={error ? "error" : "info"}
+      title={t(`${key}.title`)}
+      body={t(`${key}.body`)}
+      dismissLabel={t("dismiss")}
+    />
   );
 }
