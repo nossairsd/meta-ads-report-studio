@@ -193,9 +193,6 @@
       "ctaSecondary": "Se connecter avec Facebook",
       "trustLine": "Démo gratuite · Aucune carte bancaire · Aucun compte Meta requis",
       "ctaSecondaryPending": "Redirection vers Meta…",
-      "betaPill": "Ouverte aux agences",
-      "betaTag": "Bêta",
-      "betaPillAction": "Demander un accès",
       "ctaRequest": "Demander un accès"
     },
     "features": {

@@ -91,31 +91,6 @@ export default function Hero() {
           </div>
 
           <p className="text-xs text-foreground/50">{t("trustLine")}</p>
-
-          {/* The beta, after the two main actions rather than above the headline:
-              the headline states what the product is; this is news for the
-              agencies who want in. */}
-          <AnchorLink
-            href="#early-access"
-            className="group relative inline-flex max-w-full items-center gap-2.5 overflow-hidden rounded-full bg-white/85 p-1 pr-3.5 text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.06),0_10px_28px_-14px_rgba(37,99,235,0.55)] ring-1 ring-black/[0.06] backdrop-blur-md transition-shadow hover:ring-primary/30 sm:pr-4 sm:text-sm"
-          >
-            <span
-              aria-hidden
-              className="beta-chip-sheen pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/90 to-transparent"
-            />
-            <span className="relative shrink-0 rounded-full bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] px-2.5 py-1 text-[11px] font-semibold tracking-[0.08em] text-white uppercase shadow-[0_4px_10px_-4px_rgba(37,99,235,0.8)]">
-              {t("betaTag")}
-            </span>
-            {/* On a phone the chip keeps to the page margins: the call to
-                action is the arrow, so the words for it can go. */}
-            <span className="relative truncate font-medium text-foreground/75 transition-colors group-hover:text-black">
-              {t("betaPill")}
-              <span className="beta-chip-action"> · {t("betaPillAction")}</span>
-            </span>
-            <span className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black/[0.05] transition-colors group-hover:bg-primary group-hover:text-white">
-              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-px" />
-            </span>
-          </AnchorLink>
         </SlideEffect>
 
         <SlideEffect className="relative w-full px-4 md:px-0" isSpring={false} duration={1.2}>

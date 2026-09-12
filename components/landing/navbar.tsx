@@ -52,7 +52,7 @@ export default function Navbar() {
             paddingRight: 8,
           },
           scrolled: {
-            maxWidth: 920,
+            maxWidth: 1060,
             borderRadius: 999,
             backgroundColor: "rgba(255,255,255,0.75)",
             borderColor: "rgba(0,0,0,0.06)",
@@ -72,7 +72,7 @@ export default function Navbar() {
           </Link>
         </motion.div>
 
-        <div className="hidden items-center justify-center gap-2 md:flex">
+        <div className="hidden items-center justify-center gap-2 xl:flex">
           <ul
             className="flex items-center justify-center gap-1 text-sm font-medium text-black/70"
             onMouseLeave={() => setHovered(null)}
@@ -96,7 +96,7 @@ export default function Navbar() {
                 )}
                 <AnchorLink
                   href={link.href}
-                  className="block rounded-full px-3.5 py-2 transition-colors hover:text-black"
+                  className="block rounded-full px-3.5 py-2 whitespace-nowrap transition-colors hover:text-black"
                 >
                   {link.name}
                 </AnchorLink>
@@ -134,7 +134,7 @@ export default function Navbar() {
           initial={{ scale: 1 }}
           whileTap={{ scale: 0.85 }}
           transition={{ duration: 0.2 }}
-          className="flex cursor-pointer text-black md:hidden"
+          className="flex cursor-pointer text-black xl:hidden"
           onClick={() => setIsOpen((v) => !v)}
         >
           {isOpen ? <X size={22} /> : <AlignJustify size={22} />}
@@ -147,7 +147,7 @@ export default function Navbar() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-full left-0 z-50 mt-2 w-full overflow-hidden rounded-2xl border border-black/5 bg-white/95 shadow-xl backdrop-blur-xl md:hidden"
+              className="absolute top-full left-0 z-50 mt-2 w-full overflow-hidden rounded-2xl border border-black/5 bg-white/95 shadow-xl backdrop-blur-xl xl:hidden"
             >
               <div className="flex flex-col gap-4 p-6">
                 {navLinks.map((link) => (
