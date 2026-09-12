@@ -37,8 +37,10 @@ image — and merge it.
 4. Do **not** deploy yet: add the environment variables first, or the first
    build will produce a site that cannot sign anyone in.
 
-`output: "standalone"` in `next.config.ts` is there for the Docker image.
-Vercel builds with its own adapter and ignores it; it costs nothing to leave.
+The self-contained "standalone" bundle is produced only when `BUILD_STANDALONE=1`,
+which the Dockerfile sets. It must stay off here: standalone output relocates the
+trace files, and a Vercel build then fails with `ENOENT` on
+`.next/next-server.js.nft.json` after compiling correctly.
 
 ---
 

@@ -33,6 +33,9 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV DATABASE_URL="postgresql://build:build@localhost:5432/build"
 
+# Asks Next for the self-contained server bundle the runtime stage copies.
+ENV BUILD_STANDALONE=1
+
 RUN npm run build
 
 
