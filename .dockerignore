@@ -13,7 +13,6 @@ coverage
 !.env.example
 
 # Local tooling and editor state
-.claude
 .vscode
 *.log
 npm-debug.log*
