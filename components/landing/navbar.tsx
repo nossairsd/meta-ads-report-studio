@@ -42,6 +42,13 @@ export default function Navbar() {
         variants={{
           // Both states use px so motion can interpolate; 1152px matches the
           // page's max-w-6xl container, and `w-full` keeps it responsive below.
+          //
+          // The shrunk width is a target, not a promise: `xl:min-w-max` on the
+          // bar keeps it at least as wide as its own contents. French labels
+          // plus the sign-in link need about 1090px, more than the 1060px
+          // below, and without that floor the demo button hung outside the
+          // rounded bar. A floor beats a hand-tuned number: it holds for any
+          // language and any item added later.
           top: {
             maxWidth: 1152,
             borderRadius: 18,
@@ -62,7 +69,7 @@ export default function Navbar() {
           },
         }}
         transition={{ type: "spring", stiffness: 260, damping: 30 }}
-        className={`mx-auto flex h-fit w-full items-center justify-between border py-2 ${
+        className={`mx-auto flex h-fit w-full items-center justify-between border py-2 xl:min-w-max ${
           scrolled ? "backdrop-blur-xl" : ""
         }`}
       >
